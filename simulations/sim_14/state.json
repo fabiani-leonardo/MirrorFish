@@ -1,0 +1,25 @@
+{
+  "simulation_id": "sim_14",
+  "project_id": "proj_14",
+  "graph_id": "b36ef667-ffda-4d0f-9455-dced5adb6fb5",
+  "enable_twitter": true,
+  "enable_reddit": true,
+  "status": "ready",
+  "entities_count": 111,
+  "profiles_count": 111,
+  "entity_types": [
+    "Person",
+    "RetiredPerson",
+    "NewsAgency",
+    "PoliticalParty",
+    "JudicialAssociation"
+  ],
+  "config_generated": true,
+  "config_reasoning": "Time config: Configuration follows Italian social media habits as specified. Peak activity is set to 21-23h to align with TV news/talk shows, which drive the referendum debate. Morning hours (6-9) cover early workers/students. Work hours (10-20) include lunch breaks (13-14) and post-work evening wind-down, ensuring broad coverage across students, workers, and retirees. Off-peak is 0-5h. Agents per round (10-25) ensures manageable simulation load while maintaining diversity. | Event config: The configuration establishes a balanced starting point between the 'SI' and 'NO' camps, reflecting the official stances of the major political parties and judicial associations provided in the entity list. The 'NewsAgency' (ANSA) provides the factual baseline. 'PoliticalParty' types represent the polarized institutional voices (Lega/FdI for SI, PD/M5S for NO). 'Person' types represent the general electorate's initial confusion or partisan leaning, and 'JudicialAssociation' adds the specific stakeholder perspective. This setup allows the simulation to track how exposure to these distinct narratives over 312 rounds influences the population's voting intention. | Agent config: Successfully generated 111 | Initial posts assigned: 8 posts assigned publishers",
+  "current_round": 0,
+  "twitter_status": "not_started",
+  "reddit_status": "not_started",
+  "created_at": "2026-08-29T10:18:04.754276",
+  "updated_at": "2026-08-29T10:35:01.041178",
+  "error": null
+}

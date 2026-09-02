@@ -1,0 +1,5 @@
+httpx>=0.27
+python-dotenv>=1.0
+# opzionali, solo per l'analisi a posteriori:
+# networkx>=3.2
+# pandas>=2.2

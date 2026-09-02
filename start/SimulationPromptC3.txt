@@ -1,0 +1,32 @@
+SCENARIO
+Referendum costituzionale confermativo sulla separazione delle carriere dei
+magistrati (giudicante/requirente), tenutosi in Italia il 22-23 marzo 2026.
+La legge costituzionale è stata pubblicata in Gazzetta Ufficiale il 30
+ottobre 2025.
+
+PIATTAFORME
+Reddit e Twitter, in esecuzione parallela.
+
+COSA OSSERVARE
+Come si distribuisce, al termine del periodo simulato, l'intenzione di voto
+(Sì / No / Astensione) della popolazione, e come questa distribuzione
+cambia nel tempo mano a mano che la popolazione viene esposta alle notizie
+reali sull'argomento.
+
+PARAMETRI TEMPORALI (VINCOLANTI)
+Dal 30 ottobre 2025 al 22 marzo 2026 (circa 143 giorni). La
+popolazione deve attraversare gradualmente l'intera campagna referendaria.
+Ogni round rappresenta esattamente 660 minuti di tempo simulato.
+Il periodo da coprire e' di 3432 ore, quindi 312 round.
+Non modificare questi valori.
+
+FASCE DI ATTIVITA'
+Ogni agente deve avere almeno 8 ore attive nell'arco della giornata, non
+finestre strette. Assegnale in base all'eta' e alla professione, secondo le
+abitudini italiane di consumo dei social:
+- studenti e under 30: tardo pomeriggio, sera e notte (16-24 e 0-1)
+- lavoratori adulti: prima mattina, pausa pranzo, sera dopo cena (7-9, 13-14, 20-24)
+- pensionati e over 65: mattina, primo pomeriggio, prima serata (8-13, 15-19, 21-23)
+La fascia serale 21-23 e' quella di massima attivita' per tutti, perche'
+coincide con i telegiornali e i talk show politici.
+Il numero di agenti che agiscono in un singolo round deve stare fra 10 e 25.

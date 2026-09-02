@@ -1,0 +1,341 @@
+=== REALITY SEED - POPOLAZIONE ITALIANA SINTETICA ===
+
+SCHEMA DEI DATI
+Questo documento descrive una popolazione di cittadini italiani e un gruppo di
+account istituzionali. Ogni cittadino è descritto sempre dagli stessi campi:
+  - età anagrafica in anni
+  - città di residenza
+  - professione
+  - nucleo familiare con cui convive
+  - amicizie
+  - orientamento politico e livello di partecipazione al dibattito pubblico
+  - intenzione di voto al referendum costituzionale (SI, NO oppure astensione)
+Ogni account istituzionale è descritto da: tipo di organizzazione, posizione
+ufficiale sul referendum (SI o NO) e registro comunicativo.
+Le persone descritte in questo documento sono gli elettori della simulazione.
+
+TEMPO SIMULATO
+Dal 30 ottobre 2025 al 22 marzo 2026 (143 giorni).
+
+
+=== ACCOUNT ISTITUZIONALI (NON ELETTORI) ===
+
+[0] ANSA
+ANSA: Non interagisce mai. ANSA è un account istituzionale e non è un elettore. ANSA è un attore istituzionale del dibattito pubblico. ANSA non è una persona fisica e non esprime un voto. Scheda di ANSA: account ufficiale, non elettore. ANSA partecipa al dibattito come organizzazione. ANSA è un attore istituzionale del dibattito pubblico. ANSA non è una persona fisica e non esprime un voto. Scheda di ANSA: account ufficiale, non elettore. ANSA partecipa al dibattito come organizzazione. ANSA è un attore istituzionale del dibattito pubblico. ANSA non è una persona fisica e non esprime un voto.
+
+[1] Fratelli d'Italia
+Fratelli d'Italia è anche indicato con la sigla FDI. Fratelli d'Italia: Account ufficiale. Fratelli d'Italia: Promuove aggressivamente il SI al referendum. Fratelli d'Italia: Parla di efficienza, stop alla burocrazia dei giudici e difesa del Governo. La posizione ufficiale di Fratelli d'Italia sul referendum è SI. Fratelli d'Italia è un account istituzionale e non è un elettore. Fratelli d'Italia è un attore istituzionale del dibattito pubblico. Fratelli d'Italia non è una persona fisica e non esprime un voto. Scheda di Fratelli d'Italia: account ufficiale, non elettore. Fratelli d'Italia partecipa al dibattito come organizzazione.
+
+[2] Partito Democratico
+Partito Democratico è anche indicato con la sigla PD. Partito Democratico: Account ufficiale. Partito Democratico: Promuove il NO. Partito Democratico: Difende la Costituzione, attacca il governo accusandolo di voler sottomettere i giudici. La posizione ufficiale di Partito Democratico sul referendum è NO. Partito Democratico è un account istituzionale e non è un elettore. Partito Democratico è un attore istituzionale del dibattito pubblico. Partito Democratico non è una persona fisica e non esprime un voto. Scheda di Partito Democratico: account ufficiale, non elettore.
+
+[3] Movimento 5 Stelle
+Movimento 5 Stelle è anche indicato con la sigla M5S. Movimento 5 Stelle: Account ufficiale. Movimento 5 Stelle: Promuove il NO. Movimento 5 Stelle: Toni populisti, parla di casta, difesa dei magistrati antimafia. La posizione ufficiale di Movimento 5 Stelle sul referendum è NO. Movimento 5 Stelle è un account istituzionale e non è un elettore. Movimento 5 Stelle è un attore istituzionale del dibattito pubblico. Movimento 5 Stelle non è una persona fisica e non esprime un voto. Scheda di Movimento 5 Stelle: account ufficiale, non elettore. Movimento 5 Stelle partecipa al dibattito come organizzazione.
+
+[4] Lega
+Lega è anche indicato con la sigla LEGA. Lega: Account ufficiale. Lega: Promuove il SI. Lega: Toni molto diretti, chiede processi brevi e giustizia per i cittadini. La posizione ufficiale di Lega sul referendum è SI. Lega è un account istituzionale e non è un elettore. Lega è un attore istituzionale del dibattito pubblico. Lega non è una persona fisica e non esprime un voto. Scheda di Lega: account ufficiale, non elettore. Lega partecipa al dibattito come organizzazione. Lega è un attore istituzionale del dibattito pubblico. Lega non è una persona fisica e non esprime un voto. Scheda di Lega: account ufficiale, non elettore.
+
+[5] Associazione Nazionale Magistrati
+Associazione Nazionale Magistrati è anche indicato con la sigla ANM. Associazione Nazionale Magistrati: Account ufficiale. Associazione Nazionale Magistrati: Promuove il NO. Associazione Nazionale Magistrati: Usa toni tecnici, istituzionali e allarmistici sull'indipendenza della magistratura. La posizione ufficiale di Associazione Nazionale Magistrati sul referendum è NO. Associazione Nazionale Magistrati è un account istituzionale e non è un elettore. Associazione Nazionale Magistrati è un attore istituzionale del dibattito pubblico. Associazione Nazionale Magistrati non è una persona fisica e non esprime un voto.
+
+=== CITTADINI ELETTORI (100) ===
+
+[6] Giuseppe Vitale
+Giuseppe Vitale ha 18 anni. Giuseppe Vitale vive a Roma. Giuseppe Vitale di professione fa: studente universitario. Giuseppe Vitale vive con il padre Ivan Vitale e la madre Alessia Vitale. Giuseppe Vitale è amico di Carmela Rossi e Nicola Galli. Profilo politico di Giuseppe Vitale: Moderato, interviene solo quando un tema lo tocca da vicino, posta storie su Instagram, vota Partito Democratico, non andrà a votare al referendum. Giuseppe Vitale al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Giuseppe Vitale: 18 anni, Roma, studente universitario.
+
+[7] Fabio Martini
+Fabio Martini ha 82 anni. Fabio Martini vive a Milano. Fabio Martini di professione fa: pensionato ex operaio. Fabio Martini vive con la moglie Roberta Martini e la figlia Simona Martini e il figlio Paolo Martini. Fabio Martini è amico di Barbara Giordano e Lucia Mancini. Profilo politico di Fabio Martini: Moderato, legge molto e scrive poco, parla della pensione, vota Alleanza Verdi Sinistra, voterà NO al referendum. Fabio Martini al referendum voterà NO. Scheda anagrafica di Fabio Martini: 82 anni, Milano, pensionato ex operaio. Fabio Martini è uno dei cittadini elettori di questa popolazione.
+
+[8] Stefano Lombardi
+Stefano Lombardi ha 23 anni. Stefano Lombardi vive a Padova. Stefano Lombardi di professione fa: cameriere. Stefano Lombardi vive con la madre Elena Lombardi. Stefano Lombardi è amico di Giovanni Villa e Federica Martinelli. Profilo politico di Stefano Lombardi: Disinteressato, ignora le notizie politiche, va ai concerti, non andrà a votare al referendum. Stefano Lombardi al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Stefano Lombardi: 23 anni, Padova, cameriere. Stefano Lombardi è uno dei cittadini elettori di questa popolazione. Stefano Lombardi risiede a Padova e ha 23 anni.
+
+[9] Nicola Galli
+Nicola Galli ha 51 anni. Nicola Galli vive a Roma. Nicola Galli di professione fa: ingegnere. Nicola Galli vive con il padre Giorgio Galli e la madre Rita Galli. Nicola Galli è amico di Anna Farina e Vincenzo Farina. Profilo politico di Nicola Galli: Disinteressato, non guarda i telegiornali, posta foto di cucina, non andrà a votare al referendum. Nicola Galli al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Nicola Galli: 51 anni, Roma, ingegnere. Nicola Galli è uno dei cittadini elettori di questa popolazione. Nicola Galli risiede a Roma e ha 51 anni.
+
+[10] Giovanni Bianchi
+Giovanni Bianchi ha 37 anni. Giovanni Bianchi vive a Torino. Giovanni Bianchi di professione fa: infermiere. Giovanni Bianchi vive con la sorella Elisa Bianchi. Giovanni Bianchi è amico di Francesca Monti e Lucia Ricci. Profilo politico di Giovanni Bianchi: Moderato, commenta con toni disillusi, segue il calcio, vota Fratelli d'Italia, voterà SÌ al referendum. Giovanni Bianchi al referendum voterà SÌ. Scheda anagrafica di Giovanni Bianchi: 37 anni, Torino, infermiere. Giovanni Bianchi è uno dei cittadini elettori di questa popolazione. Giovanni Bianchi risiede a Torino e ha 37 anni.
+
+[11] Giuseppe Gallo
+Giuseppe Gallo ha 19 anni. Giuseppe Gallo vive a Torino. Giuseppe Gallo di professione fa: rider. Giuseppe Gallo vive con il padre Nicola Gallo e la madre Lucia Gallo. Giuseppe Gallo è amico di Filippo Monti e Lucia Ricci. Profilo politico di Giuseppe Gallo: Moderato, diffida di entrambe le parti, commenta i video su TikTok, vota Movimento 5 Stelle, voterà NO al referendum. Giuseppe Gallo al referendum voterà NO. Scheda anagrafica di Giuseppe Gallo: 19 anni, Torino, rider. Giuseppe Gallo è uno dei cittadini elettori di questa popolazione. Giuseppe Gallo risiede a Torino e ha 19 anni.
+
+[12] Michele Lombardo
+Michele Lombardo ha 60 anni. Michele Lombardo vive a Palermo. Michele Lombardo di professione fa: capotreno. Michele Lombardo vive da solo. Michele Lombardo è amico di Roberta Pellegrini e Mario Longo. Profilo politico di Michele Lombardo: Moderato, condivide notizie senza commentarle, posta foto di cucina, vota Movimento 5 Stelle, voterà NO al referendum. Michele Lombardo al referendum voterà NO. Scheda anagrafica di Michele Lombardo: 60 anni, Palermo, capotreno. Michele Lombardo è uno dei cittadini elettori di questa popolazione. Michele Lombardo risiede a Palermo e ha 60 anni.
+
+[13] Loredana Silvestri
+Loredana Silvestri ha 75 anni. Loredana Silvestri vive a Bari. Loredana Silvestri di professione fa: pensionata ex insegnante. Loredana Silvestri vive con la figlia Laura Silvestri. Loredana Silvestri è amica di Federico Mariani e Lucia Gentile. Profilo politico di Loredana Silvestri: Attivista, litiga spesso nei commenti, posta foto dei nipoti, vota Partito Democratico, voterà NO al referendum. Loredana Silvestri al referendum voterà NO. Scheda anagrafica di Loredana Silvestri: 75 anni, Bari, pensionata ex insegnante. Loredana Silvestri è uno dei cittadini elettori di questa popolazione.
+
+[14] Tommaso Rizzi
+Tommaso Rizzi ha 58 anni. Tommaso Rizzi vive a Catania. Tommaso Rizzi di professione fa: operaio metalmeccanico. Tommaso Rizzi vive con la moglie Barbara Rizzi e il figlio Cristian Rizzi. Tommaso Rizzi è amico di Daniela Morelli e Federico Mariani. Profilo politico di Tommaso Rizzi: Attivista, molto presente sui social, commenta ogni notizia politica, segue il calcio, vota Fratelli d'Italia, voterà SÌ al referendum. Tommaso Rizzi al referendum voterà SÌ. Scheda anagrafica di Tommaso Rizzi: 58 anni, Catania, operaio metalmeccanico. Tommaso Rizzi è uno dei cittadini elettori di questa popolazione.
+
+[15] Roberto Conti
+Roberto Conti ha 59 anni. Roberto Conti vive a Cagliari. Roberto Conti di professione fa: capotreno. Roberto Conti vive con la sorella Roberta Conti. Roberto Conti è amico di Alessandro Rinaldi e Daniela Morelli. Profilo politico di Roberto Conti: Disinteressato, salta i post di politica, posta foto di cucina, non andrà a votare al referendum. Roberto Conti al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Roberto Conti: 59 anni, Cagliari, capotreno. Roberto Conti è uno dei cittadini elettori di questa popolazione. Roberto Conti risiede a Cagliari e ha 59 anni.
+
+[16] Carlo Martinelli
+Carlo Martinelli ha 51 anni. Carlo Martinelli vive a Padova. Carlo Martinelli di professione fa: insegnante di liceo. Carlo Martinelli vive con la madre Federica Martinelli. Carlo Martinelli è amico di Lucia Ricci e Silvia Giordano. Profilo politico di Carlo Martinelli: Moderato, commenta con toni disillusi, si lamenta delle liste d'attesa della sanità, non andrà a votare al referendum. Carlo Martinelli al referendum voterà SÌ. Scheda anagrafica di Carlo Martinelli: 51 anni, Padova, insegnante di liceo. Carlo Martinelli è uno dei cittadini elettori di questa popolazione. Carlo Martinelli risiede a Padova e ha 51 anni.
+
+[17] Marco Russo
+Marco Russo ha 77 anni. Marco Russo vive a Napoli. Marco Russo di professione fa: pensionato ex artigiano. Marco Russo vive con il figlio Pietro Russo. Marco Russo è amico di Federica Basile e Gabriele Fontana. Profilo politico di Marco Russo: Moderato, interviene solo quando un tema lo tocca da vicino, posta foto dei nipoti, vota Fratelli d'Italia, voterà SÌ al referendum. Marco Russo al referendum voterà SÌ. Scheda anagrafica di Marco Russo: 77 anni, Napoli, pensionato ex artigiano. Marco Russo è uno dei cittadini elettori di questa popolazione. Marco Russo risiede a Napoli e ha 77 anni.
+
+[18] Stefano Rizzo
+Stefano Rizzo ha 65 anni. Stefano Rizzo vive a Bologna. Stefano Rizzo di professione fa: pensionato ex artigiano. Stefano Rizzo vive con la moglie Elisa Rizzo e il figlio Andrea Rizzo. Stefano Rizzo è amico di Samuele Marino e Camilla Marino. Profilo politico di Stefano Rizzo: Attivista, organizza raccolte firme, posta foto dei nipoti, vota Fratelli d'Italia, voterà SÌ al referendum. Stefano Rizzo al referendum voterà SÌ. Scheda anagrafica di Stefano Rizzo: 65 anni, Bologna, pensionato ex artigiano. Stefano Rizzo è uno dei cittadini elettori di questa popolazione. Stefano Rizzo risiede a Bologna e ha 65 anni.
+
+[19] Barbara Rizzi
+Barbara Rizzi ha 57 anni. Barbara Rizzi vive a Catania. Barbara Rizzi di professione fa: impiegata di banca. Barbara Rizzi vive con il marito Tommaso Rizzi e il figlio Cristian Rizzi. Barbara Rizzi è amica di Alberto Coppola e Federico Mariani. Profilo politico di Barbara Rizzi: Attivista, molto presente sui social, commenta ogni notizia politica, parla della scuola dei figli, vota Fratelli d'Italia, voterà SÌ al referendum. Barbara Rizzi al referendum voterà SÌ. Scheda anagrafica di Barbara Rizzi: 57 anni, Catania, impiegata di banca. Barbara Rizzi è uno dei cittadini elettori di questa popolazione.
+
+[20] Alessia Palumbo
+Alessia Palumbo ha 32 anni. Alessia Palumbo vive a Milano. Alessia Palumbo di professione fa: insegnante precaria. Alessia Palumbo vive con il padre Francesco Palumbo. Alessia Palumbo è amica di Paolo Martini e Martina Leone. Profilo politico di Alessia Palumbo: Moderata, commenta con toni disillusi, parla di affitti troppo cari, vota Partito Democratico, voterà NO al referendum. Alessia Palumbo al referendum voterà NO. Scheda anagrafica di Alessia Palumbo: 32 anni, Milano, insegnante precaria. Alessia Palumbo è uno dei cittadini elettori di questa popolazione. Alessia Palumbo risiede a Milano e ha 32 anni.
+
+[21] Dario Leone
+Dario Leone ha 61 anni. Dario Leone vive a Milano. Dario Leone di professione fa: ingegnere. Dario Leone vive con la moglie Martina Leone e la figlia Serena Leone e la figlia Maria Leone. Dario Leone è amico di Roberta Martini e Lucia Mancini. Profilo politico di Dario Leone: Moderato, commenta con toni disillusi, commenta le bollette, vota Movimento 5 Stelle, voterà NO al referendum. Dario Leone al referendum voterà NO. Scheda anagrafica di Dario Leone: 61 anni, Milano, ingegnere. Dario Leone è uno dei cittadini elettori di questa popolazione. Dario Leone risiede a Milano e ha 61 anni.
+
+[22] Ivan Vitale
+Ivan Vitale ha 84 anni. Ivan Vitale vive a Roma. Ivan Vitale di professione fa: pensionato ex dirigente. Ivan Vitale vive con la moglie Alessia Vitale e il figlio Giuseppe Vitale. Ivan Vitale è amico di Fabio Villa e Rita Galli. Profilo politico di Ivan Vitale: Moderato, commenta con toni disillusi, parla dell'orto, vota Lega, voterà SÌ al referendum. Ivan Vitale al referendum voterà SÌ. Scheda anagrafica di Ivan Vitale: 84 anni, Roma, pensionato ex dirigente. Ivan Vitale è uno dei cittadini elettori di questa popolazione. Ivan Vitale risiede a Roma e ha 84 anni. La professione di Ivan Vitale è: pensionato ex dirigente.
+
+[23] Vincenzo Farina
+Vincenzo Farina ha 32 anni. Vincenzo Farina vive a Roma. Vincenzo Farina di professione fa: insegnante precario. Vincenzo Farina vive con la sorella Anna Farina. Vincenzo Farina è amico di Lorenzo Villa e Nicola Galli. Profilo politico di Vincenzo Farina: Moderato, legge molto e scrive poco, gioca online, vota Lega, voterà SÌ al referendum. Vincenzo Farina al referendum voterà SÌ. Scheda anagrafica di Vincenzo Farina: 32 anni, Roma, insegnante precario. Vincenzo Farina è uno dei cittadini elettori di questa popolazione. Vincenzo Farina risiede a Roma e ha 32 anni. La professione di Vincenzo Farina è: insegnante precario.
+
+[24] Lucia Ferrari
+Lucia Ferrari ha 42 anni. Lucia Ferrari vive a Bergamo. Lucia Ferrari di professione fa: infermiera. Lucia Ferrari vive con il fratello Claudio Ferrari. Lucia Ferrari è amica di Dario Colombo e Andrea Rizzo. Profilo politico di Lucia Ferrari: Moderata, diffida di entrambe le parti, parla di stipendi fermi, vota Fratelli d'Italia, voterà SÌ al referendum. Lucia Ferrari al referendum voterà SÌ. Scheda anagrafica di Lucia Ferrari: 42 anni, Bergamo, infermiera. Lucia Ferrari è uno dei cittadini elettori di questa popolazione. Lucia Ferrari risiede a Bergamo e ha 42 anni. La professione di Lucia Ferrari è: infermiera.
+
+[25] Nicola Gallo
+Nicola Gallo ha 83 anni. Nicola Gallo vive a Torino. Nicola Gallo di professione fa: pensionato ex insegnante. Nicola Gallo vive con la moglie Lucia Gallo e il figlio Giuseppe Gallo. Nicola Gallo è amico di Alessia Vitale e Elisa Bianchi. Profilo politico di Nicola Gallo: Disinteressato, usa i social solo per svago, segue il ciclismo, non andrà a votare al referendum. Nicola Gallo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Nicola Gallo: 83 anni, Torino, pensionato ex insegnante. Nicola Gallo è uno dei cittadini elettori di questa popolazione.
+
+[26] Barbara Giordano
+Barbara Giordano ha 63 anni. Barbara Giordano vive a Milano. Barbara Giordano di professione fa: geometra. Barbara Giordano vive con il marito Domenico Giordano e la figlia Silvia Giordano. Barbara Giordano è amica di Lucia Mancini e Maria Leone. Profilo politico di Barbara Giordano: Attivista, litiga spesso nei commenti, posta foto di cucina, vota Partito Democratico, voterà NO al referendum. Barbara Giordano al referendum voterà NO. Scheda anagrafica di Barbara Giordano: 63 anni, Milano, geometra. Barbara Giordano è uno dei cittadini elettori di questa popolazione. Barbara Giordano risiede a Milano e ha 63 anni.
+
+[27] Martina Leone
+Martina Leone ha 59 anni. Martina Leone vive a Milano. Martina Leone di professione fa: avvocata. Martina Leone vive con il marito Dario Leone e la figlia Serena Leone e la figlia Maria Leone. Martina Leone è amica di Lucia Mancini e Barbara Giordano. Profilo politico di Martina Leone: Attivista, litiga spesso nei commenti, posta foto di cucina, vota Alleanza Verdi Sinistra, voterà NO al referendum. Martina Leone al referendum voterà NO. Scheda anagrafica di Martina Leone: 59 anni, Milano, avvocata. Martina Leone è uno dei cittadini elettori di questa popolazione. Martina Leone risiede a Milano e ha 59 anni.
+
+[28] Luca Gentile
+Luca Gentile ha 77 anni. Luca Gentile vive a Napoli. Luca Gentile di professione fa: pensionato ex agricoltore. Luca Gentile vive con la moglie Lucia Gentile e la figlia Noemi Gentile. Luca Gentile è amico di Marco Russo e Giulia Cattaneo. Profilo politico di Luca Gentile: Moderato, diffida di entrambe le parti, condivide catene su WhatsApp, vota Partito Democratico, voterà NO al referendum. Luca Gentile al referendum voterà NO. Scheda anagrafica di Luca Gentile: 77 anni, Napoli, pensionato ex agricoltore. Luca Gentile è uno dei cittadini elettori di questa popolazione. Luca Gentile risiede a Napoli e ha 77 anni.
+
+[29] Andrea Cattaneo
+Andrea Cattaneo ha 34 anni. Andrea Cattaneo vive a Napoli. Andrea Cattaneo di professione fa: agente immobiliare. Andrea Cattaneo vive con la sorella Sara Cattaneo e la madre Giulia Cattaneo e il padre Cristian Cattaneo. Andrea Cattaneo è amico di Antonio Fontana e Federica Basile. Profilo politico di Andrea Cattaneo: Disinteressato, non guarda i telegiornali, commenta i video su TikTok, non andrà a votare al referendum. Andrea Cattaneo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Andrea Cattaneo: 34 anni, Napoli, agente immobiliare. Andrea Cattaneo è uno dei cittadini elettori di questa popolazione.
+
+[30] Sara Cattaneo
+Sara Cattaneo ha 35 anni. Sara Cattaneo vive a Napoli. Sara Cattaneo di professione fa: camionista. Sara Cattaneo vive con il fratello Andrea Cattaneo e la madre Giulia Cattaneo e il padre Cristian Cattaneo. Sara Cattaneo è amica di Noemi Gentile e Antonio Fontana. Profilo politico di Sara Cattaneo: Disinteressata, usa i social solo per svago, commenta le bollette, non andrà a votare al referendum. Sara Cattaneo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Sara Cattaneo: 35 anni, Napoli, camionista. Sara Cattaneo è uno dei cittadini elettori di questa popolazione.
+
+[31] Noemi Gentile
+Noemi Gentile ha 29 anni. Noemi Gentile vive a Napoli. Noemi Gentile di professione fa: grafica. Noemi Gentile vive con il padre Luca Gentile e la madre Lucia Gentile. Noemi Gentile è amica di Antonio Fontana e Andrea Cattaneo. Profilo politico di Noemi Gentile: Moderata, condivide notizie senza commentarle, guarda serie TV, vota Partito Democratico, voterà NO al referendum. Noemi Gentile al referendum voterà NO. Scheda anagrafica di Noemi Gentile: 29 anni, Napoli, grafica. Noemi Gentile è uno dei cittadini elettori di questa popolazione. Noemi Gentile risiede a Napoli e ha 29 anni.
+
+[32] Davide Sanna
+Davide Sanna ha 68 anni. Davide Sanna vive a Bari. Davide Sanna di professione fa: pensionato ex dirigente. Davide Sanna vive con la moglie Silvia Sanna e la figlia Simona Sanna. Davide Sanna è amico di Loredana Silvestri e Giulia Cattaneo. Profilo politico di Davide Sanna: Attivista, condivide articoli e attacca chi la pensa diversamente, parla della pensione, vota Fratelli d'Italia, voterà SÌ al referendum. Davide Sanna al referendum voterà SÌ. Scheda anagrafica di Davide Sanna: 68 anni, Bari, pensionato ex dirigente. Davide Sanna è uno dei cittadini elettori di questa popolazione.
+
+[33] Giovanni Villa
+Giovanni Villa ha 23 anni. Giovanni Villa vive a Roma. Giovanni Villa di professione fa: rider. Giovanni Villa vive con il fratello Lorenzo Villa e il padre Fabio Villa e la madre Serena Villa. Giovanni Villa è amico di Vincenzo Farina e Anna Farina. Profilo politico di Giovanni Villa: Disinteressato, ignora le notizie politiche, va ai concerti, non andrà a votare al referendum. Giovanni Villa al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Giovanni Villa: 23 anni, Roma, rider. Giovanni Villa è uno dei cittadini elettori di questa popolazione.
+
+[34] Filippo Monti
+Filippo Monti ha 24 anni. Filippo Monti vive a Torino. Filippo Monti di professione fa: apprendista meccanico. Filippo Monti vive con la sorella Francesca Monti. Filippo Monti è amico di Elisa Bianchi e Giovanni Bianchi. Profilo politico di Filippo Monti: Disinteressato, non guarda i telegiornali, commenta i video su TikTok, non andrà a votare al referendum. Filippo Monti al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Filippo Monti: 24 anni, Torino, apprendista meccanico. Filippo Monti è uno dei cittadini elettori di questa popolazione. Filippo Monti risiede a Torino e ha 24 anni.
+
+[35] Enrico Serra
+Enrico Serra ha 39 anni. Enrico Serra vive a Perugia. Enrico Serra di professione fa: commercialista. Enrico Serra vive con la sorella Simona Serra. Enrico Serra è amico di Daniela Morelli e Davide Barbieri. Profilo politico di Enrico Serra: Disinteressato, usa i social solo per svago, segue il calcio, non andrà a votare al referendum. Enrico Serra al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Enrico Serra: 39 anni, Perugia, commercialista. Enrico Serra è uno dei cittadini elettori di questa popolazione. Enrico Serra risiede a Perugia e ha 39 anni.
+
+[36] Simona Sanna
+Simona Sanna ha 37 anni. Simona Sanna vive a Bari. Simona Sanna di professione fa: impiegata comunale. Simona Sanna vive con il padre Davide Sanna e la madre Silvia Sanna. Simona Sanna è amica di Loredana Silvestri e Elisa Bianchi. Profilo politico di Simona Sanna: Disinteressata, salta i post di politica, commenta le bollette, non andrà a votare al referendum. Simona Sanna al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Simona Sanna: 37 anni, Bari, impiegata comunale. Simona Sanna è uno dei cittadini elettori di questa popolazione. Simona Sanna risiede a Bari e ha 37 anni.
+
+[37] Claudio Romano
+Claudio Romano ha 60 anni. Claudio Romano vive a Bergamo. Claudio Romano di professione fa: commerciante. Claudio Romano vive da solo. Claudio Romano è amico di Michele Lombardo e Dario Colombo. Profilo politico di Claudio Romano: Moderato, interviene solo quando un tema lo tocca da vicino, scrive di viaggi in camper, vota Partito Democratico, voterà NO al referendum. Claudio Romano al referendum voterà NO. Scheda anagrafica di Claudio Romano: 60 anni, Bergamo, commerciante. Claudio Romano è uno dei cittadini elettori di questa popolazione. Claudio Romano risiede a Bergamo e ha 60 anni.
+
+[38] Simona Martini
+Simona Martini ha 19 anni. Simona Martini vive a Milano. Simona Martini di professione fa: barista. Simona Martini vive con il fratello Paolo Martini e il padre Fabio Martini e la madre Roberta Martini. Simona Martini è amica di Serena Leone e Alessia Palumbo. Profilo politico di Simona Martini: Moderata, diffida di entrambe le parti, guarda serie TV, vota Fratelli d'Italia, voterà SÌ al referendum. Simona Martini al referendum voterà SÌ. Scheda anagrafica di Simona Martini: 19 anni, Milano, barista. Simona Martini è uno dei cittadini elettori di questa popolazione. Simona Martini risiede a Milano e ha 19 anni.
+
+[39] Sara Mazza
+Sara Mazza ha 41 anni. Sara Mazza vive a Firenze. Sara Mazza di professione fa: impiegata comunale. Sara Mazza vive con il fratello Stefano Mazza. Sara Mazza è amica di Enrico Caruso e Enrico Serra. Profilo politico di Sara Mazza: Moderata, condivide notizie senza commentarle, parla di stipendi fermi, vota Alleanza Verdi Sinistra, voterà NO al referendum. Sara Mazza al referendum voterà NO. Scheda anagrafica di Sara Mazza: 41 anni, Firenze, impiegata comunale. Sara Mazza è uno dei cittadini elettori di questa popolazione. Sara Mazza risiede a Firenze e ha 41 anni. La professione di Sara Mazza è: impiegata comunale.
+
+[40] Anna Farina
+Anna Farina ha 38 anni. Anna Farina vive a Roma. Anna Farina di professione fa: operaia tessile. Anna Farina vive con il fratello Vincenzo Farina. Anna Farina è amica di Rita Galli e Lorenzo Villa. Profilo politico di Anna Farina: Moderata, condivide notizie senza commentarle, scrive di viaggi in camper, vota Azione, voterà SÌ al referendum. Anna Farina al referendum voterà SÌ. Scheda anagrafica di Anna Farina: 38 anni, Roma, operaia tessile. Anna Farina è uno dei cittadini elettori di questa popolazione. Anna Farina risiede a Roma e ha 38 anni. La professione di Anna Farina è: operaia tessile.
+
+[41] Marta Testa
+Marta Testa ha 37 anni. Marta Testa vive a Verona. Marta Testa di professione fa: operaia tessile. Marta Testa vive con il fratello Ivan Testa. Marta Testa è amica di Fabio Guerra e Simona Sanna. Profilo politico di Marta Testa: Moderata, commenta con toni disillusi, commenta le bollette, vota Movimento 5 Stelle, voterà NO al referendum. Marta Testa al referendum voterà NO. Scheda anagrafica di Marta Testa: 37 anni, Verona, operaia tessile. Marta Testa è uno dei cittadini elettori di questa popolazione. Marta Testa risiede a Verona e ha 37 anni. La professione di Marta Testa è: operaia tessile.
+
+[42] Giulia Cattaneo
+Giulia Cattaneo ha 69 anni. Giulia Cattaneo vive a Napoli. Giulia Cattaneo di professione fa: pensionata ex infermiera. Giulia Cattaneo vive con il marito Cristian Cattaneo e il figlio Andrea Cattaneo e la figlia Sara Cattaneo. Giulia Cattaneo è amica di Lucia Gentile e Noemi Gentile. Profilo politico di Giulia Cattaneo: Disinteressata, salta i post di politica, condivide catene su WhatsApp, non andrà a votare al referendum. Giulia Cattaneo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Giulia Cattaneo: 69 anni, Napoli, pensionata ex infermiera.
+
+[43] Simona Serra
+Simona Serra ha 34 anni. Simona Serra vive a Perugia. Simona Serra di professione fa: operaia. Simona Serra vive con il fratello Enrico Serra. Simona Serra è amica di Camilla Marino e Sara Cattaneo. Profilo politico di Simona Serra: Moderata, interviene solo quando un tema lo tocca da vicino, parla di affitti troppo cari, vota Forza Italia, voterà SÌ al referendum. Simona Serra al referendum voterà SÌ. Scheda anagrafica di Simona Serra: 34 anni, Perugia, operaia. Simona Serra è uno dei cittadini elettori di questa popolazione. Simona Serra risiede a Perugia e ha 34 anni. La professione di Simona Serra è: operaia.
+
+[44] Roberta Martini
+Roberta Martini ha 81 anni. Roberta Martini vive a Milano. Roberta Martini di professione fa: pensionata ex insegnante. Roberta Martini vive con il marito Fabio Martini e la figlia Simona Martini e il figlio Paolo Martini. Roberta Martini è amica di Dario Leone e Francesco Palumbo. Profilo politico di Roberta Martini: Disinteressata, usa i social solo per svago, parla della pensione, non andrà a votare al referendum. Roberta Martini al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Roberta Martini: 81 anni, Milano, pensionata ex insegnante. Roberta Martini è uno dei cittadini elettori di questa popolazione.
+
+[45] Elena Barbieri
+Elena Barbieri ha 45 anni. Elena Barbieri vive a Genova. Elena Barbieri di professione fa: camionista. Elena Barbieri vive con il fratello Davide Barbieri. Elena Barbieri è amica di Dario Colombo e Carlo Moretti. Profilo politico di Elena Barbieri: Disinteressata, ignora le notizie politiche, segue il calcio, non andrà a votare al referendum. Elena Barbieri al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Elena Barbieri: 45 anni, Genova, camionista. Elena Barbieri è uno dei cittadini elettori di questa popolazione. Elena Barbieri risiede a Genova e ha 45 anni.
+
+[46] Antonio Fontana
+Antonio Fontana ha 18 anni. Antonio Fontana vive a Napoli. Antonio Fontana di professione fa: rider. Antonio Fontana vive con il padre Gabriele Fontana. Antonio Fontana è amico di Andrea Cattaneo e Noemi Gentile. Profilo politico di Antonio Fontana: Attivista, litiga spesso nei commenti, posta storie su Instagram, vota Fratelli d'Italia, voterà SÌ al referendum. Antonio Fontana al referendum voterà SÌ. Scheda anagrafica di Antonio Fontana: 18 anni, Napoli, rider. Antonio Fontana è uno dei cittadini elettori di questa popolazione. Antonio Fontana risiede a Napoli e ha 18 anni.
+
+[47] Roberta Conti
+Roberta Conti ha 53 anni. Roberta Conti vive a Cagliari. Roberta Conti di professione fa: insegnante di liceo. Roberta Conti vive con il fratello Roberto Conti. Roberta Conti è amica di Maria Leone e Federico Sala. Profilo politico di Roberta Conti: Moderata, commenta con toni disillusi, commenta le bollette, vota Partito Democratico, voterà NO al referendum. Roberta Conti al referendum voterà NO. Scheda anagrafica di Roberta Conti: 53 anni, Cagliari, insegnante di liceo. Roberta Conti è uno dei cittadini elettori di questa popolazione. Roberta Conti risiede a Cagliari e ha 53 anni.
+
+[48] Alessandro Esposito
+Alessandro Esposito ha 79 anni. Alessandro Esposito vive a Palermo. Alessandro Esposito di professione fa: pensionato ex insegnante. Alessandro Esposito vive da solo. Alessandro Esposito è amico di Roberta Pellegrini e Valentina Longo. Profilo politico di Alessandro Esposito: Moderato, diffida di entrambe le parti, parla della pensione, vota Movimento 5 Stelle, voterà NO al referendum. Alessandro Esposito al referendum voterà NO. Scheda anagrafica di Alessandro Esposito: 79 anni, Palermo, pensionato ex insegnante. Alessandro Esposito è uno dei cittadini elettori di questa popolazione.
+
+[49] Elisa Bianchi
+Elisa Bianchi ha 36 anni. Elisa Bianchi vive a Torino. Elisa Bianchi di professione fa: farmacista. Elisa Bianchi vive con il fratello Giovanni Bianchi. Elisa Bianchi è amica di Lucia Gallo e Francesca Monti. Profilo politico di Elisa Bianchi: Moderata, legge molto e scrive poco, commenta le bollette, vota Forza Italia, voterà SÌ al referendum. Elisa Bianchi al referendum voterà SÌ. Scheda anagrafica di Elisa Bianchi: 36 anni, Torino, farmacista. Elisa Bianchi è uno dei cittadini elettori di questa popolazione. Elisa Bianchi risiede a Torino e ha 36 anni. La professione di Elisa Bianchi è: farmacista.
+
+[50] Federico Sala
+Federico Sala ha 55 anni. Federico Sala vive a Bologna. Federico Sala di professione fa: avvocato. Federico Sala vive da solo. Federico Sala è amico di Elisa Rizzo e Andrea Rizzo. Profilo politico di Federico Sala: Moderato, condivide notizie senza commentarle, parla di stipendi fermi, vota Partito Democratico, voterà NO al referendum. Federico Sala al referendum voterà NO. Scheda anagrafica di Federico Sala: 55 anni, Bologna, avvocato. Federico Sala è uno dei cittadini elettori di questa popolazione. Federico Sala risiede a Bologna e ha 55 anni. La professione di Federico Sala è: avvocato.
+
+[51] Andrea Rizzo
+Andrea Rizzo ha 40 anni. Andrea Rizzo vive a Bologna. Andrea Rizzo di professione fa: farmacista. Andrea Rizzo vive con il padre Stefano Rizzo e la madre Elisa Rizzo. Andrea Rizzo è amico di Samuele Marino e Enrico Serra. Profilo politico di Andrea Rizzo: Disinteressato, salta i post di politica, segue il calcio, non andrà a votare al referendum. Andrea Rizzo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Andrea Rizzo: 40 anni, Bologna, farmacista. Andrea Rizzo è uno dei cittadini elettori di questa popolazione. Andrea Rizzo risiede a Bologna e ha 40 anni.
+
+[52] Serena Leone
+Serena Leone ha 52 anni. Serena Leone vive a Milano. Serena Leone di professione fa: avvocata. Serena Leone vive con la sorella Maria Leone e il padre Dario Leone e la madre Martina Leone. Serena Leone è amica di Alessia Palumbo e Domenico Giordano. Profilo politico di Serena Leone: Moderata, diffida di entrambe le parti, segue il calcio, vota Fratelli d'Italia, voterà SÌ al referendum. Serena Leone al referendum voterà SÌ. Scheda anagrafica di Serena Leone: 52 anni, Milano, avvocata. Serena Leone è uno dei cittadini elettori di questa popolazione. Serena Leone risiede a Milano e ha 52 anni.
+
+[53] Lucia Mancini
+Lucia Mancini ha 66 anni. Lucia Mancini vive a Milano. Lucia Mancini di professione fa: pensionata ex insegnante. Lucia Mancini vive da sola. Lucia Mancini è amica di Domenico Giordano e Serena Leone. Profilo politico di Lucia Mancini: Moderata, diffida di entrambe le parti, posta foto dei nipoti, vota Azione, voterà SÌ al referendum. Lucia Mancini al referendum voterà SÌ. Scheda anagrafica di Lucia Mancini: 66 anni, Milano, pensionata ex insegnante. Lucia Mancini è uno dei cittadini elettori di questa popolazione. Lucia Mancini risiede a Milano e ha 66 anni. La professione di Lucia Mancini è: pensionata ex insegnante.
+
+[54] Stefano Mazza
+Stefano Mazza ha 33 anni. Stefano Mazza vive a Firenze. Stefano Mazza di professione fa: estetista. Stefano Mazza vive con la sorella Sara Mazza. Stefano Mazza è amico di Vincenzo Farina e Alessia Palumbo. Profilo politico di Stefano Mazza: Disinteressato, non guarda i telegiornali, segue il calcio, non andrà a votare al referendum. Stefano Mazza al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Stefano Mazza: 33 anni, Firenze, estetista. Stefano Mazza è uno dei cittadini elettori di questa popolazione. Stefano Mazza risiede a Firenze e ha 33 anni.
+
+[55] Alberto Coppola
+Alberto Coppola ha 56 anni. Alberto Coppola vive a Lecce. Alberto Coppola di professione fa: ingegnere. Alberto Coppola vive da solo. Alberto Coppola è amico di Federico Sala e Loredana Santoro. Profilo politico di Alberto Coppola: Disinteressato, ignora le notizie politiche, posta foto di cucina, non andrà a votare al referendum. Alberto Coppola al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Alberto Coppola: 56 anni, Lecce, ingegnere. Alberto Coppola è uno dei cittadini elettori di questa popolazione. Alberto Coppola risiede a Lecce e ha 56 anni.
+
+[56] Roberta Pellegrini
+Roberta Pellegrini ha 78 anni. Roberta Pellegrini vive a Palermo. Roberta Pellegrini di professione fa: pensionata ex operaia. Roberta Pellegrini vive con il figlio Davide Pellegrini. Roberta Pellegrini è amica di Mario Longo e Valentina Longo. Profilo politico di Roberta Pellegrini: Moderata, legge molto e scrive poco, posta foto dei nipoti, vota Lega, voterà SÌ al referendum. Roberta Pellegrini al referendum voterà SÌ. Scheda anagrafica di Roberta Pellegrini: 78 anni, Palermo, pensionata ex operaia. Roberta Pellegrini è uno dei cittadini elettori di questa popolazione.
+
+[57] Daniela Morelli
+Daniela Morelli ha 58 anni. Daniela Morelli vive a Perugia. Daniela Morelli di professione fa: capotreno. Daniela Morelli vive da sola. Daniela Morelli è amica di Federica Basile e Alessandro Rinaldi. Profilo politico di Daniela Morelli: Disinteressata, non guarda i telegiornali, scrive di viaggi in camper, non andrà a votare al referendum. Daniela Morelli al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Daniela Morelli: 58 anni, Perugia, capotreno. Daniela Morelli è uno dei cittadini elettori di questa popolazione. Daniela Morelli risiede a Perugia e ha 58 anni.
+
+[58] Silvia Giordano
+Silvia Giordano ha 51 anni. Silvia Giordano vive a Milano. Silvia Giordano di professione fa: avvocata. Silvia Giordano vive con la madre Barbara Giordano e il padre Domenico Giordano. Silvia Giordano è amica di Maria Leone e Alessia Palumbo. Profilo politico di Silvia Giordano: Moderata, diffida di entrambe le parti, commenta le bollette, vota Partito Democratico, voterà SÌ al referendum. Silvia Giordano al referendum voterà SÌ. Scheda anagrafica di Silvia Giordano: 51 anni, Milano, avvocata. Silvia Giordano è uno dei cittadini elettori di questa popolazione. Silvia Giordano risiede a Milano e ha 51 anni.
+
+[59] Maria Leone
+Maria Leone ha 52 anni. Maria Leone vive a Milano. Maria Leone di professione fa: geometra. Maria Leone vive con la sorella Serena Leone e il padre Dario Leone e la madre Martina Leone. Maria Leone è amica di Barbara Giordano e Alessia Palumbo. Profilo politico di Maria Leone: Disinteressata, ignora le notizie politiche, commenta le bollette, non andrà a votare al referendum. Maria Leone al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Maria Leone: 52 anni, Milano, geometra. Maria Leone è uno dei cittadini elettori di questa popolazione. Maria Leone risiede a Milano e ha 52 anni.
+
+[60] Cristian Cattaneo
+Cristian Cattaneo ha 70 anni. Cristian Cattaneo vive a Napoli. Cristian Cattaneo di professione fa: pensionato ex commerciante. Cristian Cattaneo vive con la moglie Giulia Cattaneo e il figlio Andrea Cattaneo e la figlia Sara Cattaneo. Cristian Cattaneo è amico di Gabriele Fontana e Marco Russo. Profilo politico di Cristian Cattaneo: Moderato, condivide notizie senza commentarle, posta foto dei nipoti, vota Partito Democratico, voterà NO al referendum. Cristian Cattaneo al referendum voterà NO. Scheda anagrafica di Cristian Cattaneo: 70 anni, Napoli, pensionato ex commerciante.
+
+[61] Cristian Rizzi
+Cristian Rizzi ha 55 anni. Cristian Rizzi vive a Catania. Cristian Rizzi di professione fa: insegnante di liceo. Cristian Rizzi vive con il padre Tommaso Rizzi e la madre Barbara Rizzi. Cristian Rizzi è amico di Roberta Conti e Loredana Santoro. Profilo politico di Cristian Rizzi: Attivista, condivide articoli e attacca chi la pensa diversamente, scrive di viaggi in camper, vota Italia Viva, voterà SÌ al referendum. Cristian Rizzi al referendum voterà SÌ. Scheda anagrafica di Cristian Rizzi: 55 anni, Catania, insegnante di liceo. Cristian Rizzi è uno dei cittadini elettori di questa popolazione.
+
+[62] Ivan Testa
+Ivan Testa ha 31 anni. Ivan Testa vive a Verona. Ivan Testa di professione fa: cuoco. Ivan Testa vive con la sorella Marta Testa. Ivan Testa è amico di Fabio Guerra e Alessia Palumbo. Profilo politico di Ivan Testa: Disinteressato, usa i social solo per svago, parla di affitti troppo cari, non andrà a votare al referendum. Ivan Testa al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Ivan Testa: 31 anni, Verona, cuoco. Ivan Testa è uno dei cittadini elettori di questa popolazione. Ivan Testa risiede a Verona e ha 31 anni. La professione di Ivan Testa è: cuoco.
+
+[63] Greta Caruso
+Greta Caruso ha 38 anni. Greta Caruso vive a Firenze. Greta Caruso di professione fa: insegnante. Greta Caruso vive con il padre Enrico Caruso. Greta Caruso è amica di Simona Sanna e Stefano Mazza. Profilo politico di Greta Caruso: Disinteressata, usa i social solo per svago, scrive di viaggi in camper, non andrà a votare al referendum. Greta Caruso al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Greta Caruso: 38 anni, Firenze, insegnante. Greta Caruso è uno dei cittadini elettori di questa popolazione. Greta Caruso risiede a Firenze e ha 38 anni.
+
+[64] Valentina Longo
+Valentina Longo ha 70 anni. Valentina Longo vive a Palermo. Valentina Longo di professione fa: pensionata ex dirigente. Valentina Longo vive con il marito Enrico Longo e il figlio Mario Longo. Valentina Longo è amica di Alessandro Esposito e Giulia Cattaneo. Profilo politico di Valentina Longo: Attivista, scrive post lunghi e argomentati, commenta le notizie di cronaca locale, vota Lega, voterà SÌ al referendum. Valentina Longo al referendum voterà SÌ. Scheda anagrafica di Valentina Longo: 70 anni, Palermo, pensionata ex dirigente. Valentina Longo è uno dei cittadini elettori di questa popolazione.
+
+[65] Gabriele Fontana
+Gabriele Fontana ha 84 anni. Gabriele Fontana vive a Napoli. Gabriele Fontana di professione fa: pensionato ex agricoltore. Gabriele Fontana vive con il figlio Antonio Fontana. Gabriele Fontana è amico di Marco Russo e Federica Basile. Profilo politico di Gabriele Fontana: Attivista, condivide articoli e attacca chi la pensa diversamente, parla della pensione, vota Fratelli d'Italia, voterà SÌ al referendum. Gabriele Fontana al referendum voterà SÌ. Scheda anagrafica di Gabriele Fontana: 84 anni, Napoli, pensionato ex agricoltore. Gabriele Fontana è uno dei cittadini elettori di questa popolazione.
+
+[66] Silvia Sanna
+Silvia Sanna ha 68 anni. Silvia Sanna vive a Bari. Silvia Sanna di professione fa: pensionata ex operaia. Silvia Sanna vive con il marito Davide Sanna e la figlia Simona Sanna. Silvia Sanna è amica di Paola Grassi e Laura Silvestri. Profilo politico di Silvia Sanna: Moderata, condivide notizie senza commentarle, guarda i talk show, vota Forza Italia, voterà SÌ al referendum. Silvia Sanna al referendum voterà SÌ. Scheda anagrafica di Silvia Sanna: 68 anni, Bari, pensionata ex operaia. Silvia Sanna è uno dei cittadini elettori di questa popolazione. Silvia Sanna risiede a Bari e ha 68 anni.
+
+[67] Enrico Longo
+Enrico Longo ha 71 anni. Enrico Longo vive a Palermo. Enrico Longo di professione fa: pensionato ex dirigente. Enrico Longo vive con la moglie Valentina Longo e il figlio Mario Longo. Enrico Longo è amico di Cristian Cattaneo e Michele Lombardo. Profilo politico di Enrico Longo: Disinteressato, usa i social solo per svago, condivide catene su WhatsApp, non andrà a votare al referendum. Enrico Longo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Enrico Longo: 71 anni, Palermo, pensionato ex dirigente. Enrico Longo è uno dei cittadini elettori di questa popolazione.
+
+[68] Franca Guerra
+Franca Guerra ha 35 anni. Franca Guerra vive a Verona. Franca Guerra di professione fa: impiegata comunale. Franca Guerra vive con il fratello Fabio Guerra. Franca Guerra è amica di Marta Testa e Ivan Testa. Profilo politico di Franca Guerra: Disinteressata, usa i social solo per svago, segue il calcio, non andrà a votare al referendum. Franca Guerra al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Franca Guerra: 35 anni, Verona, impiegata comunale. Franca Guerra è uno dei cittadini elettori di questa popolazione. Franca Guerra risiede a Verona e ha 35 anni.
+
+[69] Davide Barbieri
+Davide Barbieri ha 38 anni. Davide Barbieri vive a Genova. Davide Barbieri di professione fa: tecnico informatico. Davide Barbieri vive con la sorella Elena Barbieri. Davide Barbieri è amico di Serena Moretti e Anna Farina. Profilo politico di Davide Barbieri: Attivista, organizza raccolte firme, posta foto di cucina, vota Movimento 5 Stelle, voterà NO al referendum. Davide Barbieri al referendum voterà NO. Scheda anagrafica di Davide Barbieri: 38 anni, Genova, tecnico informatico. Davide Barbieri è uno dei cittadini elettori di questa popolazione. Davide Barbieri risiede a Genova e ha 38 anni.
+
+[70] Enrico Caruso
+Enrico Caruso ha 67 anni. Enrico Caruso vive a Firenze. Enrico Caruso di professione fa: pensionato ex artigiano. Enrico Caruso vive con la figlia Greta Caruso. Enrico Caruso è amico di Stefano Mazza e Sara Mazza. Profilo politico di Enrico Caruso: Disinteressato, ignora le notizie politiche, segue il ciclismo, non andrà a votare al referendum. Enrico Caruso al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Enrico Caruso: 67 anni, Firenze, pensionato ex artigiano. Enrico Caruso è uno dei cittadini elettori di questa popolazione. Enrico Caruso risiede a Firenze e ha 67 anni.
+
+[71] Alessia Vitale
+Alessia Vitale ha 83 anni. Alessia Vitale vive a Roma. Alessia Vitale di professione fa: pensionata ex artigiana. Alessia Vitale vive con il marito Ivan Vitale e il figlio Giuseppe Vitale. Alessia Vitale è amica di Rita Galli e Fabio Villa. Profilo politico di Alessia Vitale: Moderata, commenta con toni disillusi, parla dell'orto, vota +Europa, voterà SÌ al referendum. Alessia Vitale al referendum voterà SÌ. Scheda anagrafica di Alessia Vitale: 83 anni, Roma, pensionata ex artigiana. Alessia Vitale è uno dei cittadini elettori di questa popolazione. Alessia Vitale risiede a Roma e ha 83 anni.
+
+[72] Francesco Palumbo
+Francesco Palumbo ha 73 anni. Francesco Palumbo vive a Milano. Francesco Palumbo di professione fa: pensionato ex impiegato. Francesco Palumbo vive con la figlia Alessia Palumbo. Francesco Palumbo è amico di Roberta Martini e Lucia Mancini. Profilo politico di Francesco Palumbo: Attivista, scrive post lunghi e argomentati, condivide catene su WhatsApp, vota Movimento 5 Stelle, voterà NO al referendum. Francesco Palumbo al referendum voterà NO. Scheda anagrafica di Francesco Palumbo: 73 anni, Milano, pensionato ex impiegato. Francesco Palumbo è uno dei cittadini elettori di questa popolazione.
+
+[73] Samuele Marino
+Samuele Marino ha 69 anni. Samuele Marino vive a Bologna. Samuele Marino di professione fa: pensionato ex insegnante. Samuele Marino vive con la figlia Camilla Marino. Samuele Marino è amico di Stefano Rizzo e Andrea Rizzo. Profilo politico di Samuele Marino: Moderato, legge molto e scrive poco, parla della pensione, vota un partito minore, non andrà a votare al referendum. Samuele Marino al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Samuele Marino: 69 anni, Bologna, pensionato ex insegnante. Samuele Marino è uno dei cittadini elettori di questa popolazione.
+
+[74] Giorgio Galli
+Giorgio Galli ha 64 anni. Giorgio Galli vive a Roma. Giorgio Galli di professione fa: medico di base. Giorgio Galli vive con la moglie Rita Galli e il figlio Nicola Galli. Giorgio Galli è amico di Serena Villa e Alessia Vitale. Profilo politico di Giorgio Galli: Moderato, commenta con toni disillusi, scrive di viaggi in camper, vota Forza Italia, voterà SÌ al referendum. Giorgio Galli al referendum voterà SÌ. Scheda anagrafica di Giorgio Galli: 64 anni, Roma, medico di base. Giorgio Galli è uno dei cittadini elettori di questa popolazione. Giorgio Galli risiede a Roma e ha 64 anni.
+
+[75] Claudio Ferrari
+Claudio Ferrari ha 48 anni. Claudio Ferrari vive a Bergamo. Claudio Ferrari di professione fa: commercialista. Claudio Ferrari vive con la sorella Lucia Ferrari. Claudio Ferrari è amico di Elena Barbieri e Dario Colombo. Profilo politico di Claudio Ferrari: Moderato, interviene solo quando un tema lo tocca da vicino, parla della scuola dei figli, vota Fratelli d'Italia, voterà SÌ al referendum. Claudio Ferrari al referendum voterà SÌ. Scheda anagrafica di Claudio Ferrari: 48 anni, Bergamo, commercialista. Claudio Ferrari è uno dei cittadini elettori di questa popolazione. Claudio Ferrari risiede a Bergamo e ha 48 anni.
+
+[76] Davide Pellegrini
+Davide Pellegrini ha 28 anni. Davide Pellegrini vive a Palermo. Davide Pellegrini di professione fa: insegnante precario. Davide Pellegrini vive con la madre Roberta Pellegrini. Davide Pellegrini è amico di Valentina Longo e Michele Lombardo. Profilo politico di Davide Pellegrini: Attivista, litiga spesso nei commenti, segue il calcio, vota Fratelli d'Italia, voterà SÌ al referendum. Davide Pellegrini al referendum voterà SÌ. Scheda anagrafica di Davide Pellegrini: 28 anni, Palermo, insegnante precario. Davide Pellegrini è uno dei cittadini elettori di questa popolazione.
+
+[77] Camilla Marino
+Camilla Marino ha 35 anni. Camilla Marino vive a Bologna. Camilla Marino di professione fa: insegnante. Camilla Marino vive con il padre Samuele Marino. Camilla Marino è amica di Sara Cattaneo e Federico Sala. Profilo politico di Camilla Marino: Disinteressata, usa i social solo per svago, si lamenta delle liste d'attesa della sanità, non andrà a votare al referendum. Camilla Marino al referendum voterà SÌ. Scheda anagrafica di Camilla Marino: 35 anni, Bologna, insegnante. Camilla Marino è uno dei cittadini elettori di questa popolazione. Camilla Marino risiede a Bologna e ha 35 anni.
+
+[78] Alessandro Rinaldi
+Alessandro Rinaldi ha 58 anni. Alessandro Rinaldi vive a Verona. Alessandro Rinaldi di professione fa: medico di base. Alessandro Rinaldi vive da solo. Alessandro Rinaldi è amico di Fabio Guerra e Ivan Testa. Profilo politico di Alessandro Rinaldi: Disinteressato, usa i social solo per svago, scrive di viaggi in camper, non andrà a votare al referendum. Alessandro Rinaldi al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Alessandro Rinaldi: 58 anni, Verona, medico di base. Alessandro Rinaldi è uno dei cittadini elettori di questa popolazione.
+
+[79] Dario Colombo
+Dario Colombo ha 44 anni. Dario Colombo vive a Bergamo. Dario Colombo di professione fa: impiegato comunale. Dario Colombo vive da solo. Dario Colombo è amico di Claudio Romano e Paola Grassi. Profilo politico di Dario Colombo: Disinteressato, salta i post di politica, parla di stipendi fermi, non andrà a votare al referendum. Dario Colombo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Dario Colombo: 44 anni, Bergamo, impiegato comunale. Dario Colombo è uno dei cittadini elettori di questa popolazione. Dario Colombo risiede a Bergamo e ha 44 anni.
+
+[80] Serena Moretti
+Serena Moretti ha 44 anni. Serena Moretti vive a Genova. Serena Moretti di professione fa: infermiera. Serena Moretti vive con il fratello Carlo Moretti. Serena Moretti è amica di Davide Barbieri e Dario Colombo. Profilo politico di Serena Moretti: Attivista, scrive post lunghi e argomentati, parla di stipendi fermi, vota Fratelli d'Italia, voterà SÌ al referendum. Serena Moretti al referendum voterà SÌ. Scheda anagrafica di Serena Moretti: 44 anni, Genova, infermiera. Serena Moretti è uno dei cittadini elettori di questa popolazione. Serena Moretti risiede a Genova e ha 44 anni.
+
+[81] Federica Martinelli
+Federica Martinelli ha 63 anni. Federica Martinelli vive a Padova. Federica Martinelli di professione fa: dirigente d'azienda. Federica Martinelli vive con il figlio Carlo Martinelli. Federica Martinelli è amica di Barbara Giordano e Stefano Lombardi. Profilo politico di Federica Martinelli: Moderata, diffida di entrambe le parti, si lamenta delle liste d'attesa della sanità, vota Movimento 5 Stelle, voterà SÌ al referendum. Federica Martinelli al referendum voterà SÌ. Scheda anagrafica di Federica Martinelli: 63 anni, Padova, dirigente d'azienda. Federica Martinelli è uno dei cittadini elettori di questa popolazione.
+
+[82] Lorenzo Villa
+Lorenzo Villa ha 21 anni. Lorenzo Villa vive a Roma. Lorenzo Villa di professione fa: cameriere. Lorenzo Villa vive con il fratello Giovanni Villa e il padre Fabio Villa e la madre Serena Villa. Lorenzo Villa è amico di Rita Galli e Giuseppe Vitale. Profilo politico di Lorenzo Villa: Moderato, commenta con toni disillusi, posta storie su Instagram, vota Alleanza Verdi Sinistra, voterà NO al referendum. Lorenzo Villa al referendum voterà NO. Scheda anagrafica di Lorenzo Villa: 21 anni, Roma, cameriere. Lorenzo Villa è uno dei cittadini elettori di questa popolazione. Lorenzo Villa risiede a Roma e ha 21 anni.
+
+[83] Federica Basile
+Federica Basile ha 57 anni. Federica Basile vive a Napoli. Federica Basile di professione fa: impiegata di banca. Federica Basile vive da sola. Federica Basile è amica di Cristian Cattaneo e Marco Russo. Profilo politico di Federica Basile: Disinteressata, usa i social solo per svago, si lamenta delle liste d'attesa della sanità, non andrà a votare al referendum. Federica Basile al referendum voterà SÌ. Scheda anagrafica di Federica Basile: 57 anni, Napoli, impiegata di banca. Federica Basile è uno dei cittadini elettori di questa popolazione. Federica Basile risiede a Napoli e ha 57 anni.
+
+[84] Carlo Moretti
+Carlo Moretti ha 24 anni. Carlo Moretti vive a Genova. Carlo Moretti di professione fa: barista. Carlo Moretti vive con la sorella Serena Moretti. Carlo Moretti è amico di Alessandra Costa e Francesca Monti. Profilo politico di Carlo Moretti: Moderato, commenta con toni disillusi, guarda serie TV, vota Fratelli d'Italia, voterà SÌ al referendum. Carlo Moretti al referendum voterà SÌ. Scheda anagrafica di Carlo Moretti: 24 anni, Genova, barista. Carlo Moretti è uno dei cittadini elettori di questa popolazione. Carlo Moretti risiede a Genova e ha 24 anni. La professione di Carlo Moretti è: barista.
+
+[85] Elisa Rizzo
+Elisa Rizzo ha 66 anni. Elisa Rizzo vive a Bologna. Elisa Rizzo di professione fa: pensionata ex infermiera. Elisa Rizzo vive con il marito Stefano Rizzo e il figlio Andrea Rizzo. Elisa Rizzo è amica di Silvia Sanna e Federico Sala. Profilo politico di Elisa Rizzo: Moderata, interviene solo quando un tema lo tocca da vicino, posta foto dei nipoti, vota Partito Democratico, voterà NO al referendum. Elisa Rizzo al referendum voterà NO. Scheda anagrafica di Elisa Rizzo: 66 anni, Bologna, pensionata ex infermiera. Elisa Rizzo è uno dei cittadini elettori di questa popolazione. Elisa Rizzo risiede a Bologna e ha 66 anni.
+
+[86] Paola Grassi
+Paola Grassi ha 44 anni. Paola Grassi vive a Bari. Paola Grassi di professione fa: camionista. Paola Grassi vive da sola. Paola Grassi è amica di Carmela Rossi e Davide Sanna. Profilo politico di Paola Grassi: Disinteressata, salta i post di politica, si lamenta delle liste d'attesa della sanità, non andrà a votare al referendum. Paola Grassi al referendum voterà SÌ. Scheda anagrafica di Paola Grassi: 44 anni, Bari, camionista. Paola Grassi è uno dei cittadini elettori di questa popolazione. Paola Grassi risiede a Bari e ha 44 anni. La professione di Paola Grassi è: camionista.
+
+[87] Samuele Pagano
+Samuele Pagano ha 78 anni. Samuele Pagano vive a Lecce. Samuele Pagano di professione fa: pensionato ex artigiano. Samuele Pagano vive da solo. Samuele Pagano è amico di Marco Russo e Elena Lombardi. Profilo politico di Samuele Pagano: Moderato, interviene solo quando un tema lo tocca da vicino, condivide catene su WhatsApp, vota Italia Viva, voterà SÌ al referendum. Samuele Pagano al referendum voterà SÌ. Scheda anagrafica di Samuele Pagano: 78 anni, Lecce, pensionato ex artigiano. Samuele Pagano è uno dei cittadini elettori di questa popolazione. Samuele Pagano risiede a Lecce e ha 78 anni.
+
+[88] Francesca Monti
+Francesca Monti ha 23 anni. Francesca Monti vive a Torino. Francesca Monti di professione fa: cameriera. Francesca Monti vive con il fratello Filippo Monti. Francesca Monti è amica di Nicola Gallo e Lucia Ricci. Profilo politico di Francesca Monti: Disinteressata, usa i social solo per svago, segue il calcio, non andrà a votare al referendum. Francesca Monti al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Francesca Monti: 23 anni, Torino, cameriera. Francesca Monti è uno dei cittadini elettori di questa popolazione. Francesca Monti risiede a Torino e ha 23 anni.
+
+[89] Laura Silvestri
+Laura Silvestri ha 30 anni. Laura Silvestri vive a Bari. Laura Silvestri di professione fa: infermiera. Laura Silvestri vive con la madre Loredana Silvestri. Laura Silvestri è amica di Simona Sanna e Silvia Sanna. Profilo politico di Laura Silvestri: Moderata, legge molto e scrive poco, va ai concerti, vota Lega, voterà SÌ al referendum. Laura Silvestri al referendum voterà SÌ. Scheda anagrafica di Laura Silvestri: 30 anni, Bari, infermiera. Laura Silvestri è uno dei cittadini elettori di questa popolazione. Laura Silvestri risiede a Bari e ha 30 anni. La professione di Laura Silvestri è: infermiera.
+
+[90] Lucia Ricci
+Lucia Ricci ha 52 anni. Lucia Ricci vive a Torino. Lucia Ricci di professione fa: casalinga. Lucia Ricci vive da sola. Lucia Ricci è amica di Lucia Gallo e Giovanni Bianchi. Profilo politico di Lucia Ricci: Moderata, condivide notizie senza commentarle, parla della scuola dei figli, vota Partito Democratico, voterà NO al referendum. Lucia Ricci al referendum voterà NO. Scheda anagrafica di Lucia Ricci: 52 anni, Torino, casalinga. Lucia Ricci è uno dei cittadini elettori di questa popolazione. Lucia Ricci risiede a Torino e ha 52 anni. La professione di Lucia Ricci è: casalinga.
+
+[91] Rita Galli
+Rita Galli ha 64 anni. Rita Galli vive a Roma. Rita Galli di professione fa: impiegata di banca. Rita Galli vive con il marito Giorgio Galli e il figlio Nicola Galli. Rita Galli è amica di Ivan Vitale e Fabio Villa. Profilo politico di Rita Galli: Attivista, molto presente sui social, commenta ogni notizia politica, segue il calcio, vota Partito Democratico, voterà NO al referendum. Rita Galli al referendum voterà NO. Scheda anagrafica di Rita Galli: 64 anni, Roma, impiegata di banca. Rita Galli è uno dei cittadini elettori di questa popolazione. Rita Galli risiede a Roma e ha 64 anni.
+
+[92] Mario Longo
+Mario Longo ha 33 anni. Mario Longo vive a Palermo. Mario Longo di professione fa: insegnante precario. Mario Longo vive con la madre Valentina Longo e il padre Enrico Longo. Mario Longo è amico di Alessandro Esposito e Davide Pellegrini. Profilo politico di Mario Longo: Disinteressato, salta i post di politica, segue il calcio, non andrà a votare al referendum. Mario Longo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Mario Longo: 33 anni, Palermo, insegnante precario. Mario Longo è uno dei cittadini elettori di questa popolazione. Mario Longo risiede a Palermo e ha 33 anni.
+
+[93] Fabio Villa
+Fabio Villa ha 81 anni. Fabio Villa vive a Roma. Fabio Villa di professione fa: pensionato ex infermiere. Fabio Villa vive con la moglie Serena Villa e il figlio Giovanni Villa e il figlio Lorenzo Villa. Fabio Villa è amico di Carmela Rossi e Rita Galli. Profilo politico di Fabio Villa: Moderato, legge molto e scrive poco, segue il ciclismo, voterà NO al referendum. Fabio Villa al referendum voterà NO. Scheda anagrafica di Fabio Villa: 81 anni, Roma, pensionato ex infermiere. Fabio Villa è uno dei cittadini elettori di questa popolazione. Fabio Villa risiede a Roma e ha 81 anni.
+
+[94] Elena Lombardi
+Elena Lombardi ha 79 anni. Elena Lombardi vive a Padova. Elena Lombardi di professione fa: pensionata ex operaia. Elena Lombardi vive con il figlio Stefano Lombardi. Elena Lombardi è amica di Carlo Martinelli e Alessandro Esposito. Profilo politico di Elena Lombardi: Moderata, legge molto e scrive poco, segue il ciclismo, vota Forza Italia, voterà SÌ al referendum. Elena Lombardi al referendum voterà SÌ. Scheda anagrafica di Elena Lombardi: 79 anni, Padova, pensionata ex operaia. Elena Lombardi è uno dei cittadini elettori di questa popolazione. Elena Lombardi risiede a Padova e ha 79 anni.
+
+[95] Loredana Santoro
+Loredana Santoro ha 55 anni. Loredana Santoro vive a Catania. Loredana Santoro di professione fa: geometra. Loredana Santoro vive da sola. Loredana Santoro è amica di Barbara Rizzi e Alberto Coppola. Profilo politico di Loredana Santoro: Moderata, interviene solo quando un tema lo tocca da vicino, si lamenta delle liste d'attesa della sanità, vota Fratelli d'Italia, voterà SÌ al referendum. Loredana Santoro al referendum voterà SÌ. Scheda anagrafica di Loredana Santoro: 55 anni, Catania, geometra. Loredana Santoro è uno dei cittadini elettori di questa popolazione. Loredana Santoro risiede a Catania e ha 55 anni.
+
+[96] Paolo Martini
+Paolo Martini ha 21 anni. Paolo Martini vive a Milano. Paolo Martini di professione fa: studente universitario. Paolo Martini vive con la sorella Simona Martini e il padre Fabio Martini e la madre Roberta Martini. Paolo Martini è amico di Martina Leone e Dario Leone. Profilo politico di Paolo Martini: Disinteressato, ignora le notizie politiche, commenta i video su TikTok, non andrà a votare al referendum. Paolo Martini al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Paolo Martini: 21 anni, Milano, studente universitario. Paolo Martini è uno dei cittadini elettori di questa popolazione.
+
+[97] Pietro Russo
+Pietro Russo ha 28 anni. Pietro Russo vive a Napoli. Pietro Russo di professione fa: operaio. Pietro Russo vive con il padre Marco Russo. Pietro Russo è amico di Federica Basile e Noemi Gentile. Profilo politico di Pietro Russo: Disinteressato, non guarda i telegiornali, segue il calcio, non andrà a votare al referendum. Pietro Russo al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Pietro Russo: 28 anni, Napoli, operaio. Pietro Russo è uno dei cittadini elettori di questa popolazione. Pietro Russo risiede a Napoli e ha 28 anni. La professione di Pietro Russo è: operaio.
+
+[98] Alessandra Costa
+Alessandra Costa ha 22 anni. Alessandra Costa vive a Genova. Alessandra Costa di professione fa: cameriera. Alessandra Costa vive da sola. Alessandra Costa è amica di Francesca Monti e Stefano Lombardi. Profilo politico di Alessandra Costa: Moderata, diffida di entrambe le parti, posta storie su Instagram, vota Fratelli d'Italia, voterà SÌ al referendum. Alessandra Costa al referendum voterà SÌ. Scheda anagrafica di Alessandra Costa: 22 anni, Genova, cameriera. Alessandra Costa è uno dei cittadini elettori di questa popolazione. Alessandra Costa risiede a Genova e ha 22 anni.
+
+[99] Carmela Rossi
+Carmela Rossi ha 44 anni. Carmela Rossi vive a Roma. Carmela Rossi di professione fa: infermiera. Carmela Rossi vive da sola. Carmela Rossi è amica di Giorgio Galli e Vincenzo Farina. Profilo politico di Carmela Rossi: Moderata, condivide notizie senza commentarle, parla di stipendi fermi, vota Fratelli d'Italia, voterà SÌ al referendum. Carmela Rossi al referendum voterà SÌ. Scheda anagrafica di Carmela Rossi: 44 anni, Roma, infermiera. Carmela Rossi è uno dei cittadini elettori di questa popolazione. Carmela Rossi risiede a Roma e ha 44 anni. La professione di Carmela Rossi è: infermiera.
+
+[100] Serena Villa
+Serena Villa ha 81 anni. Serena Villa vive a Roma. Serena Villa di professione fa: pensionata ex insegnante. Serena Villa vive con il marito Fabio Villa e il figlio Giovanni Villa e il figlio Lorenzo Villa. Serena Villa è amica di Ivan Vitale e Giorgio Galli. Profilo politico di Serena Villa: Moderata, diffida di entrambe le parti, parla dell'orto, vota un partito minore, voterà SÌ al referendum. Serena Villa al referendum voterà SÌ. Scheda anagrafica di Serena Villa: 81 anni, Roma, pensionata ex insegnante. Serena Villa è uno dei cittadini elettori di questa popolazione. Serena Villa risiede a Roma e ha 81 anni.
+
+[101] Federico Mariani
+Federico Mariani ha 76 anni. Federico Mariani vive a Catania. Federico Mariani di professione fa: pensionato ex insegnante. Federico Mariani vive da solo. Federico Mariani è amico di Loredana Silvestri e Barbara Rizzi. Profilo politico di Federico Mariani: Disinteressato, usa i social solo per svago, commenta le notizie di cronaca locale, non andrà a votare al referendum. Federico Mariani al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Federico Mariani: 76 anni, Catania, pensionato ex insegnante. Federico Mariani è uno dei cittadini elettori di questa popolazione.
+
+[102] Fabio Guerra
+Fabio Guerra ha 31 anni. Fabio Guerra vive a Verona. Fabio Guerra di professione fa: grafico. Fabio Guerra vive con la sorella Franca Guerra. Fabio Guerra è amico di Ivan Testa e Alessia Palumbo. Profilo politico di Fabio Guerra: Disinteressato, salta i post di politica, gioca online, non andrà a votare al referendum. Fabio Guerra al referendum è ancora indeciso e non ha deciso come votare. Scheda anagrafica di Fabio Guerra: 31 anni, Verona, grafico. Fabio Guerra è uno dei cittadini elettori di questa popolazione. Fabio Guerra risiede a Verona e ha 31 anni. La professione di Fabio Guerra è: grafico.
+
+[103] Lucia Gentile
+Lucia Gentile ha 76 anni. Lucia Gentile vive a Napoli. Lucia Gentile di professione fa: pensionata ex insegnante. Lucia Gentile vive con il marito Luca Gentile e la figlia Noemi Gentile. Lucia Gentile è amica di Gabriele Fontana e Giulia Cattaneo. Profilo politico di Lucia Gentile: Moderata, condivide notizie senza commentarle, condivide catene su WhatsApp, vota Forza Italia, voterà SÌ al referendum. Lucia Gentile al referendum voterà SÌ. Scheda anagrafica di Lucia Gentile: 76 anni, Napoli, pensionata ex insegnante. Lucia Gentile è uno dei cittadini elettori di questa popolazione.
+
+[104] Domenico Giordano
+Domenico Giordano ha 63 anni. Domenico Giordano vive a Milano. Domenico Giordano di professione fa: impiegato di banca. Domenico Giordano vive con la moglie Barbara Giordano e la figlia Silvia Giordano. Domenico Giordano è amico di Lucia Mancini e Dario Leone. Profilo politico di Domenico Giordano: Attivista, litiga spesso nei commenti, posta foto di cucina, vota Fratelli d'Italia, voterà SÌ al referendum. Domenico Giordano al referendum voterà SÌ. Scheda anagrafica di Domenico Giordano: 63 anni, Milano, impiegato di banca. Domenico Giordano è uno dei cittadini elettori di questa popolazione.
+
+[105] Lucia Gallo
+Lucia Gallo ha 82 anni. Lucia Gallo vive a Torino. Lucia Gallo di professione fa: pensionata ex impiegata. Lucia Gallo vive con il marito Nicola Gallo e il figlio Giuseppe Gallo. Lucia Gallo è amica di Fabio Martini e Elisa Bianchi. Profilo politico di Lucia Gallo: Moderata, legge molto e scrive poco, posta foto dei nipoti, vota Fratelli d'Italia, voterà SÌ al referendum. Lucia Gallo al referendum voterà SÌ. Scheda anagrafica di Lucia Gallo: 82 anni, Torino, pensionata ex impiegata. Lucia Gallo è uno dei cittadini elettori di questa popolazione. Lucia Gallo risiede a Torino e ha 82 anni.
