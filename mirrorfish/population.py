@@ -17,6 +17,52 @@ import random
 from pathlib import Path
 from typing import Any
 
+# Cronotipi: propensione relativa all'uso dei social per ora del giorno.
+# Derivati per fascia; nel run vero vanno tarati sui dati ISTAT sull'uso del
+# tempo, non su queste stime.
+CRONOTIPI: dict[str, list[float]] = {
+    # 0h                                   12h                          23h
+    "studente":  [.4,.3,.2,.1,.1,.1,.1,.2,.4,.5,.6,.7,.8,.7,.6,.6,.7,.8,.9,1.,1.,.9,.8,.6],
+    "lavoratore":[.1,.1,.0,.0,.0,.1,.3,.6,.7,.5,.4,.4,.8,.7,.4,.4,.5,.7,.9,1.,.9,.7,.4,.2],
+    "pensionato":[.0,.0,.0,.0,.1,.2,.5,.8,.9,1.,.9,.8,.7,.6,.7,.8,.8,.7,.6,.5,.4,.2,.1,.0],
+    "notturno":  [.9,.8,.6,.4,.2,.1,.1,.1,.2,.3,.3,.4,.5,.5,.5,.5,.6,.7,.8,.9,1.,1.,1.,1.],
+}
+
+
+def cronotipo_for(age: int | None, profession: str | None) -> str:
+    prof = (profession or "").lower()
+    if "student" in prof or (age is not None and age < 25):
+        return "studente"
+    if "pension" in prof or (age is not None and age >= 67):
+        return "pensionato"
+    return "lavoratore"
+
+
+def activation_prob(
+    activity_hours: list[float], start_hour: int, span_hours: int, scale: float
+) -> float:
+    """
+    Probabilita' che l'agente sia attivo in un tick che copre
+    [start_hour, start_hour + span_hours).
+
+    Questo rende superfluo il trucco dei tick coprimi con 24: non serve che i
+    tick "ruotino" attraverso le ore per dare a tutti la stessa occasione,
+    perche' la probabilita' e' gia' calcolata sulla sovrapposizione reale fra
+    la finestra del tick e il profilo orario dell'agente. Ogni tick campiona
+    ogni agente in modo corretto, sempre.
+
+    Nota: piu' il tick e' lungo, piu' la media si appiattisce e i cronotipi si
+    somigliano. A 24h tutti hanno la stessa probabilita' e la differenziazione
+    demografica sparisce del tutto.
+    """
+    if span_hours >= 24:
+        hours = range(24)
+    else:
+        hours = [(start_hour + i) % 24 for i in range(span_hours)]
+    mean = sum(activity_hours[h] for h in hours) / max(1, len(list(hours)))
+    return max(0.0, min(1.0, mean * scale))
+
+
 REGIONI = [
     "Lombardia", "Lazio", "Campania", "Sicilia", "Veneto", "Emilia-Romagna",
     "Piemonte", "Puglia", "Toscana", "Calabria",
@@ -39,6 +85,8 @@ def load_mirofish_profiles(path: str | Path) -> list[dict[str, Any]]:
             "region": p.get("region") or p.get("location"),
             "education": p.get("education"),
             "activity": float(p.get("activity_level", 0.35) or 0.35),
+            "activity_hours": p.get("activity_hours") or CRONOTIPI[
+                cronotipo_for(p.get("age"), p.get("profession"))],
             "is_source": 1 if "ansa" in username.lower() else 0,
             "attrs": {k: v for k, v in p.items()
                       if k not in {"user_id", "username", "persona", "bio"}},
@@ -75,6 +123,9 @@ def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
                                       "pensionato", "studente", "commerciante"]),
             "age": eta, "region": reg, "education": tit,
             "activity": round(rng.uniform(0.15, 0.6), 2),
+            "activity_hours": CRONOTIPI[
+                "notturno" if rng.random() < 0.12
+                else cronotipo_for(eta, None)],
             "is_source": 0,
             "attrs": {"lean": lean},
         })

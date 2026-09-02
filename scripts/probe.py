@@ -75,6 +75,21 @@ async def probe(cfg: LLMConfig, max_tokens: int, no_think: bool, idx: int) -> bo
     else:
         print("header rilevanti: nessuno (il gateway non espone info di quota)")
 
+    # Quanto budget di token viene scalato? Se il calo dipende da max_tokens
+    # e non dai token realmente consumati, il gateway pre-alloca sulla stima:
+    # e' il meccanismo con cui una richiesta da 261.678 token esauriva da sola
+    # l'intera finestra da 100.000 token/minuto.
+    rem = r.headers.get("x-ratelimit-team_member-remaining-tokens")
+    if rem is not None:
+        try:
+            probe.prev_remaining  # type: ignore[attr-defined]
+        except AttributeError:
+            probe.prev_remaining = None  # type: ignore[attr-defined]
+        if probe.prev_remaining is not None:  # type: ignore[attr-defined]
+            drop = probe.prev_remaining - float(rem)  # type: ignore[attr-defined]
+            print(f"budget token  : -{drop:.0f} scalati (max_tokens={max_tokens})")
+        probe.prev_remaining = float(rem)  # type: ignore[attr-defined]
+
     if r.status_code == 200:
         d = r.json()
         u = d.get("usage") or {}

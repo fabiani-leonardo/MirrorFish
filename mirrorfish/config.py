@@ -63,8 +63,15 @@ class LLMConfig:
     # min_interval_s: distanza minima fra due partenze -> spalma il burst.
     # Con 2 GPU e altri utenti sul modello, 6 e 0.15 sono un punto di partenza
     # prudente. Da tarare con scripts/diagnose_llm.py.
-    concurrency: int = 6
-    min_interval_s: float = 0.15
+    # Tarati sugli header osservati il 2026-09-02:
+    #   x-ratelimit-api_key-limit-max_parallel_requests : 5
+    #   x-ratelimit-team_member-limit-requests          : 8   <- vincolante
+    #   x-ratelimit-team-limit-requests                 : 25  <- condiviso
+    # A 8 richieste/minuto ogni chiamata costa 7,5 s di orologio: la
+    # concorrenza oltre ~2 non serve a niente, serve solo il ritmo giusto.
+    requests_per_minute: float = 8.0
+    concurrency: int = 2
+    min_interval_s: float = 0.0   # 0 = derivato da requests_per_minute
     timeout_s: float = 180.0
     max_retries: int = 6
     backoff_base_s: float = 2.0
@@ -72,6 +79,12 @@ class LLMConfig:
     # I limiti di gateway hanno tipicamente finestre da 60s: un backoff da
     # pochi secondi non fa che ritriggerare il limite.
     rate_limit_cooldown_s: float = 60.0
+
+    def pace_interval(self) -> float:
+        """Secondi fra due partenze. Lascia un 10% di margine sul limite."""
+        if self.min_interval_s > 0:
+            return self.min_interval_s
+        return 60.0 / max(0.1, self.requests_per_minute) * 1.1
 
     @classmethod
     def from_env(cls, **overrides: Any) -> "LLMConfig":
@@ -95,7 +108,10 @@ class SimConfig:
 
     start_date: date = date(2026, 3, 1)
     end_date: date = date(2026, 3, 21)
-    ticks_per_day: int = 4                 # 4 tick = mattina/pomeriggio/sera/notte
+    # Durata del tick in ORE. E' la leva principale sul costo: dimezzarla
+    # raddoppia le chiamate. Vedi scripts/plan_run.py per il trade-off fra
+    # costo e differenziazione comportamentale.
+    hours_per_tick: int = 8
 
     # Popolazione
     n_agents: int | None = None            # None = tutti quelli nel file
@@ -120,9 +136,17 @@ class SimConfig:
     counterfactual_from_tick: int | None = None
     counterfactual_news_dir: str | None = None
 
+    @property
+    def ticks_per_day(self) -> float:
+        return 24 / self.hours_per_tick
+
     def total_ticks(self) -> int:
         days = (self.end_date - self.start_date).days + 1
-        return days * self.ticks_per_day
+        return max(1, int(days * 24 / self.hours_per_tick))
+
+    def tick_hours(self, tick: int) -> tuple[int, int]:
+        """Ora di inizio e durata del tick, nel giorno simulato."""
+        return (tick * self.hours_per_tick) % 24, self.hours_per_tick
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
