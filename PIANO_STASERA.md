@@ -22,24 +22,31 @@ scalati per 33 di prompt + 6 di output. Nessuna penalizzazione basata su
 **Latenza media: ~940 ms.** Con 5 richieste parallele gia' concesse, il tetto
 fisico del parallelismo e' ~300 req/min.
 
-## Cosa NON e' confermato (non usarlo domani)
+## La causa del problema originale, riprodotta
 
-Restano due decrementi anomali sul primo colpo di ogni finestra: -269 con
-`max_tokens=256` e -3.879 con `max_tokens=4096`. Suggeriscono una riserva
-proporzionale al tetto richiesto, ma il test non e' pulito: `probe.py`
-azzerava il riferimento a ogni invocazione, quindi il confronto fra i due
-valori non e' mai stato fatto sulla stessa baseline.
+Sei misure sulla stessa baseline (`probe.py --n 3 --max-tokens 256 4096`)
+si spiegano con un modello solo: **il gateway riserva `max_tokens` + ~13
+token di overhead contro la finestra da 100.000/minuto, e riconcilia contro
+la riserva della richiesta precedente.**
 
-Ora si prova tutto in una sola invocazione (6 chiamate, meno di un minuto):
+| req | max_tokens | riserva | rimborso prec. | netto atteso | osservato |
+|----:|-----------:|--------:|---------------:|-------------:|----------:|
+|   1 |        256 |     269 |              0 |          269 |       269 |
+|   2 |        256 |     269 |            230 |           39 |        39 |
+|   3 |        256 |     269 |            230 |           39 |        39 |
+|   4 |      4.096 |   4.109 |            230 |        3.879 |     3.879 |
+|   5 |      4.096 |   4.109 |          4.070 |           39 |        39 |
+|   6 |      4.096 |   4.109 |          4.070 |           39 |        39 |
 
-```bash
-python scripts/probe.py --n 3 --max-tokens 256 4096
-```
+Sei su sei. A regime il netto e' il consumo reale (39 token per 33+6 usati),
+ma la riserva resta appesa alla finestra.
 
-Se il decremento cresce col tetto, e' un argomento in piu'. Se non si
-riproduce, **lascia perdere**: l'argomento principale regge da solo e
-presentare un meccanismo non riprodotto e' il modo piu' rapido per perdere
-credibilita' sul resto.
+Conseguenza diretta sul problema originale: con `max_tokens` omesso, il valore
+diventava 261.678, cioe' una riserva **2,6 volte l'intera finestra da 100.000
+token al minuto**. Una singola richiesta non poteva essere ammessa, mai.
+
+Non era la KV cache di vLLM: era la contabilita' del gateway. Spiegazione piu'
+semplice, riprodotta, e falsificabile — basta rifare la tabella.
 
 ## L'argomento
 
