@@ -65,14 +65,15 @@ async def main_async(args: argparse.Namespace) -> None:
     sim = SimConfig(
         run_id=out_dir.name, seed=args.seed,
         start_date=start, end_date=end,
-        ticks_per_day=args.ticks_per_day,
+        hours_per_tick=args.hours_per_tick,
         feed_size=args.feed_size, news_slots=args.news_slots,
         max_news_per_tick=args.max_news_per_tick,
         reflection_every=args.reflection_every,
         counterfactual_from_tick=args.cf_from_tick,
         counterfactual_news_dir=args.cf_news,
     )
-    llm_cfg = LLMConfig.from_env(concurrency=args.concurrency)
+    llm_cfg = LLMConfig.from_env(concurrency=args.concurrency,
+                                 requests_per_minute=args.rpm)
     if args.max_action_tokens:
         llm_cfg.token_budget["action"] = args.max_action_tokens
 
@@ -133,7 +134,7 @@ async def main_async(args: argparse.Namespace) -> None:
     # --- notizie ----------------------------------------------------------- #
     total_ticks = sim.total_ticks()
     items = load_news(args.news) if args.news else synth_news(start, args.days)
-    stream = NewsStream(items, start, sim.ticks_per_day, total_ticks,
+    stream = NewsStream(items, start, sim.hours_per_tick, total_ticks,
                         max_per_tick=args.max_news_per_tick)
 
     if args.cf_from_tick is not None:
@@ -212,7 +213,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--start", default="2026-03-01")
     p.add_argument("--days", type=int, default=21)
-    p.add_argument("--ticks-per-day", type=int, default=4)
+    p.add_argument("--hours-per-tick", type=int, default=8,
+                   help="durata del tick in ore: leva principale sul costo")
     p.add_argument("--agents", type=int, default=None)
     p.add_argument("--profiles", default=None, help="reddit_profiles.json")
     p.add_argument("--news", default=None, help="cartella .txt ANSA")
@@ -222,7 +224,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--reflection-every", type=int, default=4)
     p.add_argument("--avg-degree", type=int, default=12)
     p.add_argument("--homophily", type=float, default=0.6)
-    p.add_argument("--concurrency", type=int, default=6)
+    p.add_argument("--concurrency", type=int, default=2)
+    p.add_argument("--rpm", type=float, default=8.0,
+                   help="richieste/minuto concesse dalla quota")
     p.add_argument("--max-action-tokens", type=int, default=None)
     p.add_argument("--stub", action="store_true", help="LLM finto, offline")
     p.add_argument("--quiet", action="store_true")

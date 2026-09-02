@@ -35,7 +35,7 @@ from typing import Any
 DEFAULT_TOKEN_BUDGET = {
     "action": 384,
     "reflection": 512,
-    "vote": 300,
+    "vote": 512,   # p95 misurato 213, max 242: 300 era troppo vicino
 }
 
 
@@ -84,7 +84,7 @@ class LLMConfig:
         """Secondi fra due partenze. Lascia un 10% di margine sul limite."""
         if self.min_interval_s > 0:
             return self.min_interval_s
-        return 60.0 / max(0.1, self.requests_per_minute) * 1.1
+        return 60.0 / max(0.1, self.requests_per_minute) * 1.15
 
     @classmethod
     def from_env(cls, **overrides: Any) -> "LLMConfig":

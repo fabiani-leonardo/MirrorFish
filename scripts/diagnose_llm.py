@@ -38,9 +38,6 @@ misurati, a parita' di prompt, variando un parametro alla volta.
 
 from __future__ import annotations
 
-from dotenv import load_dotenv
-load_dotenv()
-
 import argparse
 import asyncio
 import os

@@ -116,7 +116,10 @@ async def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=1, help="quante richieste in serie")
     ap.add_argument("--sleep", type=float, default=0.0, help="pausa fra una e l'altra")
-    ap.add_argument("--max-tokens", type=int, default=256)
+    ap.add_argument("--max-tokens", type=int, nargs="+", default=[256],
+                    help="uno o piu' valori: vengono provati NELLA STESSA "
+                         "invocazione, cosi' il confronto del budget scalato "
+                         "e' fatto sulla stessa baseline")
     ap.add_argument("--thinking-on", action="store_true",
                     help="NON disattivare il thinking, per confronto")
     args = ap.parse_args()
@@ -130,12 +133,16 @@ async def main() -> None:
     print(f"chiave   : ...{cfg.api_key[-4:]}  (lunghezza {len(cfg.api_key)})")
 
     ok = 0
-    for i in range(1, args.n + 1):
-        if await probe(cfg, args.max_tokens, not args.thinking_on, i):
-            ok += 1
-        if args.sleep and i < args.n:
-            print(f"\n(pausa {args.sleep}s)")
-            await asyncio.sleep(args.sleep)
+    total = args.n * len(args.max_tokens)
+    i = 0
+    for mt in args.max_tokens:
+        for _ in range(args.n):
+            i += 1
+            if await probe(cfg, mt, not args.thinking_on, i):
+                ok += 1
+            if args.sleep and i < total:
+                print(f"\n(pausa {args.sleep}s)")
+                await asyncio.sleep(args.sleep)
 
     print(f"\n=== {ok}/{args.n} riuscite ===")
     if ok < args.n:

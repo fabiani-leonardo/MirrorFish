@@ -121,6 +121,8 @@ def report(rows: list[dict], tpm: int, rpm_now: float, parallel: int,
     print("  " + "-" * 64)
 
     worst = 0.0
+    measured = 0.0
+    weight = 0
     for purpose, rs in sorted(by.items()):
         pr = [r["prompt_tokens"] for r in rs]
         co = [r["completion_tokens"] for r in rs]
@@ -130,6 +132,8 @@ def report(rows: list[dict], tpm: int, rpm_now: float, parallel: int,
         print(f"  {purpose:<12}{len(rs):>5}{statistics.mean(pr):>12.0f}"
               f"{statistics.mean(co):>10.0f}{p95:>9}{budget:>8}{trunc:>10}")
         worst = max(worst, statistics.mean(pr) + budget)
+        measured += (statistics.mean(pr) + statistics.mean(co)) * len(rs)
+        weight += len(rs)
 
     all_lat = [r["latency_ms"] for r in rows if r["latency_ms"]]
     lat = statistics.mean(all_lat) if all_lat else (latency_hint or 3000)
@@ -138,11 +142,18 @@ def report(rows: list[dict], tpm: int, rpm_now: float, parallel: int,
     print(" QUANTA QUOTA TOKEN RESTA LIBERA")
     print("=" * 74)
     print(f"  Limite token concesso        : {tpm:,} / minuto")
-    print(f"  Costo peggiore per chiamata  : ~{worst:.0f} token")
-    print(f"    (prompt medio + max_tokens: il gateway sembra pre-scalare sul")
-    print(f"     budget richiesto, non sul consumo effettivo — da verificare)")
+    avg = measured / max(1, weight)
+    print(f"  Consumo MISURATO per chiamata: ~{avg:.0f} token "
+          f"(prompt + completion reali)")
+    print(f"  Limite superiore teorico     : ~{worst:.0f} token "
+          f"(prompt + max_tokens)")
+    print(f"    Il contatore del gateway a regime scala il consumo REALE")
+    print(f"    (-39 token per 33+6 usati, verificato). Il limite superiore e'")
+    print(f"    riportato solo come caso peggiore difendibile.")
 
     rpm_by_tokens = tpm / worst
+    rpm_measured = tpm / avg
+    print(f"\n  Req/min sostenibili col consumo misurato : {rpm_measured:.0f}")
     print(f"\n  Richieste/min sostenibili col SOLO limite di token: "
           f"{rpm_by_tokens:.0f}")
     print(f"  Richieste/min attualmente concesse                : {rpm_now:.0f}")

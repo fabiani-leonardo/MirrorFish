@@ -18,6 +18,7 @@ piu' repliche e riportata con media e dispersione, non come numero singolo.
 from __future__ import annotations
 
 import asyncio
+import json
 import random
 import sqlite3
 from datetime import date
@@ -28,6 +29,7 @@ from .config import LLMConfig, SimConfig
 from .llm import LLMClient
 from .memory import ReflectionEngine
 from .news import NewsStream
+from .population import activation_prob
 from .store import Store
 
 
@@ -64,8 +66,19 @@ class Engine:
     def _active_agents(self, tick: int, agents: list[sqlite3.Row]) -> list[sqlite3.Row]:
         """Chi agisce in questo tick. Deterministico dato (seed, tick)."""
         rng = self._rng(tick, "activity")
-        active = [a for a in agents if rng.random() < (a["activity"] or self.sim.base_activity)]
-        rng.shuffle(active)  # ordine di azione stabile ma non per agent_id
+        start_h, span = self.sim.tick_hours(tick)
+        active = []
+        for a in agents:
+            try:
+                hours = json.loads(a["activity_hours"] or "[]")
+            except (TypeError, ValueError):
+                hours = []
+            scale = a["activity"] or self.sim.base_activity
+            p = (activation_prob(hours, start_h, span, scale * 24 / max(1, span))
+                 if len(hours) == 24 else scale)
+            if rng.random() < p:
+                active.append(a)
+        rng.shuffle(active)  # ordine stabile ma non per agent_id
         return active
 
     # ------------------------------------------------------------------ news #
@@ -175,6 +188,7 @@ class Engine:
 
         for tick in range(start_tick, total):
             sim_date = self.news.tick_date(tick)
+            start_h, _ = self.sim.tick_hours(tick)
             n_news = self._inject_news(tick, sim_date)
             active = self._active_agents(tick, agents)
 
@@ -196,7 +210,7 @@ class Engine:
             self.store.set_meta("stats", self.stats)
 
             if self.verbose:
-                print(f"  tick {tick + 1:3d}/{total} {sim_date}  "
+                print(f"  tick {tick + 1:3d}/{total} {sim_date} {start_h:02d}h  "
                       f"attivi={len(active):3d} news={n_news:2d}  "
                       f"post={self.stats['posts']} reply={self.stats['replies']} "
                       f"like={self.stats['likes']} note={self.stats['notes']} "

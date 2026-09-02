@@ -89,27 +89,60 @@ class RateGate:
     scadenza indicata dal server (`Retry-After`) o al backoff calcolato.
     """
 
-    def __init__(self, min_interval_s: float):
-        self.min_interval_s = min_interval_s
-        self._base_interval = min_interval_s
+    def __init__(self, min_interval_s: float, rpm: float = 0.0,
+                 window_s: float = 60.0, reserve: int = 1):
+        # Spaziatura fissa (fallback) + finestra scorrevole (vincolo vero).
+        self.min_interval_s = max(min_interval_s, 0.05)
+        self._base_interval = self.min_interval_s
+        self.rpm = rpm
+        self.window_s = window_s
+        self.reserve = reserve          # margine lasciato libero nella finestra
+        self._starts: list[float] = []  # timestamp delle partenze recenti
         self._lock = asyncio.Lock()
         self._last_start = 0.0
         self._cooldown_until = 0.0
         self.trips = 0
         self.paused_s = 0.0
+        self.preemptive_pauses = 0
+        self.observed_remaining: int | None = None
 
     async def acquire(self) -> None:
+        """
+        Concede il permesso di partire.
+
+        Tre vincoli in AND:
+          1. nessuna pausa globale in corso (429 gia' incassato);
+          2. distanza minima dalla partenza precedente;
+          3. non piu' di (rpm - reserve) partenze nella finestra scorrevole.
+
+        Il terzo e' quello che conta. Una spaziatura fissa di 60/rpm secondi
+        sembra sicura ma mette esattamente `rpm` richieste dentro ogni minuto
+        solare: si e' sul bordo del limite e basta una latenza irregolare per
+        superarlo. La finestra scorrevole con riserva tiene un margine reale.
+        """
         while True:
             async with self._lock:
                 now = time.monotonic()
-                if now >= self._cooldown_until:
-                    wait = self._last_start + self.min_interval_s - now
-                    if wait <= 0:
-                        self._last_start = now
-                        return
-                    sleep_for = wait
-                else:
+                sleep_for = 0.0
+
+                if now < self._cooldown_until:
                     sleep_for = self._cooldown_until - now
+                else:
+                    gap = self._last_start + self.min_interval_s - now
+                    if gap > 0:
+                        sleep_for = gap
+                    elif self.rpm > 0:
+                        cutoff = now - self.window_s
+                        self._starts = [t for t in self._starts if t > cutoff]
+                        budget = max(1, int(self.rpm) - self.reserve)
+                        if len(self._starts) >= budget:
+                            # aspetta che la richiesta piu' vecchia esca
+                            sleep_for = self._starts[0] + self.window_s - now + 0.1
+
+                if sleep_for <= 0:
+                    self._last_start = now
+                    self._starts.append(now)
+                    return
             await asyncio.sleep(min(sleep_for, 5.0))
 
     async def trip(self, seconds: float, reason: str = "429") -> None:
@@ -122,15 +155,47 @@ class RateGate:
                 self.paused_s += seconds
                 # Rallenta anche a regime: se il limite e' scattato una volta,
                 # il ritmo precedente era troppo alto.
-                self.min_interval_s = min(self._base_interval * 8,
-                                          max(self.min_interval_s * 1.5, 0.2))
+                # Floor esplicito: con _base_interval = 0 la vecchia formula
+                # produceva 0, cioe' "rallenta" azzerava la spaziatura.
+                self.min_interval_s = min(
+                    max(self._base_interval, 1.0) * 8,
+                    max(self.min_interval_s * 1.5, 1.0),
+                )
                 if first:
                     print(f"    [rate-limit] {reason}: pausa globale "
                           f"{seconds:.0f}s, ritmo -> "
                           f"{self.min_interval_s:.2f}s fra le richieste")
 
+    async def observe(self, headers: Any) -> None:
+        """
+        Legge il contatore del server dalle risposte riuscite.
+
+        E' piu' affidabile di qualunque stima locale: il gateway conta anche
+        le richieste degli altri membri del team sul limite condiviso, che noi
+        non possiamo vedere. Quando il residuo scende sotto la riserva ci si
+        ferma PRIMA di prendere il 429, invece di reagire dopo.
+        """
+        for key in ("x-ratelimit-team_member-remaining-requests",
+                    "x-ratelimit-team-remaining-requests"):
+            raw = headers.get(key)
+            if raw is None:
+                continue
+            try:
+                remaining = int(float(raw))
+            except (TypeError, ValueError):
+                continue
+            self.observed_remaining = remaining
+            if remaining <= self.reserve:
+                async with self._lock:
+                    target = time.monotonic() + self.window_s * 0.5
+                    if target > self._cooldown_until:
+                        self._cooldown_until = target
+                        self.preemptive_pauses += 1
+            return
+
     def stats(self) -> dict[str, Any]:
         return {"trips": self.trips, "paused_s": round(self.paused_s, 1),
+                "preemptive_pauses": self.preemptive_pauses,
                 "final_interval_s": round(self.min_interval_s, 3)}
 
 
@@ -188,7 +253,7 @@ class OpenAICompatClient(LLMClient):
             )
         self.cfg = cfg
         self._sem = asyncio.Semaphore(cfg.concurrency)
-        self.gate = RateGate(cfg.min_interval_s)
+        self.gate = RateGate(cfg.pace_interval(), rpm=cfg.requests_per_minute)
         self._thinking_supported = cfg.disable_thinking
         self._client = httpx.AsyncClient(
             base_url=cfg.base_url.rstrip("/"),
@@ -268,6 +333,7 @@ class OpenAICompatClient(LLMClient):
                     continue
 
                 r.raise_for_status()
+                await self.gate.observe(r.headers)
                 data = r.json()
                 choice = data["choices"][0]
                 msg = choice.get("message", {})

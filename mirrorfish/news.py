@@ -101,13 +101,14 @@ class NewsStream:
         self,
         items: list[NewsItem],
         start_date: date,
-        ticks_per_day: int,
+        hours_per_tick: int,
         total_ticks: int,
         max_per_tick: int = 3,
         verbose: bool = True,
     ):
         self.start_date = start_date
-        self.ticks_per_day = ticks_per_day
+        self.hours_per_tick = hours_per_tick
+        self.ticks_per_day = 24 / hours_per_tick
         self.total_ticks = total_ticks
         self.max_per_tick = max_per_tick
         self.dropped_before = 0
@@ -119,7 +120,16 @@ class NewsStream:
             self.report()
 
     def tick_date(self, tick: int) -> date:
-        return self.start_date + timedelta(days=tick // self.ticks_per_day)
+        return self.start_date + timedelta(days=(tick * self.hours_per_tick) // 24)
+
+    def _first_tick_of_day(self, day_offset: int) -> int:
+        import math
+        return math.ceil(day_offset * 24 / self.hours_per_tick)
+
+    def _ticks_in_day(self, day_offset: int) -> list[int]:
+        a = self._first_tick_of_day(day_offset)
+        b = self._first_tick_of_day(day_offset + 1)
+        return [t for t in range(a, min(b, self.total_ticks))]
 
     def _build(self, items: list[NewsItem]) -> None:
         by_day: dict[int, list[NewsItem]] = {}
@@ -135,23 +145,24 @@ class NewsStream:
                 # messi nella bio, non nel feed.
                 self.dropped_before += 1
                 continue
-            if day_offset * self.ticks_per_day >= self.total_ticks:
+            if self._first_tick_of_day(day_offset) >= self.total_ticks:
                 self.dropped_after += 1
                 continue
             by_day.setdefault(day_offset, []).append(n)
 
         for day_offset, day_items in by_day.items():
-            base = day_offset * self.ticks_per_day
-            capacity = self.ticks_per_day * self.max_per_tick
+            slots = self._ticks_in_day(day_offset)
+            if not slots:
+                self.dropped_after += len(day_items)
+                continue
+            capacity = len(slots) * self.max_per_tick
             if len(day_items) > capacity:
                 # Tenere solo le prime N e' una scelta di campionamento, non
                 # una perdita silenziosa: va dichiarata nel run.
                 self.dropped_overflow += len(day_items) - capacity
                 day_items = day_items[:capacity]
             for i, item in enumerate(day_items):
-                t = base + (i % self.ticks_per_day)
-                if t < self.total_ticks:
-                    self._schedule.setdefault(t, []).append(item)
+                self._schedule.setdefault(slots[i % len(slots)], []).append(item)
 
     def report(self) -> None:
         kept = sum(len(v) for v in self._schedule.values())
@@ -180,12 +191,13 @@ class NewsStream:
         """
         forked = NewsStream.__new__(NewsStream)
         forked.start_date = self.start_date
+        forked.hours_per_tick = self.hours_per_tick
         forked.ticks_per_day = self.ticks_per_day
         forked.total_ticks = self.total_ticks
         forked._schedule = {t: v for t, v in self._schedule.items() if t < tick}
         forked.max_per_tick = self.max_per_tick
         forked.dropped_before = forked.dropped_after = forked.dropped_overflow = 0
-        alt = NewsStream(alt_items, self.start_date, self.ticks_per_day,
+        alt = NewsStream(alt_items, self.start_date, self.hours_per_tick,
                          self.total_ticks, self.max_per_tick, verbose=False)
         for t, v in alt._schedule.items():
             if t >= tick:

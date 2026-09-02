@@ -32,8 +32,10 @@ CREATE TABLE IF NOT EXISTS agent (
     region          TEXT,
     education       TEXT,
     activity        REAL NOT NULL DEFAULT 0.35,
+    activity_hours  TEXT NOT NULL DEFAULT '[]',
     is_source       INTEGER NOT NULL DEFAULT 0,
-    attrs           TEXT NOT NULL DEFAULT '{}'
+    attrs           TEXT NOT NULL DEFAULT '{}',
+    bio_vec         BLOB
 );
 
 CREATE TABLE IF NOT EXISTS follow (
@@ -50,7 +52,8 @@ CREATE TABLE IF NOT EXISTS post (
     kind            TEXT NOT NULL,          -- post | reply | news
     tick            INTEGER NOT NULL,
     sim_date        TEXT NOT NULL,
-    news_id         TEXT                    -- provenienza, se iniettato
+    news_id         TEXT,                   -- provenienza, se iniettato
+    embedding       BLOB                    -- calcolato una volta, mai piu'
 );
 CREATE INDEX IF NOT EXISTS idx_post_tick ON post(tick);
 CREATE INDEX IF NOT EXISTS idx_post_agent ON post(agent_id);
@@ -138,6 +141,7 @@ class Store:
                 a["agent_id"], a["username"], a.get("static_bio", ""),
                 a.get("profession"), a.get("age"), a.get("region"),
                 a.get("education"), a.get("activity", 0.35),
+                json.dumps(a.get("activity_hours") or []),
                 int(a.get("is_source", 0)),
                 json.dumps(a.get("attrs", {}), ensure_ascii=False),
             )
@@ -145,8 +149,8 @@ class Store:
         ]
         self.conn.executemany(
             "INSERT OR REPLACE INTO agent (agent_id, username, static_bio, "
-            "profession, age, region, education, activity, is_source, attrs) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?)",
+            "profession, age, region, education, activity, activity_hours, "
+            "is_source, attrs) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
             rows,
         )
         self.conn.commit()
@@ -225,6 +229,72 @@ class Store:
             (before_tick, agent_id, agent_id, limit - len(news)),
         ).fetchall()
         return list(news) + list(peers)
+
+    _CAND_SELECT = """
+        SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.embedding,
+               a.username, a.agent_id AS author_id,
+               (SELECT COUNT(*) FROM reaction r
+                 WHERE r.post_id = p.post_id AND r.kind = 'like') AS likes,
+               (SELECT COUNT(*) FROM post c
+                 WHERE c.parent_id = p.post_id)                   AS replies
+        FROM post p JOIN agent a ON a.agent_id = p.agent_id
+        WHERE p.tick <= ? AND p.agent_id != ? AND a.is_source = 0 AND {clause}
+        ORDER BY p.tick DESC, p.post_id DESC LIMIT ?
+    """
+
+    def candidates_in_network(self, agent_id: int, tick: int, limit: int):
+        return self.conn.execute(
+            self._CAND_SELECT.format(
+                clause="p.agent_id IN (SELECT followee_id FROM follow "
+                       "WHERE follower_id = ?)"),
+            (tick, agent_id, agent_id, limit),
+        ).fetchall()
+
+    def candidates_out_network(self, agent_id: int, tick: int, limit: int):
+        return self.conn.execute(
+            self._CAND_SELECT.format(
+                clause="p.agent_id NOT IN (SELECT followee_id FROM follow "
+                       "WHERE follower_id = ?)"),
+            (tick, agent_id, agent_id, limit),
+        ).fetchall()
+
+    def recent_news(self, tick: int, limit: int):
+        return self.conn.execute(
+            """
+            SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.embedding,
+                   a.username, a.agent_id AS author_id, 0 AS likes, 0 AS replies
+            FROM post p JOIN agent a ON a.agent_id = p.agent_id
+            WHERE p.tick <= ? AND a.is_source = 1
+            ORDER BY p.tick DESC, p.post_id DESC LIMIT ?
+            """, (tick, limit)).fetchall()
+
+    def posts_missing_embedding(self, limit: int = 512):
+        return self.conn.execute(
+            "SELECT post_id, content FROM post WHERE embedding IS NULL LIMIT ?",
+            (limit,)).fetchall()
+
+    def set_post_embeddings(self, pairs: list[tuple[int, bytes]]) -> None:
+        self.conn.executemany(
+            "UPDATE post SET embedding = ? WHERE post_id = ?",
+            [(blob, pid) for pid, blob in pairs])
+        self.conn.commit()
+
+    def set_bio_vec(self, agent_id: int, blob: bytes) -> None:
+        self.conn.execute("UPDATE agent SET bio_vec = ? WHERE agent_id = ?",
+                          (blob, agent_id))
+
+    def agent_signal_vectors(self, agent_id: int, limit: int = 20):
+        """Embedding dei post scritti e di quelli a cui ha messo like."""
+        rows = self.conn.execute(
+            """
+            SELECT embedding FROM post
+             WHERE agent_id = ? AND embedding IS NOT NULL
+            UNION ALL
+            SELECT p.embedding FROM reaction r JOIN post p ON p.post_id = r.post_id
+             WHERE r.agent_id = ? AND r.kind = 'like' AND p.embedding IS NOT NULL
+            LIMIT ?
+            """, (agent_id, agent_id, limit)).fetchall()
+        return [r["embedding"] for r in rows]
 
     def posts_by(self, agent_id: int, limit: int = 5) -> list[str]:
         rows = self.conn.execute(
