@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 import random
 import sqlite3
 from datetime import date
@@ -186,6 +187,7 @@ class Engine:
             print(f"[engine] {len(agents)} agenti, {total} tick, seed={self.sim.seed}")
             print(f"[engine] {self.news.summary()}")
 
+        run_t0 = time.perf_counter()
         for tick in range(start_tick, total):
             sim_date = self.news.tick_date(tick)
             start_h, _ = self.sim.tick_hours(tick)
@@ -193,9 +195,21 @@ class Engine:
             active = self._active_agents(tick, agents)
 
             if active:
-                outcomes = await asyncio.gather(
-                    *(self._act(a, tick, sim_date) for a in active)
-                )
+                done = 0
+                t0 = time.perf_counter()
+
+                async def tracked(a):
+                    nonlocal done
+                    out = await self._act(a, tick, sim_date)
+                    done += 1
+                    if self.verbose and done % 15 == 0:
+                        el = time.perf_counter() - t0
+                        print(f"    tick {tick + 1}: {done}/{len(active)} "
+                              f"agenti ({done / max(el, .1) * 60:.1f}/min)",
+                              flush=True)
+                    return out
+
+                outcomes = await asyncio.gather(*(tracked(a) for a in active))
                 for o in outcomes:
                     self._apply(o)
                 self.store.commit()
@@ -210,11 +224,14 @@ class Engine:
             self.store.set_meta("stats", self.stats)
 
             if self.verbose:
+                el = time.perf_counter() - run_t0
+                per = el / max(1, tick - start_tick + 1)
+                eta_h = (total - tick - 1) * per / 3600
                 print(f"  tick {tick + 1:3d}/{total} {sim_date} {start_h:02d}h  "
                       f"attivi={len(active):3d} news={n_news:2d}  "
                       f"post={self.stats['posts']} reply={self.stats['replies']} "
                       f"like={self.stats['likes']} note={self.stats['notes']} "
-                      f"err={self.stats['errors']}")
+                      f"err={self.stats['errors']}  ETA {eta_h:.1f}h", flush=True)
 
         self.store.set_meta("stats", self.stats)
         return self.stats

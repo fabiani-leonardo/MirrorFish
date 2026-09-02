@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import asyncio
 import sqlite3
+import time
 from typing import Any
 
 from .config import LLMConfig
@@ -101,7 +102,26 @@ async def run_survey(
         return (aid, normalize_vote(data.get("vote")), conf,
                 str(data.get("motivation") or "")[:1000], resp)
 
-    results = await asyncio.gather(*(one(a) for a in agents))
+    # Progresso incrementale. `asyncio.gather` non emette nulla finche' non
+    # ha finito: con 105 agenti a 8 req/min sono 13 minuti in cui il processo
+    # sembra bloccato. Su un run non sorvegliato e' la differenza fra
+    # "sta lavorando" e "l'ho ammazzato per sbaglio".
+    done = 0
+    t0 = time.perf_counter()
+
+    async def tracked(agent):
+        nonlocal done
+        out = await one(agent)
+        done += 1
+        if verbose and (done == 1 or done % 10 == 0 or done == len(agents)):
+            el = time.perf_counter() - t0
+            rate = done / el * 60 if el else 0
+            eta = (len(agents) - done) / max(rate, 0.1)
+            print(f"  [{label}] {done}/{len(agents)} voti "
+                  f"({rate:.1f}/min, ~{eta:.0f} min alla fine)", flush=True)
+        return out
+
+    results = await asyncio.gather(*(tracked(a) for a in agents))
     for aid, vote, conf, motivation, resp in results:
         store.add_vote(label, aid, vote, conf, motivation, tick=tick)
         store.log_call("vote", budget, resp, tick=tick, agent_id=aid)

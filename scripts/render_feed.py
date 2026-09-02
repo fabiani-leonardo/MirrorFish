@@ -130,7 +130,9 @@ def esc(s: str) -> str:
 
 
 def load(db: str) -> dict:
-    conn = sqlite3.connect(db)
+    # Accetta sia un percorso sia un URI file:...?mode=ro, cosi' il server
+    # puo' leggere un run in corso senza alcuna possibilita' di scrittura.
+    conn = sqlite3.connect(db, uri=db.startswith("file:"), timeout=5.0)
     conn.row_factory = sqlite3.Row
     d: dict = {}
     d["agents"] = {r["agent_id"]: dict(r)
