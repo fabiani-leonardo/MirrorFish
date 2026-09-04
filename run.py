@@ -34,6 +34,7 @@ from mirrorfish.news import NewsStream, NewsItem, load_news
 from mirrorfish.population import (
     build_follow_graph, load_mirofish_profiles, source_agent, synthetic,
 )
+from mirrorfish.recommender import POLICIES, Recommender, explain_policies
 from mirrorfish.store import Store
 from mirrorfish.survey import crosstab, run_survey, shift_report
 
@@ -67,6 +68,7 @@ async def main_async(args: argparse.Namespace) -> None:
         start_date=start, end_date=end,
         hours_per_tick=args.hours_per_tick,
         feed_size=args.feed_size, news_slots=args.news_slots,
+        max_actions=args.max_actions,
         max_news_per_tick=args.max_news_per_tick,
         reflection_every=args.reflection_every,
         counterfactual_from_tick=args.cf_from_tick,
@@ -74,6 +76,9 @@ async def main_async(args: argparse.Namespace) -> None:
     )
     llm_cfg = LLMConfig.from_env(concurrency=args.concurrency,
                                  requests_per_minute=args.rpm)
+    if args.max_actions > 1:
+        # Piu' azioni = output piu' lungo, ma sempre UNA richiesta.
+        llm_cfg.token_budget["action"] = 384 + 128 * (args.max_actions - 1)
     if args.max_action_tokens:
         llm_cfg.token_budget["action"] = args.max_action_tokens
 
@@ -97,6 +102,9 @@ async def main_async(args: argparse.Namespace) -> None:
     store = Store(db_path)
     store.set_meta("sim_config", sim.to_dict())
     store.set_meta("fingerprint", sim.fingerprint())
+    store.set_meta("actions", {"max_actions": args.max_actions})
+    store.set_meta("feed", {"policy": args.recommender,
+                           "out_of_network": args.out_of_network})
     store.set_meta("llm", {"model": llm_cfg.model, "budget": llm_cfg.token_budget,
                            "concurrency": llm_cfg.concurrency,
                            "stub": bool(args.stub)})
@@ -152,7 +160,7 @@ async def main_async(args: argparse.Namespace) -> None:
         # un rate limit stretto sprecarle a ogni ripresa e' proibitivo.
         done_baseline = store.vote_tally("baseline")
         n_ok = sum(v for k, v in done_baseline.items() if k != "ERROR")
-        if n_ok >= len(store.agents()):
+        if n_ok >= len(store.agents(voters_only=True)):
             print(f"[survey] baseline gia' completa ({n_ok} voti), salto.")
         else:
             if n_ok:
@@ -160,8 +168,17 @@ async def main_async(args: argparse.Namespace) -> None:
                 store.commit()
             await run_survey(store, client, llm_cfg, label="baseline", baseline=True)
 
+        rec = Recommender(store, policy=args.recommender,
+                          out_of_network=args.out_of_network, seed=args.seed)
+        if rec.needs_embeddings:
+            raise SystemExit(
+                f"La politica '{args.recommender}' richiede gli embedding, "
+                f"che non sono ancora collegati al motore. Usa random, "
+                f"recency o engagement.")
+        print(f"[feed] politica: {args.recommender}, "
+              f"fuori-rete {args.out_of_network:.0%}")
         engine = Engine(store, client, sim, llm_cfg, stream, src_id,
-                        verbose=not args.quiet)
+                        verbose=not args.quiet, recommender=rec)
         start_tick = (store.get_meta("last_completed_tick", -1) + 1) if resuming else 0
         stats = await engine.run(start_tick=start_tick)
 
@@ -229,6 +246,17 @@ def parse_args() -> argparse.Namespace:
                    help="richieste/minuto concesse dalla quota")
     p.add_argument("--max-action-tokens", type=int, default=None)
     p.add_argument("--stub", action="store_true", help="LLM finto, offline")
+    p.add_argument("--max-actions", type=int, default=1,
+                   help="azioni per agente per tick, in una sola chiamata. "
+                        "1 = comportamento dei run precedenti; 3 = sessione "
+                        "realistica (qualche like + al piu' un contenuto)")
+    p.add_argument("--recommender", default="recency", choices=sorted(POLICIES),
+                   help="politica del feed. 'recency' (default) riproduce "
+                        "esattamente il comportamento dei run precedenti; "
+                        "'random' e' il controllo")
+    p.add_argument("--out-of-network", type=float, default=0.0,
+                   help="quota di post da fuori la rete dei seguiti "
+                        "(0.0 = comportamento dei run precedenti)")
     p.add_argument("--quiet", action="store_true")
     p.add_argument("--resume", action="store_true",
                    help="riprende un run interrotto dall'ultimo tick completato")

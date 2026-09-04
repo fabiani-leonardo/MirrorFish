@@ -14,6 +14,7 @@ from __future__ import annotations
 import csv
 import json
 import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -26,10 +27,39 @@ CRONOTIPI: dict[str, list[float]] = {
     "lavoratore":[.1,.1,.0,.0,.0,.1,.3,.6,.7,.5,.4,.4,.8,.7,.4,.4,.5,.7,.9,1.,.9,.7,.4,.2],
     "pensionato":[.0,.0,.0,.0,.1,.2,.5,.8,.9,1.,.9,.8,.7,.6,.7,.8,.8,.7,.6,.5,.4,.2,.1,.0],
     "notturno":  [.9,.8,.6,.4,.2,.1,.1,.1,.2,.3,.3,.4,.5,.5,.5,.5,.6,.7,.8,.9,1.,1.,1.,1.],
+    # Partiti, comitati, testate: pubblicano in orario di redazione, con i
+    # picchi della rassegna del mattino e del telegiornale della sera.
+    "istituzionale":[0,0,0,0,0,0,.2,.6,1.,1.,.9,.8,.7,.8,.9,.9,.8,.7,.9,1.,.6,.3,.1,0],
 }
 
+# Marcatori di account non elettore. Vengono dalle bio che generi tu:
+# "non e' una persona fisica", "account istituzionale", eccetera.
+_NON_ELETTORE = re.compile(
+    r"non (?:è|e') un(?:a)? (?:elettore|persona fisica)|"
+    r"account (?:istituzionale|ufficiale)|\bcomitato\b|\btestata\b|"
+    r"agenzia di stampa", re.IGNORECASE)
+_USERNAME_IST = re.compile(
+    r"partito|movimento|lega_|forza_|fratelli|comitato|ansa|repubblica|"
+    r"corriere|stampa", re.IGNORECASE)
 
-def cronotipo_for(age: int | None, profession: str | None) -> str:
+
+def is_institutional(bio: str | None, username: str | None) -> bool:
+    """
+    Distingue chi partecipa al dibattito da chi ha una scheda elettorale.
+
+    Un account di partito posta, viene letto e influenza, ma non vota. Finora
+    l'unico filtro era `"ansa" in username`, quindi i partiti finivano nel
+    conteggio del referendum come cittadini qualunque — contaminando proprio
+    il numero che la tesi deve confrontare col risultato reale.
+    """
+    return bool(_NON_ELETTORE.search(bio or "")
+                or _USERNAME_IST.search(username or ""))
+
+
+def cronotipo_for(age: int | None, profession: str | None,
+                  institutional: bool = False) -> str:
+    if institutional:
+        return "istituzionale"
     prof = (profession or "").lower()
     if "student" in prof or (age is not None and age < 25):
         return "studente"
@@ -76,6 +106,9 @@ def load_mirofish_profiles(path: str | Path) -> list[dict[str, Any]]:
     out = []
     for p in profiles:
         username = p.get("username", "")
+        bio = p.get("persona") or p.get("bio") or ""
+        ist = is_institutional(bio, username)
+        is_ansa = "ansa" in username.lower()
         out.append({
             "agent_id": p.get("user_id"),
             "username": username,
@@ -86,8 +119,9 @@ def load_mirofish_profiles(path: str | Path) -> list[dict[str, Any]]:
             "education": p.get("education"),
             "activity": float(p.get("activity_level", 0.35) or 0.35),
             "activity_hours": p.get("activity_hours") or CRONOTIPI[
-                cronotipo_for(p.get("age"), p.get("profession"))],
-            "is_source": 1 if "ansa" in username.lower() else 0,
+                cronotipo_for(p.get("age"), p.get("profession"), ist)],
+            "is_source": 1 if is_ansa else 0,
+            "is_voter": 0 if (ist or is_ansa) else 1,
             "attrs": {k: v for k, v in p.items()
                       if k not in {"user_id", "username", "persona", "bio"}},
         })
@@ -126,7 +160,7 @@ def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
             "activity_hours": CRONOTIPI[
                 "notturno" if rng.random() < 0.12
                 else cronotipo_for(eta, None)],
-            "is_source": 0,
+            "is_source": 0, "is_voter": 1,
             "attrs": {"lean": lean},
         })
     return agents
@@ -137,6 +171,7 @@ def source_agent(agent_id: int = 0, username: str = "ANSA") -> dict[str, Any]:
         "agent_id": agent_id, "username": username,
         "static_bio": "Agenzia di stampa. Pubblica notizie, non commenta.",
         "profession": "agenzia di stampa", "activity": 0.0, "is_source": 1,
+        "is_voter": 0,
         "attrs": {},
     }
 

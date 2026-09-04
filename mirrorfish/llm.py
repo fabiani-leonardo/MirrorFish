@@ -105,6 +105,7 @@ class RateGate:
         self.paused_s = 0.0
         self.preemptive_pauses = 0
         self.observed_remaining: int | None = None
+        self.observed_scope: str | None = None
 
     async def acquire(self) -> None:
         """
@@ -175,23 +176,33 @@ class RateGate:
         non possiamo vedere. Quando il residuo scende sotto la riserva ci si
         ferma PRIMA di prendere il 429, invece di reagire dopo.
         """
-        for key in ("x-ratelimit-team_member-remaining-requests",
-                    "x-ratelimit-team-remaining-requests"):
-            raw = headers.get(key)
+        # Va guardato il MINIMO fra tutti i limiti, non il primo trovato.
+        # Il bug precedente usciva dopo `team_member`, che dopo l'aumento a 60
+        # e' sempre abbondante, e non leggeva mai `team` — che e' condiviso
+        # con gli altri membri ed e' quello che scatta davvero.
+        found: dict[str, int] = {}
+        for scope in ("api_key", "team_member", "team"):
+            raw = headers.get(f"x-ratelimit-{scope}-remaining-requests")
             if raw is None:
                 continue
             try:
-                remaining = int(float(raw))
+                found[scope] = int(float(raw))
             except (TypeError, ValueError):
-                continue
-            self.observed_remaining = remaining
-            if remaining <= self.reserve:
-                async with self._lock:
-                    target = time.monotonic() + self.window_s * 0.5
-                    if target > self._cooldown_until:
-                        self._cooldown_until = target
-                        self.preemptive_pauses += 1
+                pass
+        if not found:
             return
+
+        scope, remaining = min(found.items(), key=lambda kv: kv[1])
+        self.observed_remaining = remaining
+        self.observed_scope = scope
+        if remaining <= self.reserve:
+            async with self._lock:
+                target = time.monotonic() + self.window_s * 0.5
+                if target > self._cooldown_until:
+                    self._cooldown_until = target
+                    self.preemptive_pauses += 1
+                    print(f"    [rate-limit] freno preventivo: "
+                          f"{scope} a {remaining} richieste residue", flush=True)
 
     def stats(self) -> dict[str, Any]:
         return {"trips": self.trips, "paused_s": round(self.paused_s, 1),
@@ -424,7 +435,37 @@ class StubLLM(LLMClient):
                 "confidence": round(rng.uniform(0.4, 0.95), 2),
             }
         else:
+            # Quante azioni consente il prompt? Lo stub deve poter esercitare
+            # anche il percorso multi-azione, altrimenti resta non testato.
+            m = re.search(r"fino a (\d+) azioni", system)
+            max_acts = int(m.group(1)) if m else 1
             weights = [25, 30, 25, 20] if feed_ids else [45, 0, 0, 55]
+
+            def one():
+                act = rng.choices(self.ACTIONS, weights=weights)[0]
+                return {
+                    "action": act,
+                    "content": "" if act in ("LIKE", "IGNORE")
+                               else f"[stub-{rng.randint(1000,9999)}] Contenuto "
+                                    f"simulato, tono {rng.choice(['critico','favorevole','dubbioso'])}.",
+                    "target_post_id": (rng.choice(feed_ids)
+                                       if act in ("REPLY", "LIKE") and feed_ids
+                                       else None),
+                }
+
+            if max_acts > 1:
+                # Frequenze realistiche: si reagisce spesso, si scrive di rado.
+                n = rng.choices(range(1, max_acts + 1),
+                                weights=[3, 4, 2][:max_acts])[0]
+                body = {"actions": [one() for _ in range(n)]}
+            else:
+                body = one()
+            text = json.dumps(body, ensure_ascii=False)
+            return LLMResponse(
+                text=text, prompt_tokens=len(system + user) // 4,
+                completion_tokens=len(text) // 4,
+                finish_reason="stop", latency_ms=self.latency_ms,
+            )
             action = rng.choices(self.ACTIONS, weights=weights)[0]
             body = {
                 "action": action,

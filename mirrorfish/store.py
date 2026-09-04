@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS agent (
     activity        REAL NOT NULL DEFAULT 0.35,
     activity_hours  TEXT NOT NULL DEFAULT '[]',
     is_source       INTEGER NOT NULL DEFAULT 0,
+    is_voter        INTEGER NOT NULL DEFAULT 1,
     attrs           TEXT NOT NULL DEFAULT '{}',
     bio_vec         BLOB
 );
@@ -142,7 +143,7 @@ class Store:
                 a.get("profession"), a.get("age"), a.get("region"),
                 a.get("education"), a.get("activity", 0.35),
                 json.dumps(a.get("activity_hours") or []),
-                int(a.get("is_source", 0)),
+                int(a.get("is_source", 0)), int(a.get("is_voter", 1)),
                 json.dumps(a.get("attrs", {}), ensure_ascii=False),
             )
             for a in agents
@@ -150,16 +151,26 @@ class Store:
         self.conn.executemany(
             "INSERT OR REPLACE INTO agent (agent_id, username, static_bio, "
             "profession, age, region, education, activity, activity_hours, "
-            "is_source, attrs) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            "is_source, is_voter, attrs) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             rows,
         )
         self.conn.commit()
         return len(rows)
 
-    def agents(self, include_sources: bool = False) -> list[sqlite3.Row]:
-        q = "SELECT * FROM agent"
+    def agents(self, include_sources: bool = False,
+               voters_only: bool = False) -> list[sqlite3.Row]:
+        """
+        `voters_only=True` esclude gli account istituzionali: partecipano al
+        dibattito ma non hanno una scheda elettorale.
+        """
+        conds = []
         if not include_sources:
-            q += " WHERE is_source = 0"
+            conds.append("is_source = 0")
+        if voters_only:
+            conds.append("is_voter = 1")
+        q = "SELECT * FROM agent"
+        if conds:
+            q += " WHERE " + " AND ".join(conds)
         return self.conn.execute(q + " ORDER BY agent_id").fetchall()
 
     def add_follows(self, edges: Iterable[tuple[int, int]]) -> int:
@@ -295,6 +306,28 @@ class Store:
             LIMIT ?
             """, (agent_id, agent_id, limit)).fetchall()
         return [r["embedding"] for r in rows]
+
+    def parents_of(self, post_ids: list[int]) -> dict[int, sqlite3.Row]:
+        """
+        Post padre delle reply presenti nel feed.
+
+        Serve perche' una risposta senza il messaggio a cui risponde e' un non
+        sequitur: "Carlo, concordo sulla cautela" letto da solo non dice ne'
+        chi sia Carlo ne' su cosa si concordi. Finora il feed le consegnava
+        cosi', indistinguibili dai post originali.
+        """
+        if not post_ids:
+            return {}
+        marks = ",".join("?" * len(post_ids))
+        rows = self.conn.execute(
+            f"""SELECT c.post_id AS child_id, p.post_id, p.content, p.kind,
+                       a.username, a.is_source
+                FROM post c JOIN post p ON p.post_id = c.parent_id
+                JOIN agent a ON a.agent_id = p.agent_id
+                WHERE c.post_id IN ({marks})""",
+            post_ids,
+        ).fetchall()
+        return {r["child_id"]: r for r in rows}
 
     def posts_by(self, agent_id: int, limit: int = 5) -> list[str]:
         rows = self.conn.execute(

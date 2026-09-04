@@ -31,6 +31,7 @@ from .llm import LLMClient
 from .memory import ReflectionEngine
 from .news import NewsStream
 from .population import activation_prob
+from .recommender import Recommender
 from .store import Store
 
 
@@ -44,6 +45,7 @@ class Engine:
         news: NewsStream,
         source_agent_id: int,
         verbose: bool = True,
+        recommender: Recommender | None = None,
     ):
         self.store = store
         self.client = client
@@ -53,12 +55,18 @@ class Engine:
         self.source_agent_id = source_agent_id
         self.verbose = verbose
         self.reflector = ReflectionEngine(client)
+        # Default: `recency` senza iniezione fuori-rete. Verificato identico
+        # a store.feed_for su 90 confronti, quindi i run gia' fatti restano
+        # confrontabili con quelli nuovi.
+        self.recommender = recommender or Recommender(
+            store, policy="recency", out_of_network=0.0, seed=sim.seed)
         self.stats: dict[str, int] = {
             "posts": 0, "replies": 0, "likes": 0,
             "ignored": 0, "errors": 0, "notes": 0,
         }
         # Cosa ha letto ogni agente dall'ultima riflessione
         self._seen: dict[int, list[str]] = {}
+        self._interest: dict[int, list[float]] = {}
 
     # ------------------------------------------------------------------ util #
     def _rng(self, tick: int, purpose: str) -> random.Random:
@@ -101,17 +109,22 @@ class Engine:
     # ----------------------------------------------------------------- azioni #
     async def _act(self, agent: sqlite3.Row, tick: int, sim_date: date) -> dict[str, Any]:
         agent_id = int(agent["agent_id"])
-        feed = self.store.feed_for(
-            agent_id, limit=self.sim.feed_size, before_tick=tick + 1,
+        feed = self.recommender.feed(
+            agent_id, tick, limit=self.sim.feed_size,
             news_slots=self.sim.news_slots,
+            interest_vec=self._interest.get(agent_id),
         )
         notes = self.store.notes_for(agent_id, limit=self.sim.max_notes_in_prompt)
         own = self.store.posts_by(agent_id, limit=3)
 
-        action, resp = await decide(
+        parents = self.store.parents_of(
+            [r["post_id"] for r in feed if r["kind"] == "reply"])
+        actions, resp = await decide(
             self.client, agent, feed, notes, own, sim_date.isoformat(),
             max_tokens=self.llm_cfg.token_budget["action"],
             temperature=self.llm_cfg.temperature,
+            parents=parents,
+            max_actions=self.sim.max_actions,
         )
         # Traccia cosa ha letto, per la riflessione successiva
         if feed:
@@ -119,12 +132,11 @@ class Engine:
             bucket.extend(r["content"] for r in feed)
             del bucket[:-30]
 
-        return {"agent_id": agent_id, "action": action, "resp": resp,
+        return {"agent_id": agent_id, "actions": actions, "resp": resp,
                 "tick": tick, "sim_date": sim_date}
 
     def _apply(self, outcome: dict[str, Any]) -> None:
         """Scritture su DB: serializzate nel thread principale, non nei task."""
-        action = outcome["action"]
         agent_id = outcome["agent_id"]
         tick, sim_date = outcome["tick"], outcome["sim_date"]
 
@@ -133,22 +145,25 @@ class Engine:
             outcome["resp"], tick=tick, agent_id=agent_id,
         )
 
-        if action.error:
-            self.stats["errors"] += 1
-            return
-        if action.action == "IGNORE":
-            self.stats["ignored"] += 1
-        elif action.action == "POST":
-            self.store.add_post(agent_id, action.content, "post", tick,
-                                sim_date.isoformat())
-            self.stats["posts"] += 1
-        elif action.action == "REPLY":
-            self.store.add_post(agent_id, action.content, "reply", tick,
-                                sim_date.isoformat(), parent_id=action.target_post_id)
-            self.stats["replies"] += 1
-        elif action.action == "LIKE":
-            self.store.add_reaction(agent_id, action.target_post_id, "like", tick)
-            self.stats["likes"] += 1
+        for action in outcome["actions"]:
+            if action.error:
+                self.stats["errors"] += 1
+                continue
+            if action.action == "IGNORE":
+                self.stats["ignored"] += 1
+            elif action.action == "POST":
+                self.store.add_post(agent_id, action.content, "post", tick,
+                                    sim_date.isoformat())
+                self.stats["posts"] += 1
+            elif action.action == "REPLY":
+                self.store.add_post(agent_id, action.content, "reply", tick,
+                                    sim_date.isoformat(),
+                                    parent_id=action.target_post_id)
+                self.stats["replies"] += 1
+            elif action.action == "LIKE":
+                self.store.add_reaction(agent_id, action.target_post_id,
+                                        "like", tick)
+                self.stats["likes"] += 1
 
     # ------------------------------------------------------------ riflessione #
     async def _reflect_all(self, agents: list[sqlite3.Row], tick: int) -> None:

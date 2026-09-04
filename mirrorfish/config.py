@@ -118,6 +118,11 @@ class SimConfig:
 
     # Feed
     feed_size: int = 8                     # post mostrati per tick
+    # Azioni per agente per tick, in UNA sola chiamata. Con 1 (default
+    # storico) scrivere e reagire competono per lo stesso slot, e scrivere
+    # vince: nel run del 2 settembre i "mi piace" erano il 4,9% delle azioni.
+    # Alzarlo non costa richieste in piu', solo qualche token di output.
+    max_actions: int = 1
     news_slots: int = 2                    # quanti di quegli slot sono notizie
     max_news_per_tick: int = 3
     feed_recency_bias: float = 0.7         # 0 = casuale, 1 = solo i piu' recenti

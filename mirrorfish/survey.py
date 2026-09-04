@@ -76,7 +76,7 @@ async def run_survey(
     tick: int | None = None,
     verbose: bool = True,
 ) -> dict[str, int]:
-    agents = store.agents(include_sources=False)
+    agents = store.agents(include_sources=False, voters_only=True)
     budget = llm_cfg.token_budget["vote"]
 
     async def one(agent: sqlite3.Row) -> tuple[int, str, float, str, Any]:
