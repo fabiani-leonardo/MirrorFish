@@ -48,9 +48,6 @@ _USERNAME_IST = re.compile(
 _ATTENZIONE_BASSA = re.compile(
     r"non segue la politica|disinteressat|si informa poco|"
     r"non si interessa di politica|lontan[oa] dalla politica", re.I)
-_ATTENZIONE_MEDIA = re.compile(
-    r"in modo discontinuo|solo quando un tema lo tocca|saltuari|"
-    r"segue poco|di sfuggita", re.I)
 _ATTENZIONE_ALTA = re.compile(
     r"segue (?:molto |assiduamente |con attenzione )|appassionat[oa] di politica|"
     r"legge i (?:giornali|quotidiani)|si informa (?:molto|quotidianamente)|"
@@ -59,8 +56,14 @@ _ATTENZIONE_ALTA = re.compile(
 
 def media_depth(bio: str | None, institutional: bool = False) -> str:
     """
-    Quanto a fondo un agente legge una notizia: integrale, titolo, sommario,
-    oppure nessuna.
+    Quanto a fondo un agente legge una notizia: integrale, titolo o nessuna.
+
+    Tre livelli, non quattro. Il livello 'sommario' e' stato tolto: esisteva
+    per i rilanci in stile social di una cartella separata, ma la simulazione
+    usa solo l'archivio degli articoli integrali, da cui titolo e corpo si
+    ricavano nello stesso file. Restava una categoria che nel codice esisteva
+    e nei dati coincideva con 'titolo': meta' della popolazione vi finiva
+    dentro e leggeva esattamente quanto chi era classificato 'titolo'.
 
     Le fonti e gli account istituzionali leggono tutto (e' il loro mestiere).
     Per i cittadini la profondita' viene dedotta dalla biografia; in assenza
@@ -78,8 +81,6 @@ def media_depth(bio: str | None, institutional: bool = False) -> str:
         return "integrale"
     if _ATTENZIONE_BASSA.search(b):
         return "nessuna"
-    if _ATTENZIONE_MEDIA.search(b):
-        return "sommario"
     return "titolo"
 
 
@@ -195,7 +196,7 @@ def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
                 else cronotipo_for(eta, None)],
             "is_source": 0, "is_voter": 1,
             "media_depth": rng.choice(
-                ["integrale", "titolo", "titolo", "sommario", "nessuna"]),
+                ["integrale", "titolo", "titolo", "titolo", "nessuna"]),
             "attrs": {"lean": lean},
         })
     # Due account istituzionali: partecipano al dibattito ma NON votano.

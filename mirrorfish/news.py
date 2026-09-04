@@ -61,16 +61,15 @@ class NewsItem:
     """
     Una notizia, alle tre profondita' con cui puo' essere letta.
 
-    `title` e `body` vengono dall'articolo integrale scrapato (cartella
-    notizie_referendum) e sono la fonte primaria. `summary` e' il rilancio in
-    stile social, opzionale.
+    Titolo e corpo vengono dallo STESSO file dell'archivio integrale
+    (notizie_referendum): la divisione avviene in lettura, non in due
+    cartelle diverse.
     """
 
     news_id: str
     published: date
     title: str                   # titolo originale, dall'articolo integrale
     body: str = ""               # testo integrale
-    summary: str = ""            # rilancio social, opzionale
 
     def at_depth(self, depth: str, max_body_chars: int = 1400) -> str:
         """
@@ -81,6 +80,10 @@ class NewsItem:
         di sfuggita legge il titolo, chi non la segue non lo apre affatto e
         semmai ne sente parlare da altri.
 
+        Titolo e corpo escono dallo stesso file scrapato: e' `parse_full_article`
+        a separarli, e questa funzione decide quanto darne all'agente. Non
+        servono due archivi.
+
         `nessuna` non compare qui perche' non e' un modo di leggere: e' non
         ricevere la notizia. Lo gestisce il feed azzerando gli slot.
         """
@@ -89,8 +92,6 @@ class NewsItem:
             if len(body) > max_body_chars:
                 body = body[:max_body_chars].rsplit(" ", 1)[0] + " [...]"
             return f"[ANSA] {self.title}\n{body}"
-        if depth == "sommario":
-            return f"[ANSA] {self.summary or self.title}"
         return f"[ANSA] {self.title}"          # titolo, e default
 
     def as_post(self) -> str:
@@ -133,87 +134,67 @@ class NewsCoverageError(RuntimeError):
     """Gli articoli integrali mancano o sono troppo pochi per il disegno."""
 
 
-def load_news(
-    full_dir: str | Path,
-    summary_dir: str | Path | None = None,
-    *,
-    min_body_ratio: float = 0.9,
-) -> list[NewsItem]:
+def load_news(news_dir: str | Path, *, min_body_ratio: float = 0.9) -> list[NewsItem]:
     """
-    Carica le notizie. L'INDICE e' la cartella degli articoli integrali.
+    Carica le notizie da un'unica cartella di articoli integrali.
 
-    Perche' l'indice e' cambiato. Prima si iterava sulla cartella dei
-    sommari e si attaccava il testo integrale cercando lo stesso nome file.
-    Aveva due conseguenze, entrambe silenziose. Un articolo integrale senza
-    sommario omonimo non entrava mai in simulazione, quindi l'archivio vero
-    veniva filtrato da quello derivato. E se il testo integrale mancava,
-    `title` e `body` restavano vuoti: `at_depth` cadeva nel ramo di fallback
-    e restituiva la stessa identica stringa per `integrale`, `sommario` e
-    `titolo`. Tre profondita' su quattro collassavano in una, la variabile
-    indipendente spariva e il log non lo diceva.
+    Un solo archivio, non due. La versione precedente iterava sui rilanci in
+    stile social e ci attaccava il testo integrale cercando lo stesso nome
+    file, con due conseguenze silenziose: un articolo integrale senza rilancio
+    omonimo non entrava mai in simulazione, e se il testo integrale mancava
+    `title` e `body` restavano vuoti, facendo collassare tutte le profondita'
+    di lettura sulla stessa stringa.
 
-    Ora l'integrale e' la fonte primaria, il sommario e' un arricchimento
-    opzionale, e se la copertura dei corpi scende sotto `min_body_ratio` si
-    solleva NewsCoverageError invece di partire con un esperimento che non
-    puo' misurare cio' per cui e' stato scritto.
+    Ora c'e' un archivio solo. Titolo e corpo si ricavano dal medesimo file
+    (`parse_full_article`), e la divisione fra chi legge il titolo e chi legge
+    l'articolo avviene in lettura, dentro `NewsItem.at_depth`. Se la copertura
+    dei corpi scende sotto `min_body_ratio` si solleva NewsCoverageError
+    invece di partire con un esperimento che non puo' misurare cio' per cui e'
+    stato scritto.
     """
-    full_dir = Path(full_dir)
-    if not full_dir.exists():
-        raise FileNotFoundError(f"Cartella articoli integrali inesistente: {full_dir}")
-
-    summaries: dict[str, str] = {}
-    if summary_dir:
-        sd = Path(summary_dir)
-        if not sd.exists():
-            raise FileNotFoundError(f"Cartella sommari inesistente: {sd}")
-        for f in sd.glob("*.txt"):
-            summaries[f.stem] = f.read_text(encoding="utf-8", errors="replace").strip()
+    news_dir = Path(news_dir)
+    if not news_dir.exists():
+        raise FileNotFoundError(f"Cartella notizie inesistente: {news_dir}")
 
     items: list[NewsItem] = []
-    skipped_date: list[str] = []
-    no_body: list[str] = []
-    for f in sorted(full_dir.glob("*.txt")):
+    scartati: list[str] = []
+    senza_corpo: list[str] = []
+    for f in sorted(news_dir.glob("*.txt")):
         d = parse_date_from_filename(f.name)
         if d is None:
-            skipped_date.append(f.name)
+            scartati.append(f.name)
             continue
-        raw = f.read_text(encoding="utf-8", errors="replace")
-        title, body = parse_full_article(raw)
+        title, body = parse_full_article(
+            f.read_text(encoding="utf-8", errors="replace"))
         if not title:
             # Senza titolo la notizia non e' leggibile a nessuna profondita'.
-            skipped_date.append(f.name)
+            scartati.append(f.name)
             continue
         if not body:
-            no_body.append(f.name)
-        items.append(NewsItem(news_id=f.stem, published=d, title=title,
-                              body=body, summary=summaries.get(f.stem, "")))
+            senza_corpo.append(f.name)
+        items.append(NewsItem(news_id=f.stem, published=d, title=title, body=body))
 
     items.sort(key=lambda n: (n.published, n.news_id))
 
-    if skipped_date:
-        print(f"[news] {len(skipped_date)} file ignorati (data o titolo non "
-              f"leggibili): {skipped_date[:5]}"
-              f"{'...' if len(skipped_date) > 5 else ''}")
-    if summary_dir:
-        n_sum = sum(1 for i in items if i.summary)
-        print(f"[news] sommari accoppiati: {n_sum}/{len(items)}")
-
+    if scartati:
+        print(f"[news] {len(scartati)} file ignorati (data o titolo non "
+              f"leggibili): {scartati[:5]}"
+              f"{'...' if len(scartati) > 5 else ''}")
     if not items:
-        raise NewsCoverageError(f"Nessuna notizia leggibile in {full_dir}.")
+        raise NewsCoverageError(f"Nessuna notizia leggibile in {news_dir}.")
 
-    ratio = 1.0 - len(no_body) / len(items)
+    ratio = 1.0 - len(senza_corpo) / len(items)
     if ratio < min_body_ratio:
         raise NewsCoverageError(
-            f"Solo il {ratio:.0%} delle notizie in {full_dir} ha un corpo "
-            f"integrale ({len(no_body)} su {len(items)} senza).\n"
+            f"Solo il {ratio:.0%} delle notizie in {news_dir} ha un corpo "
+            f"integrale ({len(senza_corpo)} su {len(items)} senza).\n"
             f"Sotto questa soglia gli agenti 'integrale' leggono lo stesso "
             f"testo di quelli 'titolo': la profondita' di lettura smette di "
             f"essere una variabile e il run non puo' misurarla.\n"
-            f"Controlla il formato atteso (TITOLO: / riga di trattini / corpo) "
-            f"oppure abbassa min_body_ratio se la cosa e' voluta.\n"
-            f"Primi file senza corpo: {no_body[:5]}")
-    if no_body:
-        print(f"[news] {len(no_body)} notizie senza corpo integrale "
+            f"Controlla il formato atteso (TITOLO: / riga di trattini / corpo).\n"
+            f"Primi file senza corpo: {senza_corpo[:5]}")
+    if senza_corpo:
+        print(f"[news] {len(senza_corpo)} notizie senza corpo integrale "
               f"({1 - ratio:.1%}): a quelle gli agenti 'integrale' vedono "
               f"solo il titolo.")
     return items

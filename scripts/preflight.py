@@ -155,11 +155,11 @@ def check_prompt() -> None:
         warn("formulazione cambiata", "lo stub non riconoscera' max_actions")
 
 
-def check_notizie(news_dir: str, summary_dir: str | None) -> None:
+def check_notizie(news_dir: str) -> None:
     """La profondita' di lettura sopravvive a questo archivio?"""
     from mirrorfish.news import load_news, NewsCoverageError
     try:
-        items = load_news(news_dir, summary_dir)
+        items = load_news(news_dir)
     except NewsCoverageError as e:
         fail("copertura articoli integrale insufficiente",
              str(e).splitlines()[0])
@@ -178,10 +178,10 @@ def check_notizie(news_dir: str, summary_dir: str | None) -> None:
     if campione is None:
         fail("nessun corpo integrale", "tutte le profondita' collassano in una")
         return
-    testi = {d: campione.at_depth(d) for d in ("integrale", "sommario", "titolo")}
+    testi = {d: campione.at_depth(d) for d in ("integrale", "titolo")}
     if len(set(testi.values())) == 1:
         fail("le profondita' di lettura collassano",
-             "integrale, sommario e titolo danno lo stesso testo")
+             "integrale e titolo danno lo stesso testo")
     else:
         ok("profondita' di lettura distinte",
            " / ".join(f"{d}={len(t)}c" for d, t in testi.items()))
@@ -225,14 +225,13 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--news", default=None,
                    help="cartella degli articoli integrali")
-    p.add_argument("--news-summaries", default=None)
     p.add_argument("--profiles", default=None)
     a = p.parse_args()
 
     check_infrastruttura()
     check_prompt()
     if a.news:
-        check_notizie(a.news, a.news_summaries)
+        check_notizie(a.news)
     else:
         warn("notizie non verificate", "passa --news per controllare l'archivio")
     if a.profiles:

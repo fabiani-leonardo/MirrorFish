@@ -65,7 +65,6 @@ def synth_news(start: date, days: int, per_day: int = 3) -> list[NewsItem]:
                 body=("Testo integrale simulato sul dibattito relativo alla "
                       "riforma della giustizia e alla separazione delle "
                       "carriere. " * 6),
-                summary=f"Rilancio simulato n.{i} del {day.isoformat()}.",
             ))
     return items
 
@@ -209,7 +208,7 @@ async def main_async(args: argparse.Namespace) -> None:
     # --- notizie ----------------------------------------------------------- #
     # `--news` e' la cartella degli ARTICOLI INTEGRALI: e' quella che fa da
     # indice. I sommari sono un arricchimento opzionale.
-    items = (load_news(args.news, args.news_summaries) if args.news
+    items = (load_news(args.news) if args.news
              else synth_news(sim.start_date, args.days))
     stream = NewsStream(items, sim.start_date, sim.hours_per_tick,
                         sim.total_ticks(), max_per_tick=sim.max_news_per_tick)
@@ -324,10 +323,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--news", default=None,
                    help="cartella degli ARTICOLI INTEGRALI (notizie_referendum). "
                         "E' l'indice: definisce quali notizie esistono")
-    p.add_argument("--news-summaries", default=None,
-                   help="cartella dei rilanci social, opzionale. Stessi nomi "
-                        "file degli integrali. Serve solo agli agenti con "
-                        "profondita' 'sommario'")
     p.add_argument("--cf-news", default=None,
                    help="cartella notizie controfattuali (integrali)")
     p.add_argument("--cf-from-tick", type=int, default=None)

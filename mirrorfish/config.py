@@ -57,10 +57,9 @@ DEFAULT_TOKEN_BUDGET = {
 # del testo: la profondita' di lettura non era una variabile di esposizione,
 # era una variabile tipografica.
 NEWS_SLOTS_BY_DEPTH = {
-    "integrale": 2,   # segue la politica: apre l'articolo
-    "sommario": 1,
-    "titolo": 1,      # default: scorre i titoli
-    "nessuna": 0,     # non riceve notizie: ne sente parlare dagli altri
+    "integrale": 2,   # attivista: apre l'articolo e ne legge il corpo
+    "titolo": 1,      # moderato: scorre i titoli
+    "nessuna": 0,     # disinteressato: non riceve notizie, ne sente parlare
 }
 
 

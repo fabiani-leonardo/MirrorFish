@@ -104,6 +104,21 @@ CREATE TABLE IF NOT EXISTS llm_call (
 );
 CREATE INDEX IF NOT EXISTS idx_call_purpose ON llm_call(purpose);
 
+-- Indici della generazione dei candidati. Senza questi tre, il piano di
+-- esecuzione di _CAND_SELECT degrada a
+--     CORRELATED SCALAR SUBQUERY -> SCAN r
+--     CORRELATED SCALAR SUBQUERY -> SCAN c
+-- cioe' una scansione COMPLETA di `reaction` e una di `post` per OGNI post
+-- candidato, per ogni agente, per ogni tick. Il costo cresce col quadrato
+-- della durata del run: misurato su un DB da 3.708 post, 42,90 ms per
+-- chiamata contro 0,36 ms con gli indici, 119 volte piu' lento. E' la causa
+-- del rallentamento progressivo osservato nel run da 432 tick (209 agenti/min
+-- al tick 288, 129/min al tick 428) con la CPU quasi ferma: il tempo era
+-- speso in SQLite, non nel modello.
+CREATE INDEX IF NOT EXISTS idx_post_parent   ON post(parent_id);
+CREATE INDEX IF NOT EXISTS idx_post_agent_tick ON post(agent_id, tick);
+CREATE INDEX IF NOT EXISTS idx_reaction_post ON reaction(post_id);
+
 CREATE TABLE IF NOT EXISTS run_meta (
     key             TEXT PRIMARY KEY,
     value           TEXT NOT NULL
