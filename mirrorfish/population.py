@@ -11,7 +11,6 @@ confrontabile con i run vecchi.
 
 from __future__ import annotations
 
-import csv
 import json
 import random
 import re
@@ -170,14 +169,6 @@ def load_mirofish_profiles(path: str | Path) -> list[dict[str, Any]]:
     return out
 
 
-def load_twitter_csv(path: str | Path) -> list[dict[str, Any]]:
-    rows = []
-    with open(path, encoding="utf-8", newline="") as f:
-        for r in csv.DictReader(f):
-            rows.append(r)
-    return rows
-
-
 def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
     """Popolazione finta per i test offline. NON usare per risultati."""
     rng = random.Random(seed)
@@ -206,6 +197,23 @@ def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
             "media_depth": rng.choice(
                 ["integrale", "titolo", "titolo", "sommario", "nessuna"]),
             "attrs": {"lean": lean},
+        })
+    # Due account istituzionali: partecipano al dibattito ma NON votano.
+    # Servono anche perche' lo smoke test copra il prompt istituzionale, che
+    # altrimenti resterebbe non esercitato in tutti i test offline.
+    for j, nome in enumerate(("partito_esempio", "comitato_esempio"), start=n + 1):
+        agents.append({
+            "agent_id": j,
+            "username": nome,
+            "static_bio": ("Account istituzionale. Non e' una persona fisica e "
+                           "non e' un elettore: prende posizione nel dibattito "
+                           "pubblico sul referendum."),
+            "profession": "organizzazione", "age": None,
+            "region": None, "education": None,
+            "activity": 0.5,
+            "activity_hours": CRONOTIPI["istituzionale"],
+            "is_source": 0, "is_voter": 0, "media_depth": "integrale",
+            "attrs": {"lean": "istituzionale"},
         })
     return agents
 

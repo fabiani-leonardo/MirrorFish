@@ -1,9 +1,16 @@
 """
 Configurazione della simulazione.
 
-Principio guida: *tutto* ciò che influenza il risultato di un run sta qui
-dentro ed e' serializzabile. Il file di config viene copiato nel manifest
-del run, cosi' ogni risultato in tesi e' riconducibile ai suoi parametri.
+Principio guida: *tutto* cio' che influenza il risultato di un run sta qui
+dentro ed e' serializzabile. `fingerprint()` ne e' l'hash e viene scritto nel
+run.db: due run con lo stesso fingerprint hanno gli stessi parametri.
+
+Perche' la regola e' rigida. Prima di questa revisione la politica del feed e
+la quota fuori-rete stavano FUORI da SimConfig, passate da riga di comando
+direttamente al Recommender. Il fingerprint quindi non le copriva, e due run
+con politiche di ranking diverse — cioe' con trattamenti sperimentali diversi
+— risultavano indistinguibili. Se un parametro cambia il risultato, sta in
+questa dataclass. Senza eccezioni.
 """
 
 from __future__ import annotations
@@ -13,25 +20,23 @@ import hashlib
 import os
 from dataclasses import dataclass, field, asdict
 from datetime import date
-from pathlib import Path
 from typing import Any
 
 
 # --------------------------------------------------------------------------- #
 # Budget di token
 # --------------------------------------------------------------------------- #
-# NOTA METODOLOGICA (importante per la tesi e per il professore):
-# omettere max_tokens fa si' che vLLM lo derivi da max_model_len - prompt_tokens
-# (262.144 - 466 = 261.678 nel nostro caso). Qui ogni tipo di chiamata ha un
-# budget esplicito, dimensionato sull'output che ci serve davvero.
+# NOTA METODOLOGICA (per la tesi): omettere max_tokens fa si' che vLLM lo
+# derivi da max_model_len - prompt_tokens (262.144 - 466 nel nostro caso). Qui
+# ogni tipo di chiamata ha un budget esplicito, dimensionato sull'output che
+# serve davvero.
 #
 #   azione agente : un post/reply e' ~280 caratteri -> ~120 token, + JSON
-#   riflessione   : una frase -> ~60 token, + JSON  (1200 e' il valore che
-#                   usavi: generoso perche' Qwen3 puo' "pensare" prima)
+#   riflessione   : una frase -> ~60 token, + JSON
 #   voto          : JSON con motivazione breve
 #
-# Se un finish_reason == "length" ricorre spesso, il budget e' troppo stretto:
-# la telemetria in store.llm_call lo rende misurabile invece che opinabile.
+# Se finish_reason == "length" ricorre spesso il budget e' troppo stretto: la
+# telemetria in store.llm_call lo rende misurabile invece che opinabile.
 DEFAULT_TOKEN_BUDGET = {
     "action": 384,
     "reflection": 512,
@@ -39,11 +44,30 @@ DEFAULT_TOKEN_BUDGET = {
 }
 
 
+# --------------------------------------------------------------------------- #
+# Esposizione mediatica
+# --------------------------------------------------------------------------- #
+# Quanti slot del feed sono riservati alle notizie, secondo quanto a fondo
+# l'agente legge (population.media_depth).
+#
+# Prima erano 2 su 8 per tutti, a ogni tick, per tutta la simulazione: il 25%
+# della dieta informativa di ogni cittadino era filo d'agenzia, il che non
+# assomiglia a nessun comportamento reale. Soprattutto `titolo` e `integrale`
+# ricevevano la STESSA quantita' di notizie e differivano solo per lunghezza
+# del testo: la profondita' di lettura non era una variabile di esposizione,
+# era una variabile tipografica.
+NEWS_SLOTS_BY_DEPTH = {
+    "integrale": 2,   # segue la politica: apre l'articolo
+    "sommario": 1,
+    "titolo": 1,      # default: scorre i titoli
+    "nessuna": 0,     # non riceve notizie: ne sente parlare dagli altri
+}
+
+
 @dataclass
 class LLMConfig:
     base_url: str = "https://api.ailabroma3.it/v1"
     model: str = "lab-qwen36"
-    embed_model: str = "lab-embed"
     api_key: str = ""                      # mai hardcoded: viene da env
     temperature: float = 0.7
     vote_temperature: float = 0.2
@@ -51,7 +75,7 @@ class LLMConfig:
 
     # Qwen3 ha il thinking mode: disattivarlo e' la leva piu' grossa sulla
     # lunghezza dell'output, piu' di max_tokens. Se il server rifiuta il
-    # parametro, il client fa fallback automatico (vedi llm.py).
+    # parametro il client fa fallback automatico (vedi llm.py).
     disable_thinking: bool = True
 
     token_budget: dict[str, int] = field(
@@ -59,25 +83,31 @@ class LLMConfig:
     )
 
     # --- controllo del carico ---------------------------------------------- #
-    # concurrency: quante richieste in volo contemporaneamente.
-    # min_interval_s: distanza minima fra due partenze -> spalma il burst.
-    # Con 2 GPU e altri utenti sul modello, 6 e 0.15 sono un punto di partenza
-    # prudente. Da tarare con scripts/diagnose_llm.py.
     # Tarati sugli header osservati il 2026-09-02:
     #   x-ratelimit-api_key-limit-max_parallel_requests : 5
     #   x-ratelimit-team_member-limit-requests          : 8   <- vincolante
     #   x-ratelimit-team-limit-requests                 : 25  <- condiviso
     # A 8 richieste/minuto ogni chiamata costa 7,5 s di orologio: la
-    # concorrenza oltre ~2 non serve a niente, serve solo il ritmo giusto.
+    # concorrenza oltre ~2 non serve a niente, serve il ritmo giusto.
+    # Da ritarare con `python scripts/endpoint.py ceiling`.
     requests_per_minute: float = 8.0
     concurrency: int = 2
     min_interval_s: float = 0.0   # 0 = derivato da requests_per_minute
     timeout_s: float = 180.0
+    # Timeout di CONNESSIONE, separato da quello di lettura. Un endpoint
+    # spento deve fallire in secondi, non in minuti: col valore unico a 180 s
+    # e 6 tentativi una sola chiamata verso un server irraggiungibile
+    # occupava fino a 20 minuti, e il run sembrava bloccato invece che rotto.
+    connect_timeout_s: float = 5.0
+    # Fallimenti consecutivi dopo i quali si interrompe tutto. Senza, il
+    # motore registra gli errori e prosegue: 223 tick di chiamate fallite
+    # producono un run vuoto che ha comunque l'aria di essere valido.
+    circuit_breaker_failures: int = 25
     max_retries: int = 6
     backoff_base_s: float = 2.0
-    # Quanto aspettare su 429 se il server non manda Retry-After.
-    # I limiti di gateway hanno tipicamente finestre da 60s: un backoff da
-    # pochi secondi non fa che ritriggerare il limite.
+    # Quanto aspettare su 429 se il server non manda Retry-After. I limiti di
+    # gateway hanno finestre da 60s: un backoff da pochi secondi non fa che
+    # ritriggerare il limite.
     rate_limit_cooldown_s: float = 60.0
 
     def pace_interval(self) -> float:
@@ -91,7 +121,6 @@ class LLMConfig:
         cfg = cls(
             base_url=os.environ.get("LLM_BASE_URL", cls.base_url),
             model=os.environ.get("LLM_MODEL_NAME", cls.model),
-            embed_model=os.environ.get("LLM_EMBED_MODEL", cls.embed_model),
             api_key=os.environ.get("LLM_API_KEY", ""),
         )
         for k, v in overrides.items():
@@ -106,26 +135,30 @@ class SimConfig:
     run_id: str = "run_dev"
     seed: int = 42
 
-    start_date: date = date(2026, 3, 1)
-    end_date: date = date(2026, 3, 21)
+    # Finestra canonica: apertura della campagna referendaria -> giorno del voto.
+    start_date: date = date(2025, 10, 30)
+    end_date: date = date(2026, 3, 22)
     # Durata del tick in ORE. E' la leva principale sul costo: dimezzarla
-    # raddoppia le chiamate. Vedi scripts/plan_run.py per il trade-off fra
-    # costo e differenziazione comportamentale.
+    # raddoppia le chiamate. Vedi mirrorfish/plan_run.py per il compromesso
+    # fra costo e differenziazione comportamentale.
     hours_per_tick: int = 8
 
-    # Popolazione
-    n_agents: int | None = None            # None = tutti quelli nel file
-
-    # Feed
+    # --- feed --------------------------------------------------------------- #
     feed_size: int = 8                     # post mostrati per tick
-    # Azioni per agente per tick, in UNA sola chiamata. Con 1 (default
-    # storico) scrivere e reagire competono per lo stesso slot, e scrivere
-    # vince: nel run del 2 settembre i "mi piace" erano il 4,9% delle azioni.
-    # Alzarlo non costa richieste in piu', solo qualche token di output.
-    max_actions: int = 1
-    news_slots: int = 2                    # quanti di quegli slot sono notizie
+    # Tetto agli slot notizia. Quelli EFFETTIVI dipendono dalla profondita' di
+    # lettura dell'agente: vedi NEWS_SLOTS_BY_DEPTH e news_slots_for().
+    news_slots: int = 2
     max_news_per_tick: int = 3
-    feed_recency_bias: float = 0.7         # 0 = casuale, 1 = solo i piu' recenti
+    # Politica di ranking. NON e' un dettaglio implementativo, e' il
+    # trattamento sperimentale principale. Vedi recommender.py.
+    recommender: str = "recency"
+    out_of_network: float = 0.15
+
+    # Azioni per agente per tick, in UNA sola chiamata. Con 1 scrivere e
+    # reagire competono per lo stesso slot e scrivere vince, il che rende i
+    # "mi piace" innaturalmente rari. Alzarlo non costa richieste in piu',
+    # solo qualche token di output.
+    max_actions: int = 3
 
     # Attivita': probabilita' che un agente agisca in un dato tick
     base_activity: float = 0.35
@@ -134,16 +167,14 @@ class SimConfig:
     reflection_every: int = 4
     max_notes_in_prompt: int = 8
 
-    # Survey
-    survey_every: int | None = None        # None = solo alla fine
+    # Survey intermedie, oltre a baseline e final. None = solo i due estremi.
+    # Costa N chiamate ogni volta, ma e' l'unico modo per avere la TRAIETTORIA
+    # dell'opinione invece di due soli punti.
+    survey_every: int | None = None
 
     # Controfattuale: da questo tick in poi si usa lo stream di news alternativo
     counterfactual_from_tick: int | None = None
     counterfactual_news_dir: str | None = None
-
-    @property
-    def ticks_per_day(self) -> float:
-        return 24 / self.hours_per_tick
 
     def total_ticks(self) -> int:
         days = (self.end_date - self.start_date).days + 1
@@ -152,6 +183,10 @@ class SimConfig:
     def tick_hours(self, tick: int) -> tuple[int, int]:
         """Ora di inizio e durata del tick, nel giorno simulato."""
         return (tick * self.hours_per_tick) % 24, self.hours_per_tick
+
+    def news_slots_for(self, media_depth: str) -> int:
+        """Slot notizia effettivi per un agente, dato quanto a fondo legge."""
+        return min(self.news_slots, NEWS_SLOTS_BY_DEPTH.get(media_depth, 1))
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
@@ -163,12 +198,3 @@ class SimConfig:
         """Hash stabile della config: identifica il run in modo univoco."""
         blob = json.dumps(self.to_dict(), sort_keys=True).encode()
         return hashlib.sha256(blob).hexdigest()[:12]
-
-    @classmethod
-    def from_json(cls, path: str | Path) -> "SimConfig":
-        raw = json.loads(Path(path).read_text(encoding="utf-8"))
-        for k in ("start_date", "end_date"):
-            if k in raw and isinstance(raw[k], str):
-                raw[k] = date.fromisoformat(raw[k])
-        known = {f for f in cls.__dataclass_fields__}
-        return cls(**{k: v for k, v in raw.items() if k in known})

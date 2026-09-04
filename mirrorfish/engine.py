@@ -25,13 +25,14 @@ import sqlite3
 from datetime import date
 from typing import Any
 
-from .agent import decide
+from .agent import decide, render_feed
 from .config import LLMConfig, SimConfig
 from .llm import LLMClient
 from .memory import ReflectionEngine
 from .news import NewsStream
 from .population import activation_prob
 from .recommender import Recommender
+from .survey import run_survey
 from .store import Store
 
 
@@ -55,18 +56,16 @@ class Engine:
         self.source_agent_id = source_agent_id
         self.verbose = verbose
         self.reflector = ReflectionEngine(client)
-        # Default: `recency` senza iniezione fuori-rete. Verificato identico
-        # a store.feed_for su 90 confronti, quindi i run gia' fatti restano
-        # confrontabili con quelli nuovi.
         self.recommender = recommender or Recommender(
-            store, policy="recency", out_of_network=0.0, seed=sim.seed)
+            store, policy=sim.recommender,
+            out_of_network=sim.out_of_network, seed=sim.seed)
         self.stats: dict[str, int] = {
             "posts": 0, "replies": 0, "likes": 0,
             "ignored": 0, "errors": 0, "notes": 0,
         }
-        # Cosa ha letto ogni agente dall'ultima riflessione
+        # Cosa ha letto ogni agente dall'ultima riflessione, nella STESSA
+        # resa che ha visto nel prompt (vedi agent.render_feed).
         self._seen: dict[int, list[str]] = {}
-        self._interest: dict[int, list[float]] = {}
         # news_id -> NewsItem, per rendere il testo alla profondita' giusta
         self.news_by_id = {
             it.news_id: it
@@ -113,33 +112,33 @@ class Engine:
     # ----------------------------------------------------------------- azioni #
     async def _act(self, agent: sqlite3.Row, tick: int, sim_date: date) -> dict[str, Any]:
         agent_id = int(agent["agent_id"])
-        # Chi non segue la politica non riceve notizie: ne sente parlare
+        # Quante notizie riceve dipende da quanto a fondo legge: chi non segue
+        # la politica ('nessuna') non ne riceve affatto e ne sente parlare
         # solo dagli altri. Gli slot liberati vanno ai pari.
         depth = agent["media_depth"] if "media_depth" in agent.keys() else "titolo"
-        slots = 0 if depth == "nessuna" else self.sim.news_slots
         feed = self.recommender.feed(
             agent_id, tick, limit=self.sim.feed_size,
-            news_slots=slots,
-            interest_vec=self._interest.get(agent_id),
+            news_slots=self.sim.news_slots_for(depth),
         )
+        parents = self.store.parents_of(
+            [r["post_id"] for r in feed if r["kind"] == "reply"])
+
+        # UNA sola resa del feed, usata sia per il prompt sia per la memoria
+        # di cio' che e' stato letto. Erano due, e divergevano sulle notizie.
+        feed_lines = render_feed(feed, parents, depth, self.news_by_id)
+
         notes = self.store.notes_for(agent_id, limit=self.sim.max_notes_in_prompt)
         own = self.store.posts_by(agent_id, limit=3)
 
-        parents = self.store.parents_of(
-            [r["post_id"] for r in feed if r["kind"] == "reply"])
         actions, resp = await decide(
-            self.client, agent, feed, notes, own, sim_date.isoformat(),
+            self.client, agent, feed_lines, notes, own, sim_date.isoformat(),
             max_tokens=self.llm_cfg.token_budget["action"],
             temperature=self.llm_cfg.temperature,
-            parents=parents,
-            news_depth=depth,
-            news_by_id=self.news_by_id,
             max_actions=self.sim.max_actions,
         )
-        # Traccia cosa ha letto, per la riflessione successiva
-        if feed:
+        if feed_lines:
             bucket = self._seen.setdefault(agent_id, [])
-            bucket.extend(r["content"] for r in feed)
+            bucket.extend(text for _, text in feed_lines)
             del bucket[:-30]
 
         return {"agent_id": agent_id, "actions": actions, "resp": resp,
@@ -246,6 +245,18 @@ class Engine:
 
             if self.sim.reflection_every and (tick + 1) % self.sim.reflection_every == 0:
                 await self._reflect_all(agents, tick)
+
+            # Survey intermedia. E' l'unico modo per avere la TRAIETTORIA
+            # dell'opinione: con solo baseline e final si osservano due punti
+            # e si e' costretti a chiamare "cambio di idea" qualunque
+            # differenza fra i due, senza sapere quando e' avvenuta ne' se e'
+            # stabile. Costa N chiamate ogni volta, quindi e' spenta di
+            # default e va accesa sapendo cosa si spende.
+            if self.sim.survey_every and (tick + 1) % self.sim.survey_every == 0:
+                if tick + 1 < total:      # l'ultimo punto e' gia' `final`
+                    await run_survey(self.store, self.client, self.llm_cfg,
+                                     label=f"tick_{tick}", baseline=False,
+                                     tick=tick, verbose=self.verbose)
 
             # Checkpoint a ogni tick: con un endpoint a rate limit un run
             # lungo viene interrotto spesso, e ricominciare da zero ogni volta

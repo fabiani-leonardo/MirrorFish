@@ -36,8 +36,7 @@ CREATE TABLE IF NOT EXISTS agent (
     is_source       INTEGER NOT NULL DEFAULT 0,
     is_voter        INTEGER NOT NULL DEFAULT 1,
     media_depth     TEXT NOT NULL DEFAULT 'titolo',
-    attrs           TEXT NOT NULL DEFAULT '{}',
-    bio_vec         BLOB
+    attrs           TEXT NOT NULL DEFAULT '{}'
 );
 
 CREATE TABLE IF NOT EXISTS follow (
@@ -54,8 +53,7 @@ CREATE TABLE IF NOT EXISTS post (
     kind            TEXT NOT NULL,          -- post | reply | news
     tick            INTEGER NOT NULL,
     sim_date        TEXT NOT NULL,
-    news_id         TEXT,                   -- provenienza, se iniettato
-    embedding       BLOB                    -- calcolato una volta, mai piu'
+    news_id         TEXT                    -- provenienza, se iniettato
 );
 CREATE INDEX IF NOT EXISTS idx_post_tick ON post(tick);
 CREATE INDEX IF NOT EXISTS idx_post_agent ON post(agent_id);
@@ -204,48 +202,8 @@ class Store:
             (agent_id, post_id, kind, tick),
         )
 
-    _FEED_SELECT = """
-        SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date,
-               a.username, a.agent_id AS author_id,
-               (SELECT COUNT(*) FROM reaction r
-                 WHERE r.post_id = p.post_id AND r.kind = 'like') AS likes
-        FROM post p
-        JOIN agent a ON a.agent_id = p.agent_id
-        WHERE p.tick < ? AND p.agent_id != ? AND {clause}
-        ORDER BY p.tick DESC, p.post_id DESC LIMIT ?
-    """
-
-    def feed_for(
-        self, agent_id: int, limit: int, before_tick: int, news_slots: int = 2
-    ) -> list[sqlite3.Row]:
-        """
-        Feed = quota di notizie + quota di post dei seguiti.
-
-        Gli slot sono SEPARATI di proposito. Con una sola query ordinata per
-        recency le notizie vincono sempre (sono inserite a inizio tick e
-        l'agenzia e' visibile a tutti), quindi la quota di esposizione
-        mediatica finiva per dipendere da quante notizie ci sono nell'archivio
-        quel giorno: un parametro sperimentale determinato per caso.
-        Cosi' invece e' dichiarato, e variarlo e' un asse della sensitivity
-        analysis (esposizione mediatica vs esposizione ai pari).
-        """
-        news_slots = max(0, min(news_slots, limit))
-        news = self.conn.execute(
-            self._FEED_SELECT.format(clause="a.is_source = 1"),
-            (before_tick, agent_id, news_slots),
-        ).fetchall() if news_slots else []
-
-        peers = self.conn.execute(
-            self._FEED_SELECT.format(
-                clause="a.is_source = 0 AND p.agent_id IN "
-                       "(SELECT followee_id FROM follow WHERE follower_id = ?)"
-            ),
-            (before_tick, agent_id, agent_id, limit - len(news)),
-        ).fetchall()
-        return list(news) + list(peers)
-
     _CAND_SELECT = """
-        SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.embedding,
+        SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.news_id,
                a.username, a.agent_id AS author_id,
                (SELECT COUNT(*) FROM reaction r
                  WHERE r.post_id = p.post_id AND r.kind = 'like') AS likes,
@@ -273,42 +231,71 @@ class Store:
         ).fetchall()
 
     def recent_news(self, tick: int, limit: int):
+        """
+        Notizie recenti, fuori dal grafo di follow: portata editoriale.
+
+        I like sono quelli veri. Prima erano `0 AS likes` fissi, quindi nel
+        feed una notizia appariva sempre senza riscontro anche quando mezza
+        popolazione l'aveva rilanciata: gli agenti non potevano vedere che
+        una notizia stava girando, che e' meta' di come funziona un social.
+        """
         return self.conn.execute(
             """
-            SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.embedding,
-                   a.username, a.agent_id AS author_id, 0 AS likes, 0 AS replies
+            SELECT p.post_id, p.content, p.kind, p.tick, p.sim_date, p.news_id,
+                   a.username, a.agent_id AS author_id,
+                   (SELECT COUNT(*) FROM reaction r
+                     WHERE r.post_id = p.post_id AND r.kind = 'like') AS likes,
+                   (SELECT COUNT(*) FROM post c
+                     WHERE c.parent_id = p.post_id)                   AS replies
             FROM post p JOIN agent a ON a.agent_id = p.agent_id
             WHERE p.tick <= ? AND a.is_source = 1
             ORDER BY p.tick DESC, p.post_id DESC LIMIT ?
             """, (tick, limit)).fetchall()
 
-    def posts_missing_embedding(self, limit: int = 512):
-        return self.conn.execute(
-            "SELECT post_id, content FROM post WHERE embedding IS NULL LIMIT ?",
-            (limit,)).fetchall()
+    def affinity_for(self, agent_id: int, tick: int) -> dict[int, float]:
+        """
+        Quanto ogni altro agente e' relazionalmente vicino a questo, dalle
+        interazioni avvenute fino a `tick`. -> {author_id: peso}
 
-    def set_post_embeddings(self, pairs: list[tuple[int, bytes]]) -> None:
-        self.conn.executemany(
-            "UPDATE post SET embedding = ? WHERE post_id = ?",
-            [(blob, pid) for pid, blob in pairs])
-        self.conn.commit()
+        Sostituisce la similarita' semantica del vecchio ramo embedding. Una
+        risposta pesa il doppio di un like perche' costa di piu' e segnala
+        piu' attenzione; le direzioni contano entrambe, perche' la
+        reciprocita' e' proprio cio' che distingue una relazione da un
+        semplice arco di follow.
 
-    def set_bio_vec(self, agent_id: int, blob: bytes) -> None:
-        self.conn.execute("UPDATE agent SET bio_vec = ? WHERE agent_id = ?",
-                          (blob, agent_id))
-
-    def agent_signal_vectors(self, agent_id: int, limit: int = 20):
-        """Embedding dei post scritti e di quelli a cui ha messo like."""
+        Deliberatamente NON pesa la concordanza di opinione: se lo facesse,
+        la camera d'eco sarebbe imposta dalla metrica invece che emergere
+        dall'interazione, e il risultato in tesi sarebbe circolare.
+        """
         rows = self.conn.execute(
             """
-            SELECT embedding FROM post
-             WHERE agent_id = ? AND embedding IS NOT NULL
-            UNION ALL
-            SELECT p.embedding FROM reaction r JOIN post p ON p.post_id = r.post_id
-             WHERE r.agent_id = ? AND r.kind = 'like' AND p.embedding IS NOT NULL
-            LIMIT ?
-            """, (agent_id, agent_id, limit)).fetchall()
-        return [r["embedding"] for r in rows]
+            SELECT other, SUM(w) AS score FROM (
+                -- mi ha messo like
+                SELECT r.agent_id AS other, 1.0 AS w
+                  FROM reaction r JOIN post p ON p.post_id = r.post_id
+                 WHERE p.agent_id = :me AND r.tick <= :tick
+                UNION ALL
+                -- mi ha risposto
+                SELECT c.agent_id AS other, 2.0 AS w
+                  FROM post c JOIN post p ON p.post_id = c.parent_id
+                 WHERE p.agent_id = :me AND c.tick <= :tick
+                UNION ALL
+                -- gli ho messo like
+                SELECT p.agent_id AS other, 1.0 AS w
+                  FROM reaction r JOIN post p ON p.post_id = r.post_id
+                 WHERE r.agent_id = :me AND r.tick <= :tick
+                UNION ALL
+                -- gli ho risposto
+                SELECT p.agent_id AS other, 2.0 AS w
+                  FROM post c JOIN post p ON p.post_id = c.parent_id
+                 WHERE c.agent_id = :me AND c.tick <= :tick
+            )
+            WHERE other != :me
+            GROUP BY other
+            """,
+            {"me": agent_id, "tick": tick},
+        ).fetchall()
+        return {int(r["other"]): float(r["score"]) for r in rows}
 
     def parents_of(self, post_ids: list[int]) -> dict[int, sqlite3.Row]:
         """

@@ -37,7 +37,7 @@ def main() -> None:
     VOTER = "a.is_voter" if HAS_VOTER else "1"
     if not HAS_VOTER:
         print("\n  NOTA: questo run e' anteriore a is_voter. Gli account")
-        print("  istituzionali hanno votato. Usa check_voters.py per l'impatto.")
+        print("  istituzionali hanno votato: il conteggio e' contaminato.")
 
     # --- 1. lo stimolo era bilanciato? ------------------------------------
     sezione("1. BILANCIAMENTO DELLO STIMOLO (notizie iniettate)")
@@ -124,7 +124,65 @@ def main() -> None:
         print("    - run con --recommender random")
         print("  Se la deriva verso NO compare anche senza notizie, non e' un")
         print("  risultato sull'informazione: e' un artefatto del prompt.")
+
+    # --- 5. quante note regge davvero ogni cambio di idea? ----------------
+    sezione("5. RISOLUZIONE DELLA MEMORIA RIFLESSIVA")
+    print("  Il voto finale legge le note. Se chi cambia idea ha UNA nota,")
+    print("  lo spostamento non e' esposizione accumulata: e' una sola")
+    print("  chiamata LLM che ha deciso. E' la differenza fra una dinamica")
+    print("  di opinione e un lancio di moneta ben scritto.\n")
+    per_agente = {r["agent_id"]: r["n"] for r in c.execute(
+        "SELECT agent_id, COUNT(*) n FROM note GROUP BY agent_id")}
+    cambiati = [k for k in set(b) & set(f) if b[k] != f[k]]
+    stabili = [k for k in set(b) & set(f) if b[k] == f[k]]
+    for nome, gruppo in (("chi ha cambiato idea", cambiati), ("chi non l'ha cambiata", stabili)):
+        if not gruppo:
+            continue
+        note = [per_agente.get(k, 0) for k in gruppo]
+        dist = {}
+        for n in note:
+            dist[min(n, 4)] = dist.get(min(n, 4), 0) + 1
+        media = sum(note) / len(note)
+        print(f"  {nome:<24} n={len(gruppo):<4} note/agente medie {media:.2f}")
+        print("      " + "  ".join(
+            f"{k if k < 4 else '4+'} note: {v}" for k, v in sorted(dist.items())))
+    una_sola = sum(1 for k in cambiati if per_agente.get(k, 0) <= 1)
+    if cambiati and una_sola / len(cambiati) > 0.6:
+        print(f"\n  ATTENZIONE: {una_sola}/{len(cambiati)} di chi cambia idea ha")
+        print("  al massimo UNA nota. Prima di interpretare il tasso di")
+        print("  spostamento come dinamica sociale, abbassa --reflection-every")
+        print("  oppure confrontalo con un run a riflessione spenta.")
+
+    # --- 6. si argomenta o si ripetono slogan? ----------------------------
+    sezione("6. DENSITA' ARGOMENTATIVA PER PROFONDITA' DI LETTURA")
+    print("  L'ipotesi: per argomentare servono dati, e i dati stanno")
+    print("  nell'articolo, non nel titolo. Se regge, chi legge integrale")
+    print("  scrive piu' lungo, con piu' numeri e meno hashtag.\n")
+    if "media_depth" not in cols:
+        print("  (run anteriore a media_depth, salto)")
+    else:
+        gruppi = {}
+        print(f"  {'profondita':<12}{'post':>6}{'caratt.':>9}{'n.cifre':>9}"
+              f"{'#tag':>7}{'lessico':>9}")
+        for r in c.execute("""
+            SELECT a.media_depth AS d, p.content
+            FROM post p JOIN agent a ON a.agent_id = p.agent_id
+            WHERE p.kind != 'news' AND a.is_source = 0"""):
+            gruppi.setdefault(r["d"], []).append(r["content"])
+        for d, testi in sorted(gruppi.items()):
+            n = len(testi)
+            lung = sum(len(t) for t in testi) / n
+            cifre = sum(len(re.findall(r"\d", t)) for t in testi) / n
+            tag = sum(t.count("#") for t in testi) / n
+            parole = [w.lower() for t in testi for w in re.findall(r"\w+", t)]
+            ttr = len(set(parole)) / max(len(parole), 1)
+            print(f"  {d:<12}{n:>6}{lung:>9.0f}{cifre:>9.2f}{tag:>7.2f}{ttr:>9.3f}")
+        print("\n  caratt. = lunghezza media | n.cifre = riferimenti numerici")
+        print("  #tag = hashtag per post | lessico = ricchezza (type-token ratio)")
+        print("  E' la metrica da portare in tesi: non dipende dall'aver")
+        print("  riprodotto l'esito del referendum.")
     c.close()
+
 
 
 if __name__ == "__main__":

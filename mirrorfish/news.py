@@ -58,14 +58,19 @@ def parse_date_from_filename(filename: str) -> date | None:
 
 @dataclass(frozen=True)
 class NewsItem:
+    """
+    Una notizia, alle tre profondita' con cui puo' essere letta.
+
+    `title` e `body` vengono dall'articolo integrale scrapato (cartella
+    notizie_referendum) e sono la fonte primaria. `summary` e' il rilancio in
+    stile social, opzionale.
+    """
+
     news_id: str
     published: date
-    content: str                 # sommario in stile social (notizie_social)
-    title: str = ""              # titolo originale
-    body: str = ""               # testo integrale (notizie_referendum)
-
-    def as_post(self) -> str:
-        return f"[ANSA] {self.content}"
+    title: str                   # titolo originale, dall'articolo integrale
+    body: str = ""               # testo integrale
+    summary: str = ""            # rilancio social, opzionale
 
     def at_depth(self, depth: str, max_body_chars: int = 1400) -> str:
         """
@@ -76,19 +81,29 @@ class NewsItem:
         di sfuggita legge il titolo, chi non la segue non lo apre affatto e
         semmai ne sente parlare da altri.
 
-        Finora tutti ricevevano lo stesso sommario di 200 caratteri, il che
-        rendeva l'esposizione mediatica uniforme per costruzione — e quindi
-        non misurabile come variabile.
+        `nessuna` non compare qui perche' non e' un modo di leggere: e' non
+        ricevere la notizia. Lo gestisce il feed azzerando gli slot.
         """
-        if depth == "integrale" and self.body:
+        if depth == "integrale":
             body = self.body
             if len(body) > max_body_chars:
                 body = body[:max_body_chars].rsplit(" ", 1)[0] + " [...]"
-            head = self.title or self.content
-            return f"[ANSA] {head}\n{body}"
-        if depth == "titolo":
-            return f"[ANSA] {self.title or self.content}"
-        return f"[ANSA] {self.content}"
+            return f"[ANSA] {self.title}\n{body}"
+        if depth == "sommario":
+            return f"[ANSA] {self.summary or self.title}"
+        return f"[ANSA] {self.title}"          # titolo, e default
+
+    def as_post(self) -> str:
+        """
+        Testo salvato nella tabella `post`.
+
+        E' il titolo, non l'articolo: la riga in DB e' l'identita' della
+        notizia, il testo che ogni agente legge davvero viene ricostruito a
+        ogni feed da at_depth(). Salvare qui il corpo integrale significava
+        che chiunque ricevesse la notizia di seconda mano — citata in una
+        reply, o mostrata a un agente `titolo` — se la ritrovava per intero.
+        """
+        return f"[ANSA] {self.title}"
 
 
 _TITOLO = re.compile(r"^TITOLO:\s*(.+)$", re.MULTILINE)
@@ -114,44 +129,93 @@ def parse_full_article(text: str) -> tuple[str, str]:
     return title, body
 
 
-def load_news(news_dir: str | Path,
-              full_dir: str | Path | None = None) -> list[NewsItem]:
-    """
-    Carica i .txt datati, ordinati per data poi per nome (deterministico).
+class NewsCoverageError(RuntimeError):
+    """Gli articoli integrali mancano o sono troppo pochi per il disegno."""
 
-    `full_dir` e' la cartella dei testi integrali (notizie_referendum), che ha
-    gli stessi nomi file della cartella dei sommari: l'accoppiamento e' per
-    nome, quindi non serve nessun indice.
+
+def load_news(
+    full_dir: str | Path,
+    summary_dir: str | Path | None = None,
+    *,
+    min_body_ratio: float = 0.9,
+) -> list[NewsItem]:
     """
-    news_dir = Path(news_dir)
-    full = {}
-    if full_dir:
-        fd = Path(full_dir)
-        if not fd.exists():
-            raise FileNotFoundError(f"Cartella testi integrali inesistente: {fd}")
-        for f in fd.glob("*.txt"):
-            full[f.stem] = parse_full_article(
-                f.read_text(encoding="utf-8", errors="replace"))
-    if not news_dir.exists():
-        raise FileNotFoundError(f"Cartella notizie inesistente: {news_dir}")
+    Carica le notizie. L'INDICE e' la cartella degli articoli integrali.
+
+    Perche' l'indice e' cambiato. Prima si iterava sulla cartella dei
+    sommari e si attaccava il testo integrale cercando lo stesso nome file.
+    Aveva due conseguenze, entrambe silenziose. Un articolo integrale senza
+    sommario omonimo non entrava mai in simulazione, quindi l'archivio vero
+    veniva filtrato da quello derivato. E se il testo integrale mancava,
+    `title` e `body` restavano vuoti: `at_depth` cadeva nel ramo di fallback
+    e restituiva la stessa identica stringa per `integrale`, `sommario` e
+    `titolo`. Tre profondita' su quattro collassavano in una, la variabile
+    indipendente spariva e il log non lo diceva.
+
+    Ora l'integrale e' la fonte primaria, il sommario e' un arricchimento
+    opzionale, e se la copertura dei corpi scende sotto `min_body_ratio` si
+    solleva NewsCoverageError invece di partire con un esperimento che non
+    puo' misurare cio' per cui e' stato scritto.
+    """
+    full_dir = Path(full_dir)
+    if not full_dir.exists():
+        raise FileNotFoundError(f"Cartella articoli integrali inesistente: {full_dir}")
+
+    summaries: dict[str, str] = {}
+    if summary_dir:
+        sd = Path(summary_dir)
+        if not sd.exists():
+            raise FileNotFoundError(f"Cartella sommari inesistente: {sd}")
+        for f in sd.glob("*.txt"):
+            summaries[f.stem] = f.read_text(encoding="utf-8", errors="replace").strip()
 
     items: list[NewsItem] = []
-    skipped: list[str] = []
-    for f in sorted(news_dir.glob("*.txt")):
+    skipped_date: list[str] = []
+    no_body: list[str] = []
+    for f in sorted(full_dir.glob("*.txt")):
         d = parse_date_from_filename(f.name)
         if d is None:
-            skipped.append(f.name)
+            skipped_date.append(f.name)
             continue
-        content = f.read_text(encoding="utf-8", errors="replace").strip()
-        if content:
-            title, body = full.get(f.stem, ("", ""))
-            items.append(NewsItem(news_id=f.stem, published=d, content=content,
-                                  title=title, body=body))
+        raw = f.read_text(encoding="utf-8", errors="replace")
+        title, body = parse_full_article(raw)
+        if not title:
+            # Senza titolo la notizia non e' leggibile a nessuna profondita'.
+            skipped_date.append(f.name)
+            continue
+        if not body:
+            no_body.append(f.name)
+        items.append(NewsItem(news_id=f.stem, published=d, title=title,
+                              body=body, summary=summaries.get(f.stem, "")))
 
     items.sort(key=lambda n: (n.published, n.news_id))
-    if skipped:
-        print(f"[news] {len(skipped)} file ignorati (data non parsabile): "
-              f"{skipped[:5]}{'...' if len(skipped) > 5 else ''}")
+
+    if skipped_date:
+        print(f"[news] {len(skipped_date)} file ignorati (data o titolo non "
+              f"leggibili): {skipped_date[:5]}"
+              f"{'...' if len(skipped_date) > 5 else ''}")
+    if summary_dir:
+        n_sum = sum(1 for i in items if i.summary)
+        print(f"[news] sommari accoppiati: {n_sum}/{len(items)}")
+
+    if not items:
+        raise NewsCoverageError(f"Nessuna notizia leggibile in {full_dir}.")
+
+    ratio = 1.0 - len(no_body) / len(items)
+    if ratio < min_body_ratio:
+        raise NewsCoverageError(
+            f"Solo il {ratio:.0%} delle notizie in {full_dir} ha un corpo "
+            f"integrale ({len(no_body)} su {len(items)} senza).\n"
+            f"Sotto questa soglia gli agenti 'integrale' leggono lo stesso "
+            f"testo di quelli 'titolo': la profondita' di lettura smette di "
+            f"essere una variabile e il run non puo' misurarla.\n"
+            f"Controlla il formato atteso (TITOLO: / riga di trattini / corpo) "
+            f"oppure abbassa min_body_ratio se la cosa e' voluta.\n"
+            f"Primi file senza corpo: {no_body[:5]}")
+    if no_body:
+        print(f"[news] {len(no_body)} notizie senza corpo integrale "
+              f"({1 - ratio:.1%}): a quelle gli agenti 'integrale' vedono "
+              f"solo il titolo.")
     return items
 
 

@@ -274,6 +274,10 @@ class LLMClient(ABC):
         return None
 
 
+class EndpointDown(RuntimeError):
+    """L'endpoint non risponde da troppe chiamate consecutive."""
+
+
 class OpenAICompatClient(LLMClient):
     """Client per qualunque endpoint OpenAI-compatible (vLLM, Ollama, ...)."""
 
@@ -287,13 +291,14 @@ class OpenAICompatClient(LLMClient):
         self._sem = asyncio.Semaphore(cfg.concurrency)
         self.gate = RateGate(cfg.pace_interval(), rpm=cfg.requests_per_minute)
         self._thinking_supported = cfg.disable_thinking
+        self._consecutive_failures = 0
         self._client = httpx.AsyncClient(
             base_url=cfg.base_url.rstrip("/"),
             headers={
                 "Authorization": f"Bearer {cfg.api_key}",
                 "Content-Type": "application/json",
             },
-            timeout=httpx.Timeout(cfg.timeout_s),
+            timeout=httpx.Timeout(cfg.timeout_s, connect=cfg.connect_timeout_s),
             limits=httpx.Limits(max_connections=cfg.concurrency + 2),
         )
 
@@ -374,6 +379,7 @@ class OpenAICompatClient(LLMClient):
                     # Alcuni build di Qwen mettono tutto in reasoning_content.
                     text = msg.get("reasoning_content") or ""
                 usage = data.get("usage") or {}
+                self._consecutive_failures = 0
                 return LLMResponse(
                     text=text,
                     prompt_tokens=usage.get("prompt_tokens", 0),
@@ -385,6 +391,17 @@ class OpenAICompatClient(LLMClient):
                 last_err = f"{type(exc).__name__}: {exc}"
                 await asyncio.sleep(self.cfg.backoff_base_s * (2**attempt))
 
+        # Interruttore. Un 429 non conta: e' una pausa, non un guasto.
+        if "429" not in (last_err or ""):
+            self._consecutive_failures += 1
+            if self._consecutive_failures >= self.cfg.circuit_breaker_failures:
+                raise EndpointDown(
+                    f"{self._consecutive_failures} chiamate consecutive fallite "
+                    f"({last_err}). Interrompo invece di proseguire: un run di "
+                    f"sole chiamate fallite ha comunque l'aria di essere valido.\n"
+                    f"Diagnostica: python scripts/check_endpoint.py\n"
+                    f"Ripresa:     stesso comando piu' --resume"
+                )
         return LLMResponse(text="", error=last_err or "unknown", finish_reason="error")
 
     async def aclose(self) -> None:
@@ -481,23 +498,6 @@ class StubLLM(LLMClient):
                 body = {"actions": [one() for _ in range(n)]}
             else:
                 body = one()
-            text = json.dumps(body, ensure_ascii=False)
-            return LLMResponse(
-                text=text, prompt_tokens=len(system + user) // 4,
-                completion_tokens=len(text) // 4,
-                finish_reason="stop", latency_ms=self.latency_ms,
-            )
-            action = rng.choices(self.ACTIONS, weights=weights)[0]
-            body = {
-                "action": action,
-                "content": "" if action in ("LIKE", "IGNORE")
-                           else f"[stub-{rng.randint(1000, 9999)}] Contenuto simulato "
-                                f"sul referendum, tono {rng.choice(['critico', 'favorevole', 'dubbioso'])}.",
-                "target_post_id": (rng.choice(feed_ids)
-                                   if action in ("REPLY", "LIKE") and feed_ids
-                                   else None),
-            }
-
         text = json.dumps(body, ensure_ascii=False)
         return LLMResponse(
             text=text,
