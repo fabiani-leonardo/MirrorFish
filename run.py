@@ -22,9 +22,11 @@ load_dotenv()
 
 import argparse
 import asyncio
+import atexit
 import json
+import os
 import pathlib
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 from mirrorfish.config import LLMConfig, SimConfig
@@ -55,6 +57,45 @@ def synth_news(start: date, days: int, per_day: int = 3) -> list[NewsItem]:
     return items
 
 
+
+def acquire_lock(out_dir: Path, force: bool) -> Path:
+    """
+    Impedisce due run sulla stessa cartella.
+
+    E' successo davvero: due processi sulla stessa `--out`, il secondo con
+    --force che cancella il run.db mentre il primo lo sta scrivendo. Il
+    risultato non e' un errore chiaro ma due processi che sembrano bloccati,
+    piu' le due quote sommate contro lo stesso limite di squadra.
+    """
+    lock_path = out_dir / "run.lock"
+    if lock_path.exists():
+        try:
+            pid = int(lock_path.read_text().split()[0])
+        except (ValueError, IndexError):
+            pid = -1
+        alive = False
+        if pid > 0:
+            try:
+                os.kill(pid, 0)      # segnale 0: verifica soltanto
+                alive = True
+            except (ProcessLookupError, PermissionError):
+                alive = False
+        if alive:
+            raise SystemExit(
+                f"ERRORE: un altro run sta gia' usando {out_dir} (pid {pid}).\n"
+                f"Due processi sulla stessa cartella si cancellano i dati a "
+                f"vicenda e sommano il consumo sulla stessa quota.\n"
+                f"Usa un --out diverso, oppure ferma quel processo "
+                f"(kill {pid}) e rilancia."
+            )
+        print(f"[setup] lock orfano di un processo terminato (pid {pid}): "
+              f"lo rimuovo.")
+        lock_path.unlink(missing_ok=True)
+    lock_path.write_text(f"{os.getpid()} {datetime.now().isoformat()}\n")
+    atexit.register(lambda: lock_path.unlink(missing_ok=True))
+    return lock_path
+
+
 async def main_async(args: argparse.Namespace) -> None:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -81,6 +122,8 @@ async def main_async(args: argparse.Namespace) -> None:
         llm_cfg.token_budget["action"] = 384 + 128 * (args.max_actions - 1)
     if args.max_action_tokens:
         llm_cfg.token_budget["action"] = args.max_action_tokens
+
+    acquire_lock(out_dir, args.force)
 
     db_path = out_dir / "run.db"
     resuming = False

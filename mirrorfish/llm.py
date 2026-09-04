@@ -106,6 +106,11 @@ class RateGate:
         self.preemptive_pauses = 0
         self.observed_remaining: int | None = None
         self.observed_scope: str | None = None
+        # Pausa del freno preventivo. Breve di proposito: serve solo a far
+        # scivolare la finestra, non a fermare il run.
+        self.probe_pause_s = 12.0
+        self._probe_pending = False
+        self.observed_scope: str | None = None
 
     async def acquire(self) -> None:
         """
@@ -197,12 +202,28 @@ class RateGate:
         self.observed_scope = scope
         if remaining <= self.reserve:
             async with self._lock:
-                target = time.monotonic() + self.window_s * 0.5
-                if target > self._cooldown_until:
-                    self._cooldown_until = target
-                    self.preemptive_pauses += 1
-                    print(f"    [rate-limit] freno preventivo: "
-                          f"{scope} a {remaining} richieste residue", flush=True)
+                now = time.monotonic()
+                # NON riarmare se una pausa e' gia' in corso. La versione
+                # precedente confrontava (adesso + 30s) con la scadenza
+                # corrente: essendo quasi sempre maggiore, OGNI risposta
+                # riuscita rimetteva 30 secondi di pausa. Con il contatore di
+                # squadra tenuto basso da un altro run, il ritmo collassava a
+                # una richiesta ogni 30 secondi e la simulazione sembrava
+                # bloccata.
+                if now < self._cooldown_until:
+                    return
+                # Dopo una pausa lasciamo passare una richiesta di sondaggio
+                # prima di poter frenare di nuovo: senza, due run concorrenti
+                # si terrebbero a vicenda fermi a zero.
+                if self._probe_pending:
+                    self._probe_pending = False
+                    return
+                self._cooldown_until = now + self.probe_pause_s
+                self._probe_pending = True
+                self.preemptive_pauses += 1
+                print(f"    [rate-limit] freno preventivo: {scope} a "
+                      f"{remaining} residue, pausa {self.probe_pause_s:.0f}s",
+                      flush=True)
 
     def stats(self) -> dict[str, Any]:
         return {"trips": self.trips, "paused_s": round(self.paused_s, 1),

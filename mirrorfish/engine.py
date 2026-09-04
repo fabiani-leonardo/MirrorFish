@@ -222,13 +222,18 @@ class Engine:
             if active:
                 done = 0
                 t0 = time.perf_counter()
+                last_beat = [0.0]
 
                 async def tracked(a):
                     nonlocal done
                     out = await self._act(a, tick, sim_date)
                     done += 1
-                    if self.verbose and done % 15 == 0:
-                        el = time.perf_counter() - t0
+                    # Battito a TEMPO, non a conteggio: un tick con 13
+                    # agenti attivi non raggiungeva mai la soglia di 15 e
+                    # restava muto anche per minuti.
+                    el = time.perf_counter() - t0
+                    if self.verbose and el - last_beat[0] >= 20.0:
+                        last_beat[0] = el
                         print(f"    tick {tick + 1}: {done}/{len(active)} "
                               f"agenti ({done / max(el, .1) * 60:.1f}/min)",
                               flush=True)

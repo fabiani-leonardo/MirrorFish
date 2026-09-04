@@ -63,12 +63,18 @@ PROMPT_USER = (
 
 async def one_batch(
     cfg: LLMConfig, n: int, max_tokens: int, concurrency: int,
-    disable_thinking: bool, rpm: float, progress: bool = True
+    disable_thinking: bool, rpm: float, progress: bool = True,
+    no_gate: bool = False,
 ) -> dict:
     # Il limitatore interno frena a `requests_per_minute` a prescindere dalla
     # concorrenza richiesta: se resta al default (8) il benchmark misura se
     # stesso, non l'endpoint. Va alzato esplicitamente.
-    cfg.requests_per_minute = rpm
+    # ATTENZIONE: con il gate attivo il benchmark misura il GATE, non il
+    # server. Se l'intervallo (60/rpm) supera la latenza, non c'e' mai piu'
+    # di una chiamata in volo e concorrenza e max_tokens non possono avere
+    # alcun effetto: e' cio' che e' successo nella misura del 3 settembre,
+    # dove tutte e sei le configurazioni davano 33,4 s.
+    cfg.requests_per_minute = 10_000 if no_gate else rpm
     cfg.concurrency = concurrency
     cfg.min_interval_s = 0.0          # qui vogliamo misurare il limite, non spalmare
     cfg.disable_thinking = disable_thinking
@@ -135,6 +141,10 @@ async def main() -> None:
                          "Se resta basso il benchmark misura se stesso. "
                          "Alzalo fino a dove vuoi sondare, e ricorda che il "
                          "limite di TEAM e' condiviso con i colleghi.")
+    ap.add_argument("--no-gate", action="store_true",
+                    help="disattiva il limitatore per misurare il tetto REALE "
+                         "del server. Prende 429 e consuma quota di squadra: "
+                         "usalo solo se serve davvero, con poche richieste.")
     ap.add_argument("--cooldown", type=float, default=70.0,
                     help="pausa fra configurazioni; deve superare la finestra "
                          "del rate limit, altrimenti i risultati sono un artefatto")
@@ -169,7 +179,7 @@ async def main() -> None:
                 print(f"    misuro: max_tokens={mt}, concorrenza={c}, "
                       f"rpm={args.rpm}", flush=True)
                 d = await one_batch(LLMConfig.from_env(), args.requests, mt, c,
-                                    no_think, args.rpm)
+                                    no_think, args.rpm, no_gate=args.no_gate)
                 rows.append(d)
                 print(row(d))
                 if d["errors"]:
