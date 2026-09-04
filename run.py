@@ -141,7 +141,8 @@ async def main_async(args: argparse.Namespace) -> None:
 
     # --- notizie ----------------------------------------------------------- #
     total_ticks = sim.total_ticks()
-    items = load_news(args.news) if args.news else synth_news(start, args.days)
+    items = (load_news(args.news, args.news_full) if args.news
+             else synth_news(start, args.days))
     stream = NewsStream(items, start, sim.hours_per_tick, total_ticks,
                         max_per_tick=args.max_news_per_tick)
 
@@ -234,7 +235,11 @@ def parse_args() -> argparse.Namespace:
                    help="durata del tick in ore: leva principale sul costo")
     p.add_argument("--agents", type=int, default=None)
     p.add_argument("--profiles", default=None, help="reddit_profiles.json")
-    p.add_argument("--news", default=None, help="cartella .txt ANSA")
+    p.add_argument("--news", default=None, help="cartella .txt ANSA (sommari)")
+    p.add_argument("--news-full", default=None,
+                   help="cartella dei testi integrali (notizie_referendum). "
+                        "Stessi nomi file dei sommari. Senza, tutti leggono "
+                        "il sommario e l'esposizione mediatica e' uniforme.")
     p.add_argument("--cf-news", default=None, help="cartella notizie controfattuali")
     p.add_argument("--cf-from-tick", type=int, default=None)
     p.add_argument("--feed-size", type=int, default=8)

@@ -62,8 +62,13 @@ PROMPT_USER = (
 
 
 async def one_batch(
-    cfg: LLMConfig, n: int, max_tokens: int, concurrency: int, disable_thinking: bool
+    cfg: LLMConfig, n: int, max_tokens: int, concurrency: int,
+    disable_thinking: bool, rpm: float, progress: bool = True
 ) -> dict:
+    # Il limitatore interno frena a `requests_per_minute` a prescindere dalla
+    # concorrenza richiesta: se resta al default (8) il benchmark misura se
+    # stesso, non l'endpoint. Va alzato esplicitamente.
+    cfg.requests_per_minute = rpm
     cfg.concurrency = concurrency
     cfg.min_interval_s = 0.0          # qui vogliamo misurare il limite, non spalmare
     cfg.disable_thinking = disable_thinking
@@ -71,11 +76,21 @@ async def one_batch(
     client = OpenAICompatClient(cfg)
     try:
         t0 = time.perf_counter()
-        results = await asyncio.gather(*[
-            client.complete(PROMPT_SYSTEM, PROMPT_USER,
-                            max_tokens=max_tokens, temperature=0.7, json_mode=True)
-            for _ in range(n)
-        ])
+        done = 0
+
+        async def one():
+            nonlocal done
+            r = await client.complete(PROMPT_SYSTEM, PROMPT_USER,
+                                      max_tokens=max_tokens, temperature=0.7,
+                                      json_mode=True)
+            done += 1
+            if progress and done % 5 == 0:
+                el = time.perf_counter() - t0
+                print(f"      {done}/{n} ({done/max(el,.1)*60:.0f}/min)",
+                      flush=True)
+            return r
+
+        results = await asyncio.gather(*[one() for _ in range(n)])
         wall = time.perf_counter() - t0
     finally:
         await client.aclose()
@@ -115,6 +130,11 @@ async def main() -> None:
     ap.add_argument("--requests", type=int, default=16)
     ap.add_argument("--concurrency", type=int, nargs="+", default=[1, 4, 8])
     ap.add_argument("--max-tokens", type=int, nargs="+", default=[256, 512, 2048])
+    ap.add_argument("--rpm", type=float, default=25.0,
+                    help="tetto del limitatore interno durante la misura. "
+                         "Se resta basso il benchmark misura se stesso. "
+                         "Alzalo fino a dove vuoi sondare, e ricorda che il "
+                         "limite di TEAM e' condiviso con i colleghi.")
     ap.add_argument("--cooldown", type=float, default=70.0,
                     help="pausa fra configurazioni; deve superare la finestra "
                          "del rate limit, altrimenti i risultati sono un artefatto")
@@ -146,7 +166,10 @@ async def main() -> None:
         for c in args.concurrency:
             variants = [True, False] if args.compare_thinking else [True]
             for no_think in variants:
-                d = await one_batch(LLMConfig.from_env(), args.requests, mt, c, no_think)
+                print(f"    misuro: max_tokens={mt}, concorrenza={c}, "
+                      f"rpm={args.rpm}", flush=True)
+                d = await one_batch(LLMConfig.from_env(), args.requests, mt, c,
+                                    no_think, args.rpm)
                 rows.append(d)
                 print(row(d))
                 if d["errors"]:

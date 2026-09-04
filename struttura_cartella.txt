@@ -1,38 +1,99 @@
 .
+├── DIAGNOSI.md
+├── LANCIO.md
+├── LANCIO_NOTTURNO.md
+├── lib
+│   ├── bindings
+│   │   └── utils.js
+│   ├── tom-select
+│   │   ├── tom-select.complete.min.js
+│   │   └── tom-select.css
+│   └── vis-9.1.2
+│       ├── vis-network.css
+│       └── vis-network.min.js
 ├── mirrorfish
 │   ├── agent.py
 │   ├── config.py
+│   ├── embeddings.py
 │   ├── engine.py
 │   ├── __init__.py
 │   ├── llm.py
 │   ├── memory.py
 │   ├── news.py
+│   ├── plan_run.py
 │   ├── population.py
 │   ├── __pycache__
 │   │   ├── agent.cpython-314.pyc
 │   │   ├── config.cpython-314.pyc
+│   │   ├── embeddings.cpython-314.pyc
 │   │   ├── engine.cpython-314.pyc
 │   │   ├── __init__.cpython-314.pyc
 │   │   ├── llm.cpython-314.pyc
 │   │   ├── memory.cpython-314.pyc
 │   │   ├── news.cpython-314.pyc
 │   │   ├── population.cpython-314.pyc
+│   │   ├── recommender.cpython-314.pyc
 │   │   ├── store.cpython-314.pyc
 │   │   └── survey.cpython-314.pyc
+│   ├── recommender.py
 │   ├── store.py
 │   └── survey.py
+├── PIANO_STASERA.md
+├── quota_measurement.json
 ├── README.md
 ├── requirements.txt
 ├── run.py
 ├── runs
 │   ├── base_s42
+│   │   ├── graph.html
+│   │   ├── graph.json
+│   │   ├── run.db
+│   │   ├── run.db-shm
+│   │   ├── run.db-wal
+│   │   └── shift_report.json
+│   ├── base_s42.log
+│   ├── base_s43
+│   │   ├── graph.json
+│   │   ├── run.db
+│   │   └── shift_report.json
+│   ├── base_s43.log
+│   ├── base_s44
 │   │   └── run.db
-│   └── smoke
-│       ├── graph.json
-│       ├── run.db
-│       └── shift_report.json
+│   ├── base_s45
+│   │   └── run.db
+│   ├── base_s46
+│   │   └── run.db
+│   ├── base_s47
+│   │   └── run.db
+│   ├── pilot
+│   │   ├── feed.html
+│   │   ├── graph.json
+│   │   ├── run.db
+│   │   └── shift_report.json
+│   ├── smoke
+│   │   ├── graph.json
+│   │   ├── run.db
+│   │   └── shift_report.json
+│   ├── test1
+│   │   ├── run.db
+│   │   ├── run.db-shm
+│   │   └── run.db-wal
+│   └── test1.log
 ├── scripts
-│   └── diagnose_llm.py
+│   ├── analyze_run.py
+│   ├── check_voters.py
+│   ├── diagnose_llm.py
+│   ├── export_notes.py
+│   ├── find_ceiling.py
+│   ├── plan_run.py
+│   ├── preflight.py
+│   ├── probe.py
+│   ├── __pycache__
+│   │   └── render_feed.cpython-314.pyc
+│   ├── quota_report.py
+│   ├── render_feed.py
+│   ├── render_graph.py
+│   └── serve_feed.py
 ├── simulations
 │   └── sim_14
 │       ├── ipc_commands
@@ -1277,6 +1338,9 @@
 │   │   ├── pre_process_news.py
 │   │   └── scraper_ansa.py
 │   └── SimulationPromptC3.txt
-└── struttura_cartella.txt
+├── struttura_cartella.txt
+├── TESI_ARCHITETTURA.md
+├── TESI_IMPIANTO.md
+└── TEST_NUOVI_LIMITI.md
 
-17 directories, 1263 files
+29 directories, 1315 files

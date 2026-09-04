@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS agent (
     activity_hours  TEXT NOT NULL DEFAULT '[]',
     is_source       INTEGER NOT NULL DEFAULT 0,
     is_voter        INTEGER NOT NULL DEFAULT 1,
+    media_depth     TEXT NOT NULL DEFAULT 'titolo',
     attrs           TEXT NOT NULL DEFAULT '{}',
     bio_vec         BLOB
 );
@@ -144,6 +145,7 @@ class Store:
                 a.get("education"), a.get("activity", 0.35),
                 json.dumps(a.get("activity_hours") or []),
                 int(a.get("is_source", 0)), int(a.get("is_voter", 1)),
+                a.get("media_depth", "titolo"),
                 json.dumps(a.get("attrs", {}), ensure_ascii=False),
             )
             for a in agents
@@ -151,7 +153,8 @@ class Store:
         self.conn.executemany(
             "INSERT OR REPLACE INTO agent (agent_id, username, static_bio, "
             "profession, age, region, education, activity, activity_hours, "
-            "is_source, is_voter, attrs) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            "is_source, is_voter, media_depth, attrs) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
             rows,
         )
         self.conn.commit()

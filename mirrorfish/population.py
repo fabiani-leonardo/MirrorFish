@@ -43,6 +43,47 @@ _USERNAME_IST = re.compile(
     r"corriere|stampa", re.IGNORECASE)
 
 
+# Profondita' di lettura delle notizie, dedotta dal testo della biografia.
+# I marcatori vengono dalle bio che generi tu ("Segue la politica in modo
+# discontinuo", "interviene solo quando un tema lo tocca da vicino").
+_ATTENZIONE_BASSA = re.compile(
+    r"non segue la politica|disinteressat|si informa poco|"
+    r"non si interessa di politica|lontan[oa] dalla politica", re.I)
+_ATTENZIONE_MEDIA = re.compile(
+    r"in modo discontinuo|solo quando un tema lo tocca|saltuari|"
+    r"segue poco|di sfuggita", re.I)
+_ATTENZIONE_ALTA = re.compile(
+    r"segue (?:molto |assiduamente |con attenzione )|appassionat[oa] di politica|"
+    r"legge i (?:giornali|quotidiani)|si informa (?:molto|quotidianamente)|"
+    r"militant|attivist|molto informat", re.I)
+
+
+def media_depth(bio: str | None, institutional: bool = False) -> str:
+    """
+    Quanto a fondo un agente legge una notizia: integrale, titolo, sommario,
+    oppure nessuna.
+
+    Le fonti e gli account istituzionali leggono tutto (e' il loro mestiere).
+    Per i cittadini la profondita' viene dedotta dalla biografia; in assenza
+    di marcatori il default e' 'titolo', il caso piu' comune.
+
+    Chi ha attenzione minima ('nessuna') non riceve notizie nel feed: viene a
+    sapere del referendum solo attraverso quello che ne dicono gli altri. E'
+    il meccanismo di trasmissione di seconda mano, che con un'esposizione
+    uniforme non poteva esistere.
+    """
+    if institutional:
+        return "integrale"
+    b = bio or ""
+    if _ATTENZIONE_ALTA.search(b):
+        return "integrale"
+    if _ATTENZIONE_BASSA.search(b):
+        return "nessuna"
+    if _ATTENZIONE_MEDIA.search(b):
+        return "sommario"
+    return "titolo"
+
+
 def is_institutional(bio: str | None, username: str | None) -> bool:
     """
     Distingue chi partecipa al dibattito da chi ha una scheda elettorale.
@@ -122,6 +163,7 @@ def load_mirofish_profiles(path: str | Path) -> list[dict[str, Any]]:
                 cronotipo_for(p.get("age"), p.get("profession"), ist)],
             "is_source": 1 if is_ansa else 0,
             "is_voter": 0 if (ist or is_ansa) else 1,
+            "media_depth": media_depth(bio, ist or is_ansa),
             "attrs": {k: v for k, v in p.items()
                       if k not in {"user_id", "username", "persona", "bio"}},
         })
@@ -161,6 +203,8 @@ def synthetic(n: int, seed: int = 0) -> list[dict[str, Any]]:
                 "notturno" if rng.random() < 0.12
                 else cronotipo_for(eta, None)],
             "is_source": 0, "is_voter": 1,
+            "media_depth": rng.choice(
+                ["integrale", "titolo", "titolo", "sommario", "nessuna"]),
             "attrs": {"lean": lean},
         })
     return agents
@@ -171,7 +215,7 @@ def source_agent(agent_id: int = 0, username: str = "ANSA") -> dict[str, Any]:
         "agent_id": agent_id, "username": username,
         "static_bio": "Agenzia di stampa. Pubblica notizie, non commenta.",
         "profession": "agenzia di stampa", "activity": 0.0, "is_source": 1,
-        "is_voter": 0,
+        "is_voter": 0, "media_depth": "integrale",
         "attrs": {},
     }
 

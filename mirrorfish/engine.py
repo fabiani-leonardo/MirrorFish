@@ -67,6 +67,10 @@ class Engine:
         # Cosa ha letto ogni agente dall'ultima riflessione
         self._seen: dict[int, list[str]] = {}
         self._interest: dict[int, list[float]] = {}
+        # news_id -> NewsItem, per rendere il testo alla profondita' giusta
+        self.news_by_id = {
+            it.news_id: it
+            for t_ in range(sim.total_ticks()) for it in news.at(t_)}
 
     # ------------------------------------------------------------------ util #
     def _rng(self, tick: int, purpose: str) -> random.Random:
@@ -109,9 +113,13 @@ class Engine:
     # ----------------------------------------------------------------- azioni #
     async def _act(self, agent: sqlite3.Row, tick: int, sim_date: date) -> dict[str, Any]:
         agent_id = int(agent["agent_id"])
+        # Chi non segue la politica non riceve notizie: ne sente parlare
+        # solo dagli altri. Gli slot liberati vanno ai pari.
+        depth = agent["media_depth"] if "media_depth" in agent.keys() else "titolo"
+        slots = 0 if depth == "nessuna" else self.sim.news_slots
         feed = self.recommender.feed(
             agent_id, tick, limit=self.sim.feed_size,
-            news_slots=self.sim.news_slots,
+            news_slots=slots,
             interest_vec=self._interest.get(agent_id),
         )
         notes = self.store.notes_for(agent_id, limit=self.sim.max_notes_in_prompt)
@@ -124,6 +132,8 @@ class Engine:
             max_tokens=self.llm_cfg.token_budget["action"],
             temperature=self.llm_cfg.temperature,
             parents=parents,
+            news_depth=depth,
+            news_by_id=self.news_by_id,
             max_actions=self.sim.max_actions,
         )
         # Traccia cosa ha letto, per la riflessione successiva

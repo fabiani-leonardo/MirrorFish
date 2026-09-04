@@ -65,7 +65,9 @@ class AgentAction:
         return self.action == "IGNORE" or self.error is not None
 
 
-def format_feed(rows: list[sqlite3.Row], parents: dict | None = None) -> str:
+def format_feed(rows: list[sqlite3.Row], parents: dict | None = None,
+                news_depth: str = "sommario",
+                news_by_id: dict | None = None) -> str:
     """
     Rende il feed come lo legge l'agente.
 
@@ -80,6 +82,13 @@ def format_feed(rows: list[sqlite3.Row], parents: dict | None = None) -> str:
     for r in rows:
         tag = "NOTIZIA" if r["kind"] == "news" else "@" + r["username"]
         likes = f" [{r['likes']} mi piace]" if r["likes"] else ""
+        if r["kind"] == "news" and news_by_id:
+            nid = r["news_id"] if "news_id" in r.keys() else None
+            item = news_by_id.get(nid)
+            if item is not None:
+                lines.append(f"#{r['post_id']} {tag}{likes}: "
+                             f"{item.at_depth(news_depth)}")
+                continue
         p = parents.get(r["post_id"])
         if p is not None:
             who = "ANSA" if p["is_source"] else "@" + p["username"]
@@ -101,6 +110,8 @@ def build_prompts(
     sim_date: str,
     parents: dict | None = None,
     max_actions: int = 1,
+    news_depth: str = "sommario",
+    news_by_id: dict | None = None,
 ) -> tuple[str, str]:
     notes_block = ""
     if notes:
@@ -120,7 +131,7 @@ def build_prompts(
     )
     user = USER_TEMPLATE.format(
         sim_date=sim_date,
-        feed=format_feed(feed_rows, parents),
+        feed=format_feed(feed_rows, parents, news_depth, news_by_id),
         own_block=own_block,
     )
     return system, user
@@ -224,9 +235,11 @@ async def decide(
     temperature: float,
     parents: dict | None = None,
     max_actions: int = 1,
+    news_depth: str = "sommario",
+    news_by_id: dict | None = None,
 ) -> tuple[list[AgentAction], LLMResponse]:
     system, user = build_prompts(agent, feed_rows, notes, own_posts, sim_date,
-                                 parents, max_actions)
+                                 parents, max_actions, news_depth, news_by_id)
     resp = await client.complete(
         system, user, max_tokens=max_tokens, temperature=temperature, json_mode=True
     )

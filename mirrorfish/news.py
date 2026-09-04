@@ -60,15 +60,78 @@ def parse_date_from_filename(filename: str) -> date | None:
 class NewsItem:
     news_id: str
     published: date
-    content: str
+    content: str                 # sommario in stile social (notizie_social)
+    title: str = ""              # titolo originale
+    body: str = ""               # testo integrale (notizie_referendum)
 
     def as_post(self) -> str:
         return f"[ANSA] {self.content}"
 
+    def at_depth(self, depth: str, max_body_chars: int = 1400) -> str:
+        """
+        Il testo che l'agente legge, secondo la sua profondita' di lettura.
 
-def load_news(news_dir: str | Path) -> list[NewsItem]:
-    """Carica i .txt datati, ordinati per data poi per nome (deterministico)."""
+        Modella un fatto ovvio del consumo di notizie: davanti allo stesso
+        lancio d'agenzia, chi segue la politica legge l'articolo, chi la segue
+        di sfuggita legge il titolo, chi non la segue non lo apre affatto e
+        semmai ne sente parlare da altri.
+
+        Finora tutti ricevevano lo stesso sommario di 200 caratteri, il che
+        rendeva l'esposizione mediatica uniforme per costruzione — e quindi
+        non misurabile come variabile.
+        """
+        if depth == "integrale" and self.body:
+            body = self.body
+            if len(body) > max_body_chars:
+                body = body[:max_body_chars].rsplit(" ", 1)[0] + " [...]"
+            head = self.title or self.content
+            return f"[ANSA] {head}\n{body}"
+        if depth == "titolo":
+            return f"[ANSA] {self.title or self.content}"
+        return f"[ANSA] {self.content}"
+
+
+_TITOLO = re.compile(r"^TITOLO:\s*(.+)$", re.MULTILINE)
+_SEP = re.compile(r"^-{10,}\s*$", re.MULTILINE)
+
+
+def parse_full_article(text: str) -> tuple[str, str]:
+    """
+    Estrae titolo e corpo dal formato di `notizie_referendum`:
+
+        TITOLO: ...
+        DATA ESTRATTA: 18febbraio2026
+        LINK: https://...
+        --------------------------------------------------
+
+        <corpo>
+    """
+    m = _TITOLO.search(text)
+    title = m.group(1).strip() if m else ""
+    parts = _SEP.split(text, maxsplit=1)
+    body = parts[1].strip() if len(parts) > 1 else ""
+    body = " ".join(body.split())      # ANSA manda a capo a meta' frase
+    return title, body
+
+
+def load_news(news_dir: str | Path,
+              full_dir: str | Path | None = None) -> list[NewsItem]:
+    """
+    Carica i .txt datati, ordinati per data poi per nome (deterministico).
+
+    `full_dir` e' la cartella dei testi integrali (notizie_referendum), che ha
+    gli stessi nomi file della cartella dei sommari: l'accoppiamento e' per
+    nome, quindi non serve nessun indice.
+    """
     news_dir = Path(news_dir)
+    full = {}
+    if full_dir:
+        fd = Path(full_dir)
+        if not fd.exists():
+            raise FileNotFoundError(f"Cartella testi integrali inesistente: {fd}")
+        for f in fd.glob("*.txt"):
+            full[f.stem] = parse_full_article(
+                f.read_text(encoding="utf-8", errors="replace"))
     if not news_dir.exists():
         raise FileNotFoundError(f"Cartella notizie inesistente: {news_dir}")
 
@@ -81,7 +144,9 @@ def load_news(news_dir: str | Path) -> list[NewsItem]:
             continue
         content = f.read_text(encoding="utf-8", errors="replace").strip()
         if content:
-            items.append(NewsItem(news_id=f.stem, published=d, content=content))
+            title, body = full.get(f.stem, ("", ""))
+            items.append(NewsItem(news_id=f.stem, published=d, content=content,
+                                  title=title, body=body))
 
     items.sort(key=lambda n: (n.published, n.news_id))
     if skipped:
