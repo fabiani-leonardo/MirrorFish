@@ -45,7 +45,8 @@ from mirrorfish.engine import Engine
 from mirrorfish.llm import EndpointDown, build_client
 from mirrorfish.news import NewsStream, NewsItem, load_news
 from mirrorfish.population import (
-    build_follow_graph, load_mirofish_profiles, source_agent, synthetic,
+    build_follow_graph, force_media_depth, load_mirofish_profiles,
+    source_agent, synthetic,
 )
 from mirrorfish.recommender import POLICIES, Recommender, explain_policies
 from mirrorfish.store import Store
@@ -126,6 +127,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         survey_every=args.survey_every,
         counterfactual_from_tick=args.cf_from_tick,
         counterfactual_news_dir=args.cf_news,
+        force_media_depth=args.force_media_depth,
     )
 
 
@@ -175,6 +177,12 @@ async def main_async(args: argparse.Namespace) -> None:
             agents = agents[: args.agents]
     else:
         agents = synthetic(args.agents or 40, seed=sim.seed)
+
+    if sim.force_media_depth:
+        n = force_media_depth(agents, sim.force_media_depth)
+        print(f"[setup] profondita' di lettura FORZATA a "
+              f"'{sim.force_media_depth}' per {n} agenti: "
+              f"esposizione manipolata, non dedotta dalla biografia")
 
     src_id = max((a["agent_id"] for a in agents), default=0) + 1
     if not any(a.get("is_source") for a in agents):
@@ -327,6 +335,12 @@ def parse_args() -> argparse.Namespace:
                    help="cartella notizie controfattuali (integrali)")
     p.add_argument("--cf-from-tick", type=int, default=None)
     p.add_argument("--max-news-per-tick", type=int, default=d.max_news_per_tick)
+    p.add_argument("--force-media-depth", default=None,
+                   choices=["integrale", "titolo", "nessuna"],
+                   help="impone la stessa profondita' a tutti: serve a "
+                        "separare l'effetto dell'esposizione da quello della "
+                        "personalita'. Due run che differiscono SOLO per "
+                        "questo sono un esperimento, non un'osservazione")
     p.add_argument("--news-slots", type=int, default=d.news_slots,
                    help="TETTO agli slot notizia. Quelli effettivi dipendono "
                         "dalla profondita' di lettura dell'agente")

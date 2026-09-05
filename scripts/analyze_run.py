@@ -9,6 +9,7 @@ Non produce grafici: produce i controlli che possono invalidare il run.
 from __future__ import annotations
 
 import argparse
+import random
 import re
 import sqlite3
 
@@ -169,14 +170,60 @@ def main() -> None:
             FROM post p JOIN agent a ON a.agent_id = p.agent_id
             WHERE p.kind != 'news' AND a.is_source = 0"""):
             gruppi.setdefault(r["d"], []).append(r["content"])
+        def ttr(t):
+            w = [x.lower() for x in re.findall(r"\w+", t)]
+            return len(set(w)) / len(w) if w else 0.0
+
+        misure = {}
         for d, testi in sorted(gruppi.items()):
-            n = len(testi)
-            lung = sum(len(t) for t in testi) / n
-            cifre = sum(len(re.findall(r"\d", t)) for t in testi) / n
-            tag = sum(t.count("#") for t in testi) / n
-            parole = [w.lower() for t in testi for w in re.findall(r"\w+", t)]
-            ttr = len(set(parole)) / max(len(parole), 1)
-            print(f"  {d:<12}{n:>6}{lung:>9.0f}{cifre:>9.2f}{tag:>7.2f}{ttr:>9.3f}")
+            # Ricchezza lessicale calcolata PER POST e poi mediata. Sul
+            # corpus aggregato era inutilizzabile: il type-token ratio cala
+            # meccanicamente al crescere del testo, quindi il gruppo con meno
+            # post usciva sempre "piu' ricco". Nel pilota il gruppo 'nessuna'
+            # (47 post) segnava 0,302 contro 0,118 di 'integrale' (441 post):
+            # non era ricchezza lessicale, era la dimensione del campione.
+            misure[d] = {
+                "n": len(testi),
+                "caratt": [len(t) for t in testi],
+                "cifre": [len(re.findall(r"\d", t)) for t in testi],
+                "tag": [t.count("#") for t in testi],
+                "lessico": [ttr(t) for t in testi],
+            }
+            m = misure[d]
+            print(f"  {d:<12}{m['n']:>6}"
+                  f"{sum(m['caratt'])/m['n']:>9.0f}"
+                  f"{sum(m['cifre'])/m['n']:>9.2f}"
+                  f"{sum(m['tag'])/m['n']:>7.2f}"
+                  f"{sum(m['lessico'])/m['n']:>9.3f}")
+
+        if "integrale" in misure and "titolo" in misure:
+            print("\n  Test di permutazione, integrale contro titolo")
+            print("  (10.000 rimescolamenti, nessuna assunzione di normalita')")
+            rng = random.Random(0)
+            for metrica in ("caratt", "cifre", "tag", "lessico"):
+                a = misure["integrale"][metrica]
+                b = misure["titolo"][metrica]
+                oss = sum(a) / len(a) - sum(b) / len(b)
+                tutti = a + b
+                na = len(a)
+                estremi = 0
+                for _ in range(10000):
+                    rng.shuffle(tutti)
+                    d = (sum(tutti[:na]) / na
+                         - sum(tutti[na:]) / (len(tutti) - na))
+                    if abs(d) >= abs(oss):
+                        estremi += 1
+                p = (estremi + 1) / 10001
+                verdetto = "significativo" if p < 0.05 else "non distinguibile"
+                print(f"    {metrica:<9} differenza {oss:+8.3f}   "
+                      f"p = {p:.4f}   {verdetto}")
+            print("\n  ATTENZIONE al confondimento: qui la profondita' e'")
+            print("  DEDOTTA dalla biografia, quindi chi legge l'integrale e'")
+            print("  un attivista, e un attivista scriverebbe post piu' lunghi")
+            print("  comunque. Per attribuire la differenza all'esposizione")
+            print("  servono due run con --force-media-depth integrale e")
+            print("  --force-media-depth titolo, stesso seed.")
+
         print("\n  caratt. = lunghezza media | n.cifre = riferimenti numerici")
         print("  #tag = hashtag per post | lessico = ricchezza (type-token ratio)")
         print("  E' la metrica da portare in tesi: non dipende dall'aver")

@@ -54,6 +54,33 @@ _ATTENZIONE_ALTA = re.compile(
     r"militant|attivist|molto informat", re.I)
 
 
+def force_media_depth(agents: list[dict], depth: str) -> int:
+    """
+    Impone la stessa profondita' di lettura a tutti i cittadini.
+
+    Serve a togliere un confondimento che il disegno osservativo non puo'
+    togliere. Normalmente `media_depth` si deduce dalla biografia: chi legge
+    l'articolo integrale e' un attivista, e un attivista scriverebbe post piu'
+    lunghi e piu' documentati QUALUNQUE cosa gli venga mostrato. Trovare che
+    chi legge l'integrale argomenta di piu' non distingue quindi l'effetto
+    dell'esposizione da quello della personalita'.
+
+    Forzando la stessa profondita' per tutti, e confrontando due run identici
+    (stesso seed, stessa popolazione, stesso grafo) che differiscono SOLO per
+    quanto testo ricevono, la differenza residua e' attribuibile
+    all'esposizione e a nient'altro.
+
+    Le fonti restano escluse: non leggono, pubblicano.
+    """
+    n = 0
+    for a in agents:
+        if a.get("is_source"):
+            continue
+        a["media_depth"] = depth
+        n += 1
+    return n
+
+
 def media_depth(bio: str | None, institutional: bool = False) -> str:
     """
     Quanto a fondo un agente legge una notizia: integrale, titolo o nessuna.

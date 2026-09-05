@@ -171,6 +171,12 @@ class SimConfig:
     # dell'opinione invece di due soli punti.
     survey_every: int | None = None
 
+    # Se valorizzato, tutti i cittadini leggono a questa profondita' invece
+    # di quella dedotta dalla biografia. E' una MANIPOLAZIONE: due run che
+    # differiscono solo per questo campo isolano l'effetto dell'esposizione
+    # dal confondimento con il tipo di persona.
+    force_media_depth: str | None = None
+
     # Controfattuale: da questo tick in poi si usa lo stream di news alternativo
     counterfactual_from_tick: int | None = None
     counterfactual_news_dir: str | None = None

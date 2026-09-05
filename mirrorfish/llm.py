@@ -110,7 +110,16 @@ class RateGate:
         # scivolare la finestra, non a fermare il run.
         self.probe_pause_s = 12.0
         self._probe_pending = False
-        self.observed_scope: str | None = None
+        # Risalita dopo un rallentamento. Senza, `trip` era a senso unico: un
+        # solo 429 al quinto minuto di un run da quattro ore lo rallentava del
+        # 50% per tutte le tre ore e cinquanta rimanenti. Misurato su
+        # pilot_14: ritmo nominale 2,76 s/richiesta (--rpm 25), un intervento,
+        # ritmo finale 4,14 s per l'intero run, cioe' 14,5 richieste/minuto
+        # invece di 21,7. Un terzo del tempo di orologio buttato.
+        self.recover_after = 25       # richieste riuscite prima di riprovare
+        self.recover_factor = 0.9     # risalita graduale, non a scatto
+        self._ok_since_trip = 0
+        self.recoveries = 0
 
     async def acquire(self) -> None:
         """
@@ -167,10 +176,34 @@ class RateGate:
                     max(self._base_interval, 1.0) * 8,
                     max(self.min_interval_s * 1.5, 1.0),
                 )
+                self._ok_since_trip = 0
                 if first:
                     print(f"    [rate-limit] {reason}: pausa globale "
                           f"{seconds:.0f}s, ritmo -> "
                           f"{self.min_interval_s:.2f}s fra le richieste")
+
+    async def _maybe_recover(self) -> None:
+        """
+        Risale verso il ritmo nominale dopo una serie di richieste riuscite.
+
+        La discesa e' brusca (x1.5 subito) e la risalita lenta (x0.9 ogni 25
+        successi) di proposito: si vuole reagire in fretta a un limite e
+        tornare su con prudenza, non oscillare attorno alla soglia. Da 4,14 s
+        servono circa 100 richieste riuscite per tornare a 2,76 s.
+        """
+        if self.min_interval_s <= self._base_interval:
+            return
+        self._ok_since_trip += 1
+        if self._ok_since_trip < self.recover_after:
+            return
+        self._ok_since_trip = 0
+        prima = self.min_interval_s
+        self.min_interval_s = max(self._base_interval,
+                                  self.min_interval_s * self.recover_factor)
+        self.recoveries += 1
+        if self.recoveries % 4 == 1:
+            print(f"    [rate-limit] {self.recover_after} richieste pulite: "
+                  f"ritmo {prima:.2f}s -> {self.min_interval_s:.2f}s")
 
     async def observe(self, headers: Any) -> None:
         """
@@ -181,6 +214,9 @@ class RateGate:
         non possiamo vedere. Quando il residuo scende sotto la riserva ci si
         ferma PRIMA di prendere il 429, invece di reagire dopo.
         """
+        async with self._lock:
+            await self._maybe_recover()
+
         # Va guardato il MINIMO fra tutti i limiti, non il primo trovato.
         # Il bug precedente usciva dopo `team_member`, che dopo l'aumento a 60
         # e' sempre abbondante, e non leggeva mai `team` — che e' condiviso
