@@ -125,7 +125,8 @@ class Engine:
 
         # UNA sola resa del feed, usata sia per il prompt sia per la memoria
         # di cio' che e' stato letto. Erano due, e divergevano sulle notizie.
-        feed_lines = render_feed(feed, parents, depth, self.news_by_id)
+        feed_lines = render_feed(feed, parents, depth, self.news_by_id,
+                                 max_body_chars=self.sim.max_body_chars)
 
         notes = self.store.notes_for(agent_id, limit=self.sim.max_notes_in_prompt)
         own = self.store.posts_by(agent_id, limit=3)

@@ -37,10 +37,26 @@ from typing import Any
 #
 # Se finish_reason == "length" ricorre spesso il budget e' troppo stretto: la
 # telemetria in store.llm_call lo rende misurabile invece che opinabile.
+# Massimi OSSERVATI sul pilota da 14 giorni con modello vero (100 agenti,
+# 3.380 chiamate): action 327, reflection 404, vote 289.
+#
+# I budget sono generosi DI PROPOSITO, e la ragione e' misurata. Il probe del
+# 2026-09-05 ha stabilito che questo gateway addebita i token REALMENTE usati,
+# non `max_tokens`: due richieste identiche con budget 128 e 640 hanno scalato
+# entrambe 39 token, cioe' 33 di prompt piu' 6 di output. Non c'e' alcuna
+# prenotazione.
+#
+# Conseguenza pratica: alzare max_tokens non costa nulla in quota, mentre
+# abbassarlo costa risposte troncate — e una risposta troncata e' una chiamata
+# sprecata piu' un dato perso. Quando il costo e' asimmetrico in questo modo,
+# la scelta prudente e' il budget alto.
+#
+# Da riverificare se cambia il gateway:
+#     python scripts/endpoint.py probe --n 2 --max-tokens 128 640 --sleep 20
 DEFAULT_TOKEN_BUDGET = {
-    "action": 384,
-    "reflection": 512,
-    "vote": 512,   # p95 misurato 213, max 242: 300 era troppo vicino
+    "action": 512,
+    "reflection": 640,
+    "vote": 448,
 }
 
 
@@ -158,6 +174,13 @@ class SimConfig:
     # "mi piace" innaturalmente rari. Alzarlo non costa richieste in piu',
     # solo qualche token di output.
     max_actions: int = 3
+
+    # Caratteri di articolo mostrati a chi legge l'integrale. Ero sceso a 900
+    # temendo un tetto sui token al minuto; il probe ha mostrato che i token
+    # non sono il vincolo (al ritmo di 25 richieste/minuto si consuma il 31%
+    # del limite). Ripristinato a 1400: accorciare l'articolo indebolisce il
+    # trattamento sperimentale, che e' proprio la variabile da misurare.
+    max_body_chars: int = 1400
 
     # Attivita': probabilita' che un agente agisca in un dato tick
     base_activity: float = 0.35

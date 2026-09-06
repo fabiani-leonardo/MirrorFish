@@ -139,8 +139,11 @@ async def main_async(args: argparse.Namespace) -> None:
     llm_cfg = LLMConfig.from_env(concurrency=args.concurrency,
                                  requests_per_minute=args.rpm)
     if sim.max_actions > 1:
-        # Piu' azioni = output piu' lungo, ma sempre UNA richiesta.
-        llm_cfg.token_budget["action"] = 384 + 128 * (sim.max_actions - 1)
+        # Piu' azioni = output piu' lungo, ma sempre UNA richiesta. Il
+        # supplemento e' largo: il gateway addebita i token usati, non il
+        # budget richiesto (misurato con endpoint.py probe), quindi un tetto
+        # alto non costa quota e previene i troncamenti.
+        llm_cfg.token_budget["action"] = 512 + 160 * (sim.max_actions - 1)
     if args.max_action_tokens:
         llm_cfg.token_budget["action"] = args.max_action_tokens
 

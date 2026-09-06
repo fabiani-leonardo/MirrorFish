@@ -128,6 +128,7 @@ def render_feed(
     parents: dict | None = None,
     news_depth: str = "titolo",
     news_by_id: dict | None = None,
+    max_body_chars: int = 1400,
 ) -> list[tuple[int, str]]:
     """
     Rende ogni riga del feed come l'agente la legge: (post_id, testo).
@@ -162,7 +163,8 @@ def render_feed(
             if news_by_id:
                 nid = r["news_id"] if "news_id" in r.keys() else None
                 item = news_by_id.get(nid)
-            body = item.at_depth(news_depth) if item is not None else r["content"]
+            body = (item.at_depth(news_depth, max_body_chars)
+                    if item is not None else r["content"])
             out.append((pid, f"NOTIZIA{likes}: {body}"))
             continue
 

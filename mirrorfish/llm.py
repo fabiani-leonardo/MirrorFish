@@ -116,10 +116,25 @@ class RateGate:
         # pilot_14: ritmo nominale 2,76 s/richiesta (--rpm 25), un intervento,
         # ritmo finale 4,14 s per l'intero run, cioe' 14,5 richieste/minuto
         # invece di 21,7. Un terzo del tempo di orologio buttato.
-        self.recover_after = 25       # richieste riuscite prima di riprovare
-        self.recover_factor = 0.9     # risalita graduale, non a scatto
+        # Discesa e risalita. Il rapporto fra le due era troppo squilibrato:
+        # un 429 costava il 50% del ritmo e recuperarlo richiedeva 100
+        # richieste pulite, cioe' venti minuti a quattro richieste al minuto.
+        # Con 429 ogni pochi minuti il ritmo scendeva solo, fino al tetto di
+        # 8 volte l'intervallo nominale, e il run finiva a strisciare. Ora la
+        # frenata e' meno brusca e il recupero piu' pronto.
+        self.slow_factor = 1.35       # era 1.5
+        self.recover_after = 10       # era 25
+        self.recover_factor = 0.85    # era 0.9
         self._ok_since_trip = 0
         self.recoveries = 0
+        # Costo medio in token di una chiamata, aggiornato dalle risposte.
+        # Serve a rendere confrontabile il residuo di token con quello di
+        # richieste, e a stimare i token al minuto anche quando il gateway
+        # non espone alcun header.
+        self.avg_tokens_per_call = 1500.0
+        self.total_tokens = 0
+        self.total_calls = 0
+        self.observed_tokens_left: float | None = None
 
     async def acquire(self) -> None:
         """
@@ -174,7 +189,7 @@ class RateGate:
                 # produceva 0, cioe' "rallenta" azzerava la spaziatura.
                 self.min_interval_s = min(
                     max(self._base_interval, 1.0) * 8,
-                    max(self.min_interval_s * 1.5, 1.0),
+                    max(self.min_interval_s * self.slow_factor, 1.0),
                 )
                 self._ok_since_trip = 0
                 if first:
@@ -221,19 +236,42 @@ class RateGate:
         # Il bug precedente usciva dopo `team_member`, che dopo l'aumento a 60
         # e' sempre abbondante, e non leggeva mai `team` — che e' condiviso
         # con gli altri membri ed e' quello che scatta davvero.
-        found: dict[str, int] = {}
+        #
+        # E vanno guardate anche le DUE risorse, non solo le richieste. Fino a
+        # questa revisione si leggeva unicamente `remaining-requests`: se il
+        # limite vincolante e' sui token al minuto, il gate vede un budget di
+        # richieste abbondante, non frena mai, e incassa 429 a quattro
+        # richieste al minuto senza capire perche'. Un prompt con due articoli
+        # integrali da 1400 caratteri piu' 640 token di output preallocati
+        # supera i 2.500 token: bastano cinque richieste al minuto per
+        # sfondare un tetto da 12.000 token/minuto restando a un ventesimo
+        # del limite di richieste.
+        #
+        # Il residuo di token va normalizzato prima di confrontarlo con quello
+        # di richieste: si converte in "quante richieste ancora ci stanno",
+        # dividendo per il costo tipico osservato.
+        found: dict[str, float] = {}
         for scope in ("api_key", "team_member", "team"):
             raw = headers.get(f"x-ratelimit-{scope}-remaining-requests")
-            if raw is None:
-                continue
-            try:
-                found[scope] = int(float(raw))
-            except (TypeError, ValueError):
-                pass
+            if raw is not None:
+                try:
+                    found[scope] = float(raw)
+                except (TypeError, ValueError):
+                    pass
+            raw = headers.get(f"x-ratelimit-{scope}-remaining-tokens")
+            if raw is not None:
+                try:
+                    tok = float(raw)
+                    costo = max(self.avg_tokens_per_call, 1.0)
+                    found[f"{scope}/token"] = tok / costo
+                    self.observed_tokens_left = tok
+                except (TypeError, ValueError):
+                    pass
         if not found:
             return
 
         scope, remaining = min(found.items(), key=lambda kv: kv[1])
+        remaining = int(remaining)
         self.observed_remaining = remaining
         self.observed_scope = scope
         if remaining <= self.reserve:
@@ -261,10 +299,38 @@ class RateGate:
                       f"{remaining} residue, pausa {self.probe_pause_s:.0f}s",
                       flush=True)
 
-    def stats(self) -> dict[str, Any]:
+    def account(self, prompt_tokens: int, completion_tokens: int,
+                budget: int) -> None:
+        """
+        Registra il costo in token di una chiamata riuscita.
+
+        Si contano i token di prompt piu' il BUDGET richiesto, non l'output
+        effettivo: molti gateway prenotano `max_tokens` sulla finestra al
+        momento della richiesta e restituiscono la differenza solo dopo. Se e'
+        cosi', chiedere 640 token per poi produrne 83 costa comunque 640.
+        Verificabile con `scripts/endpoint.py probe --max-tokens 128 640`.
+        """
+        self.total_calls += 1
+        self.total_tokens += prompt_tokens + max(completion_tokens, budget)
+        # Media mobile: il costo cambia nel corso del run perche' il feed si
+        # riempie e le note si accumulano.
+        self.avg_tokens_per_call += (
+            (prompt_tokens + max(completion_tokens, budget)
+             - self.avg_tokens_per_call) / min(self.total_calls, 50)
+        )
+
+    def tokens_per_minute(self) -> float:
+        """Stima del consumo a regime, col ritmo corrente."""
+        return self.avg_tokens_per_call * 60.0 / max(self.min_interval_s, 0.05)
+
+    def stats(self) -> dict[str, Any]:   # noqa: D401
         return {"trips": self.trips, "paused_s": round(self.paused_s, 1),
                 "preemptive_pauses": self.preemptive_pauses,
-                "final_interval_s": round(self.min_interval_s, 3)}
+                "final_interval_s": round(self.min_interval_s, 3),
+                "avg_tokens_per_call": round(self.avg_tokens_per_call),
+                "tokens_per_minute": round(self.tokens_per_minute()),
+                "tokens_left": self.observed_tokens_left,
+                "recoveries": self.recoveries}
 
 
 def _retry_after(resp: httpx.Response, fallback: float) -> float:
@@ -391,11 +457,32 @@ class OpenAICompatClient(LLMClient):
                 if r.status_code == 429:
                     # Il body del 429 dice QUALE limite e' scattato (richieste
                     # al minuto, token al minuto, quota della chiave...).
-                    # Va conservato: e' l'informazione da girare al professore.
-                    body = (r.text or "")[:300].replace("\n", " ")
-                    last_err = f"HTTP 429 {body}".strip()
+                    #
+                    # Va stampato PER INTERO insieme alla fotografia dei
+                    # contatori. La versione precedente lo troncava a 120
+                    # caratteri per farlo stare su una riga, e quei 120
+                    # caratteri finivano tutti dentro gli UUID del messaggio:
+                    # nei log si leggeva "Rate limit exceeded for team_member:
+                    # b2e816ee-...:ebf8625b-4191-4fe1-839c-6" e si perdeva
+                    # esattamente la parte che dice se erano le richieste o i
+                    # token. Un 429 non diagnosticabile e' un 429 che si
+                    # ripete.
+                    body = (r.text or "").replace("\n", " ").strip()
+                    last_err = f"HTTP 429 {body[:300]}"
+                    contatori = " ".join(
+                        f"{k.replace('x-ratelimit-', '')}={v}"
+                        for k, v in sorted(r.headers.items())
+                        if "ratelimit" in k.lower())
+                    print(f"    [429] {body}", flush=True)
+                    if contatori:
+                        print(f"    [429] contatori: {contatori}", flush=True)
+                    print(f"    [429] questa richiesta: {max_tokens} token di "
+                          f"budget, ritmo corrente "
+                          f"{self.gate.min_interval_s:.2f}s, consumo stimato "
+                          f"{self.gate.tokens_per_minute():,.0f} token/min",
+                          flush=True)
                     wait = _retry_after(r, self.cfg.rate_limit_cooldown_s)
-                    await self.gate.trip(wait, reason=f"429 {body[:120]}")
+                    await self.gate.trip(wait, reason="429")
                     continue
 
                 if r.status_code in (500, 502, 503, 504):
@@ -406,8 +493,14 @@ class OpenAICompatClient(LLMClient):
                     continue
 
                 r.raise_for_status()
-                await self.gate.observe(r.headers)
                 data = r.json()
+                usage_early = data.get("usage") or {}
+                self.gate.account(
+                    int(usage_early.get("prompt_tokens", 0) or 0),
+                    int(usage_early.get("completion_tokens", 0) or 0),
+                    max_tokens,
+                )
+                await self.gate.observe(r.headers)
                 choice = data["choices"][0]
                 msg = choice.get("message", {})
                 text = msg.get("content") or ""
