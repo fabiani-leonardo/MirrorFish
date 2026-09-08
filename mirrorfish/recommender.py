@@ -98,6 +98,7 @@ class Recommender:
         *,
         out_of_network: float = 0.15,
         candidate_pool: int = 60,
+        news_pool_factor: int = 5,
         seed: int = 0,
     ):
         if policy not in POLICIES:
@@ -108,6 +109,10 @@ class Recommender:
         self.weights = POLICIES[policy]
         self.out_of_network = out_of_network
         self.candidate_pool = candidate_pool
+        # Da quante notizie recenti si pesca per riempire gli slot: vedi
+        # _news_for. Fattore 5 significa che con 1 slot si sceglie fra le 5
+        # notizie piu' recenti invece di prendere sempre la prima.
+        self.news_pool_factor = news_pool_factor
         self.seed = seed
         # L'affinita' cambia poco dentro un tick e costa una query per agente:
         # la si calcola una volta per (agente, tick).
@@ -188,6 +193,53 @@ class Recommender:
         items.sort(key=lambda it: (-it.score, -it.row["post_id"]))
         return items[:limit]
 
+    def _news_for(self, agent_id: int, tick: int, slots: int) -> list:
+        """
+        Le notizie che questo agente vede in questo tick.
+
+        Prima si prendevano semplicemente le `slots` piu' recenti, uguali per
+        tutti. Con 1 slot per agente e fino a 3 notizie pubblicate per tick,
+        significava che due notizie su tre entravano nel mondo e non le
+        leggeva NESSUNO: restavano righe in tabella senza un solo lettore.
+        Gli articoli di approfondimento, che escono in giornate dense, erano i
+        piu' esposti a sparire cosi'.
+
+        Ora si pesca da una finestra piu' larga di notizie recenti con
+        probabilita' decrescente nell'anzianita', in modo deterministico per
+        (seme, agente, tick). Ne seguono tre cose: la copertura resta
+        realistica perche' le notizie fresche restano le piu' probabili;
+        nessuna notizia pubblicata e' strutturalmente invisibile; e agenti
+        diversi leggono notizie diverse nello stesso momento, che e' come
+        funziona davvero l'informazione.
+        """
+        if slots <= 0:
+            return []
+        pool = list(self.store.recent_news(
+            tick, max(slots, slots * self.news_pool_factor)))
+        if len(pool) <= slots:
+            return pool
+        pesi = [math.exp(-(tick - r["tick"]) / 3.0) for r in pool]
+        rng = random.Random(f"{self.seed}|{agent_id}|{tick}|news")
+        scelti: list = []
+        liberi = list(range(len(pool)))
+        for _ in range(slots):
+            tot = sum(pesi[i] for i in liberi)
+            if tot <= 0:
+                scelti.append(pool[liberi.pop(0)])
+                continue
+            x = rng.random() * tot
+            acc = 0.0
+            for k, i in enumerate(liberi):
+                acc += pesi[i]
+                if acc >= x:
+                    scelti.append(pool[liberi.pop(k)])
+                    break
+            else:
+                scelti.append(pool[liberi.pop(-1)])
+        # In ordine cronologico inverso, come le vedrebbe in una home.
+        scelti.sort(key=lambda r: (-r["tick"], -r["post_id"]))
+        return scelti
+
     # ------------------------------------------------------------- il feed #
     def feed(
         self,
@@ -209,7 +261,7 @@ class Recommender:
         SimConfig.news_slots_for e config.NEWS_SLOTS_BY_DEPTH.
         """
         news_slots = max(0, min(news_slots, limit))
-        news = self.store.recent_news(tick, news_slots) if news_slots else []
+        news = self._news_for(agent_id, tick, news_slots)
         seen = {r["post_id"] for r in news}
         cands = [r for r in self.candidates(agent_id, tick)
                  if r["post_id"] not in seen]

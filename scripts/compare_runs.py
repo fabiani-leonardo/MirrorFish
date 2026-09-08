@@ -156,9 +156,38 @@ def main() -> None:
     if uguali:
         print(f"\n  Tenuti costanti: {', '.join(uguali)}")
     if "force_media_depth" in diverse:
-        print("\n  Profondita' di lettura MANIPOLATA: la differenza fra i")
-        print("  bracci e' attribuibile all'esposizione, non al tipo di")
-        print("  persona. Questo e' un esperimento, non un'osservazione.")
+        print("\n  Profondita' di lettura MANIPOLATA.")
+        # `news_slots` in config e' un TETTO: gli slot effettivi dipendono
+        # dalla profondita'. Due bracci col medesimo tetto possono quindi
+        # ricevere un numero diverso di notizie, e quindi un numero diverso
+        # di post di altri agenti. La sezione 1 confrontava i campi di config
+        # e dichiarava "differisce solo la profondita'" mentre differivano
+        # due variabili: e' la ragione per cui il primo confronto fra bracci
+        # non era interpretabile.
+        from mirrorfish.config import SimConfig
+        eff = []
+        for n, d in zip(nomi, cfg):
+            prof = d.get("force_media_depth")
+            s_cfg = SimConfig(news_slots=d.get("news_slots", 2),
+                              feed_size=d.get("feed_size", 8))
+            slot = s_cfg.news_slots_for(prof) if prof else None
+            eff.append((n, prof, slot, d.get("feed_size", 8)))
+        print(f"\n  {'braccio':<16}{'profondita':>12}{'slot notizia':>14}"
+              f"{'post dei pari':>15}")
+        for n, prof, slot, fs in eff:
+            print(f"  {n:<16}{str(prof):>12}{str(slot):>14}"
+                  f"{str(fs - slot) if slot is not None else '-':>15}")
+        slots = {x[2] for x in eff}
+        if len(slots) > 1:
+            print("\n  ATTENZIONE: i bracci NON differiscono solo per quanto")
+            print("  testo leggono. Ricevono un numero DIVERSO di notizie e")
+            print("  quindi vedono un numero diverso di post di altri agenti.")
+            print("  Non e' una manipolazione a variabile singola e il")
+            print("  confronto sulle metriche NON e' interpretabile. Rifai i")
+            print("  due bracci passando lo stesso --news-slots a entrambi.")
+        else:
+            print("\n  Slot notizia identici: la manipolazione e' a variabile")
+            print("  singola e la differenza e' attribuibile alla lettura.")
 
     # --- 2. esito e traiettoria ------------------------------------------- #
     sezione("2. ESITO DEL VOTO")

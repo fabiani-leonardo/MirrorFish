@@ -58,35 +58,56 @@ VOTE_QUESTION_MINIMAL = (
     "chiamato alle urne. TU voterai SI, NO, o ASTENUTO?"
 )
 
-VOTE_QUESTION_BALLOT = """Oggi, 22 marzo 2026, si tiene il Referendum \
-Costituzionale sulla giustizia. Sulla scheda c'e' questo quesito:
+# Formula reale della scheda: e' letteralmente cio' che un elettore trova
+# davanti, cioe' il titolo della legge e nessuna spiegazione. Nei referendum
+# costituzionali italiani la scheda NON riassume il contenuto.
+VOTE_QUESTION_BALLOT = """Oggi, 22 marzo 2026, si vota il referendum \
+costituzionale sulla giustizia. Sulla scheda c'e' scritto:
 
-  \u00abApprovate il testo della legge costituzionale che modifica gli
-  articoli 87, 102, 104, 105, 106, 107 e 110 della Costituzione, in materia
-  di ordinamento giurisdizionale e di istituzione dell'Alta Corte
-  disciplinare?\u00bb
+  \u00abApprovate il testo della legge costituzionale concernente
+  \u00abNorme in materia di ordinamento giurisdizionale e di istituzione
+  della Alta Corte disciplinare\u00bb, approvato dal Parlamento e pubblicato
+  nella Gazzetta Ufficiale?\u00bb
 
-COSA PREVEDE LA LEGGE SOTTOPOSTA A VOTO:
-- separa le carriere dei magistrati giudicanti (i giudici) e requirenti (i
-  pubblici ministeri), iscrivendo la distinzione nella Costituzione;
-- sostituisce l'attuale Consiglio superiore della magistratura con DUE Csm
-  distinti, uno per i giudici e uno per i pm, entrambi presieduti dal
-  Presidente della Repubblica;
-- i componenti dei due Csm non sono piu' eletti dai magistrati ma ESTRATTI
-  A SORTE, per un terzo da un elenco di giuristi compilato dal Parlamento e
-  per due terzi fra i magistrati;
-- toglie ai Csm la funzione disciplinare e la affida a una nuova Alta Corte
-  disciplinare di 15 membri, in parte nominati e in parte sorteggiati;
-- le decisioni dell'Alta Corte non sono ricorribili in Cassazione.
-
-Votando SI si APPROVA questa riforma. Votando NO la si RESPINGE e resta
-in vigore il sistema attuale. Ci si puo' anche astenere.
+Votando SI si approva la legge, votando NO la si respinge.
 
 TU cosa voti: SI, NO, o ASTENUTO?"""
 
+# Scheda piu' il contenuto della legge: e' cio' che sa un elettore che si e'
+# informato.
+#
+# LA FORMULAZIONE E' UNA VARIABILE, NON UN DETTAGLIO. La prima stesura di
+# questo testo, scritta il 2026-09-08, descriveva le modifiche con verbi di
+# sottrazione — "non sono piu' eletti", "toglie ai Csm", "non sono
+# ricorribili" — e metteva ESTRATTI A SORTE in maiuscolo. Sono tutte scelte
+# che orientano verso il NO, e il baseline che ne e' uscito (NO 53 su 100)
+# potrebbe rifletterle. Qui le stesse modifiche sono descritte con verbi
+# neutri di sostituzione. Chi legge questo codice deve poter vedere che il
+# testo e' stato riscritto e perche': confrontare i baseline ottenuti con le
+# tre varianti e' una analisi di sensibilita', ed e' un risultato da
+# riportare, non un passaggio da nascondere.
+VOTE_QUESTION_INFORMED = VOTE_QUESTION_BALLOT.replace(
+    "\nTU cosa voti", """
+COSA CAMBIA LA LEGGE, RISPETTO A OGGI:
+- i magistrati sono distinti in due carriere, giudicante e requirente, e la
+  distinzione viene inserita in Costituzione;
+- all'attuale Consiglio superiore della magistratura subentrano due Consigli,
+  uno per ciascuna carriera, entrambi presieduti dal Presidente della
+  Repubblica;
+- i componenti dei due Consigli sono designati per sorteggio anziche' per
+  elezione, per un terzo da un elenco di giuristi compilato dal Parlamento e
+  per due terzi fra i magistrati;
+- la funzione disciplinare passa dai Consigli a una nuova Alta Corte
+  disciplinare di quindici membri, in parte nominati e in parte sorteggiati;
+- le decisioni dell'Alta Corte si impugnano davanti alla stessa Corte in
+  diversa composizione.
+
+TU cosa voti""")
+
 VOTE_QUESTIONS = {
-    "minimal": VOTE_QUESTION_MINIMAL,
-    "ballot": VOTE_QUESTION_BALLOT,
+    "minimal": VOTE_QUESTION_MINIMAL,     # solo il tema: misura il prior
+    "ballot": VOTE_QUESTION_BALLOT,       # la scheda reale, senza sintesi
+    "informed": VOTE_QUESTION_INFORMED,   # scheda + contenuto, in neutro
 }
 
 VOTE_SYSTEM = """Sei {username}, professione: {profession}.

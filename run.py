@@ -387,11 +387,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cf-from-tick", type=int, default=None)
     p.add_argument("--max-news-per-tick", type=int, default=d.max_news_per_tick)
     p.add_argument("--vote-question", default=d.vote_question,
-                   choices=["ballot", "minimal"],
-                   help="'ballot' mostra il quesito e il contenuto della "
-                        "legge, come la scheda vera. 'minimal' nomina solo il "
-                        "tema: con un modello che non conosce la riforma "
-                        "produce il suo prior, non un'opinione")
+                   choices=["minimal", "ballot", "informed"],
+                   help="'minimal' nomina solo il tema e con un modello che "
+                        "non conosce la riforma produce il suo prior; "
+                        "'ballot' riproduce la scheda reale, che non riassume "
+                        "nulla; 'informed' aggiunge il contenuto della legge "
+                        "in termini neutri. Confrontare i tre baseline e' una "
+                        "analisi di sensibilita' alla formulazione")
     p.add_argument("--force-media-depth", default=None,
                    choices=["integrale", "titolo", "nessuna"],
                    help="impone la stessa profondita' a tutti: serve a "
