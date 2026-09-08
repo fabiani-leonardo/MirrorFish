@@ -20,6 +20,8 @@ Cosa viene confrontato:
   3. spostamenti e direzionalita'
   4. produzione di note (il canale del cambio di opinione)
   5. densita' argomentativa, con test di permutazione fra i bracci
+  6. vocabolario esclusivo del corpo dell'articolo (con --news): verifica
+     MECCANICA che il testo integrale sia stato davvero letto
 
 Il test di permutazione non assume normalita' e non richiede scipy: rimescola
 le etichette dei gruppi 10.000 volte e conta quante volte una differenza
@@ -78,6 +80,22 @@ def note_per_agente(c: sqlite3.Connection) -> dict[int, int]:
         "SELECT agent_id, COUNT(*) n FROM note GROUP BY agent_id")}
 
 
+# Parole troppo comuni per distinguere alcunche'. Elenco corto di proposito:
+# serve a togliere il rumore grammaticale, non a fare analisi linguistica.
+STOPWORDS = {
+    "il", "lo", "la", "i", "gli", "le", "un", "una", "uno", "di", "a", "da",
+    "in", "con", "su", "per", "tra", "fra", "e", "o", "ma", "che", "non",
+    "si", "ci", "se", "come", "piu", "più", "anche", "solo", "del", "della",
+    "dei", "delle", "dal", "dalla", "al", "alla", "ai", "alle", "nel",
+    "nella", "sul", "sulla", "essere", "avere", "sono", "ha", "hanno", "e'",
+    "è", "questo", "questa", "loro", "sua", "suo", "ne", "li", "li'", "un'",
+}
+
+
+def parole(t: str) -> list[str]:
+    return [w.lower() for w in re.findall(r"[a-zA-Zàèéìòù]{3,}", t or "")]
+
+
 def ttr(t: str) -> float:
     w = [x.lower() for x in re.findall(r"\w+", t)]
     return len(set(w)) / len(w) if w else 0.0
@@ -112,6 +130,10 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("db", nargs="+")
     ap.add_argument("--etichette", nargs="*", default=None)
+    ap.add_argument("--news", default=None,
+                    help="cartella degli articoli integrali. Attiva la "
+                         "sezione 6: verifica se il CORPO degli articoli e' "
+                         "finito nei post, distinguendolo dai soli titoli")
     a = ap.parse_args()
 
     nomi = a.etichette or [Path(p).parent.name for p in a.db]
@@ -211,6 +233,54 @@ def main() -> None:
             esito = "significativo" if p < 0.05 else "non distinguibile"
             print(f"  {m:<12}{d:>+12.3f}{p:>10.4f}   {esito}")
         print(f"\n  Differenza positiva = {x} ha valori piu' alti.")
+
+    # --- 6. il corpo dell'articolo e' stato letto davvero? --------------- #
+    if a.news:
+        sezione("6. VOCABOLARIO ESCLUSIVO DEL CORPO DELL'ARTICOLO")
+        from mirrorfish.news import load_news
+        items = load_news(a.news)
+        voc_titoli: set[str] = set()
+        voc_corpi: set[str] = set()
+        for it in items:
+            voc_titoli |= set(parole(it.title))
+            voc_corpi |= set(parole(it.body))
+        solo_corpo = voc_corpi - voc_titoli - STOPWORDS
+        print(f"  {len(items)} articoli. Parole presenti SOLO nei corpi e mai")
+        print(f"  in un titolo: {len(solo_corpo):,}.\n")
+        print("  Se un agente che ha ricevuto solo il titolo usa queste parole")
+        print("  quanto uno che ha ricevuto l'articolo, il corpo non e'")
+        print("  arrivato: e' un guasto meccanico, non un risultato.\n")
+        print(f"  {'run':<16}{'post':>7}{'parole/post':>13}{'da solo-corpo':>15}"
+              f"{'quota':>8}")
+        quote: dict[str, list[float]] = {}
+        for n in nomi:
+            t = corpora[n]
+            q = []
+            tot_par = tot_sc = 0
+            for x in t:
+                w = [p for p in parole(x) if p not in STOPWORDS]
+                if not w:
+                    continue
+                sc = sum(1 for p in w if p in solo_corpo)
+                tot_par += len(w)
+                tot_sc += sc
+                q.append(sc / len(w))
+            quote[n] = q
+            print(f"  {n:<16}{len(t):>7}{tot_par/max(len(t),1):>13.1f}"
+                  f"{tot_sc:>15}{tot_sc/max(tot_par,1):>7.2%}")
+        if len(nomi) == 2:
+            d, p = permuta(quote[nomi[0]], quote[nomi[1]])
+            esito = "significativo" if p < 0.05 else "NON distinguibile"
+            print(f"\n  differenza {d:+.5f}   p = {p:.4f}   {esito}")
+            if p >= 0.05:
+                print("\n  I due bracci attingono allo stesso vocabolario. O il")
+                print("  corpo non e' arrivato nel prompt, oppure e' arrivato")
+                print("  e il modello non lo usa: sono due conclusioni molto")
+                print("  diverse e vanno distinte prima di scrivere la tesi.")
+            else:
+                print("\n  Il corpo E' arrivato e ha lasciato traccia nel testo")
+                print("  prodotto. Qualunque differenza sulle altre metriche e'")
+                print("  quindi un effetto della lettura, non un guasto.")
 
     for c in conn:
         c.close()

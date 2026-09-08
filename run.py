@@ -217,6 +217,16 @@ async def main_async(args: argparse.Namespace) -> None:
         print(f"[setup] profondita' di lettura FORZATA a "
               f"'{sim.force_media_depth}' per {n} agenti: "
               f"esposizione manipolata, non dedotta dalla biografia")
+        if not args.news_slots_pinned:
+            print(f"[setup] ATTENZIONE: --news-slots non e' stato fissato. "
+                  f"Con profondita' '{sim.force_media_depth}' gli slot "
+                  f"notizia sono {sim.news_slots_for(sim.force_media_depth)}, "
+                  f"ma un altro braccio ne avrebbe un numero diverso.")
+            print("[setup] I due bracci differirebbero per DUE variabili: "
+                  "quanto testo si legge E quante notizie si ricevono "
+                  "(e quindi quanti post di altri agenti). Per una "
+                  "manipolazione a variabile singola passa lo stesso "
+                  "--news-slots a entrambi, per esempio --news-slots 1.")
 
     src_id = max((a["agent_id"] for a in agents), default=0) + 1
     if not any(a.get("is_source") for a in agents):
@@ -417,7 +427,12 @@ def parse_args() -> argparse.Namespace:
                    help="riprende un run interrotto dall'ultimo tick completato")
     p.add_argument("--force", action="store_true",
                    help="cancella un run.db preesistente invece di rifiutarsi")
-    return p.parse_args()
+    ns = p.parse_args()
+    # Serve a sapere se --news-slots e' stato scritto davvero o e' il default:
+    # con force-media-depth la differenza fra le due cose e' sperimentale.
+    ns.news_slots_pinned = any(
+        x.startswith("--news-slots") for x in __import__("sys").argv)
+    return ns
 
 
 if __name__ == "__main__":
