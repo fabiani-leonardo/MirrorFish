@@ -257,6 +257,7 @@ class Engine:
                 if tick + 1 < total:      # l'ultimo punto e' gia' `final`
                     await run_survey(self.store, self.client, self.llm_cfg,
                                      label=f"tick_{tick}", baseline=False,
+                                     question=self.sim.vote_question,
                                      tick=tick, verbose=self.verbose)
 
             # Checkpoint a ogni tick: con un endpoint a rate limit un run

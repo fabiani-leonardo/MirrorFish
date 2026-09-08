@@ -27,11 +27,67 @@ from .config import LLMConfig
 from .llm import LLMClient, parse_json_response
 from .store import Store
 
-VOTE_QUESTION = (
+# --------------------------------------------------------------------------- #
+# La domanda di voto
+# --------------------------------------------------------------------------- #
+# Questa e' la variabile piu' sottovalutata dell'intero impianto.
+#
+# La versione MINIMAL e' quella usata fino al 2026-09-08: nomina il tema ma non
+# dice cosa la legge preveda, ne' cosa significhino SI e NO. Un modello con
+# cutoff 2024 non ha alcun modo di saperlo. Davanti a una parola come "riforma"
+# ricade sul proprio prior — riforma uguale efficienza, efficienza uguale bene —
+# e risponde SI quasi a tutti. La firma di questo comportamento e' nei dati:
+# nei profili B, dove il voto non e' scritto in biografia, il baseline dava
+# SI 87% al centrodestra e SI 96% al centrosinistra. Non e' un orientamento
+# politico: e' la stessa risposta data a chiunque, cioe' nessuna risposta.
+#
+# La versione BALLOT riproduce cio' che un elettore vero ha davanti nella
+# cabina: la formula del quesito e il contenuto della legge costituzionale su
+# cui si vota. Non e' informazione aggiuntiva rispetto alla realta', e' il
+# minimo perche' la domanda sia rispondibile. Il contenuto e' tratto dai due
+# articoli ANSA di spiegazione del quesito (23 febbraio e 19 marzo 2026).
+#
+# Sono tenute entrambe perche' il confronto fra le due E' un risultato: dice
+# quanta parte del voto simulato dipenda dall'aver posto la domanda in modo
+# rispondibile, e non dalla dinamica sociale che si intende misurare. Si
+# sceglie con --vote-question, ed e' coperta dal fingerprint.
+
+VOTE_QUESTION_MINIMAL = (
     "Oggi si tiene il Referendum Costituzionale sulla separazione delle "
     "carriere dei magistrati e ogni cittadino italiano sopra i 18 anni e' "
     "chiamato alle urne. TU voterai SI, NO, o ASTENUTO?"
 )
+
+VOTE_QUESTION_BALLOT = """Oggi, 22 marzo 2026, si tiene il Referendum \
+Costituzionale sulla giustizia. Sulla scheda c'e' questo quesito:
+
+  \u00abApprovate il testo della legge costituzionale che modifica gli
+  articoli 87, 102, 104, 105, 106, 107 e 110 della Costituzione, in materia
+  di ordinamento giurisdizionale e di istituzione dell'Alta Corte
+  disciplinare?\u00bb
+
+COSA PREVEDE LA LEGGE SOTTOPOSTA A VOTO:
+- separa le carriere dei magistrati giudicanti (i giudici) e requirenti (i
+  pubblici ministeri), iscrivendo la distinzione nella Costituzione;
+- sostituisce l'attuale Consiglio superiore della magistratura con DUE Csm
+  distinti, uno per i giudici e uno per i pm, entrambi presieduti dal
+  Presidente della Repubblica;
+- i componenti dei due Csm non sono piu' eletti dai magistrati ma ESTRATTI
+  A SORTE, per un terzo da un elenco di giuristi compilato dal Parlamento e
+  per due terzi fra i magistrati;
+- toglie ai Csm la funzione disciplinare e la affida a una nuova Alta Corte
+  disciplinare di 15 membri, in parte nominati e in parte sorteggiati;
+- le decisioni dell'Alta Corte non sono ricorribili in Cassazione.
+
+Votando SI si APPROVA questa riforma. Votando NO la si RESPINGE e resta
+in vigore il sistema attuale. Ci si puo' anche astenere.
+
+TU cosa voti: SI, NO, o ASTENUTO?"""
+
+VOTE_QUESTIONS = {
+    "minimal": VOTE_QUESTION_MINIMAL,
+    "ballot": VOTE_QUESTION_BALLOT,
+}
 
 VOTE_SYSTEM = """Sei {username}, professione: {profession}.
 
@@ -73,6 +129,7 @@ async def run_survey(
     *,
     label: str,
     baseline: bool = False,
+    question: str = "ballot",
     tick: int | None = None,
     verbose: bool = True,
 ) -> dict[str, int]:
@@ -88,7 +145,8 @@ async def run_survey(
             evolved="" if baseline else " e con come le tue opinioni si sono evolute",
         )
         resp = await client.complete(
-            system, f"DOMANDA DI VOTO: {VOTE_QUESTION}\nRispondi solo in JSON.",
+            system,
+            f"DOMANDA DI VOTO: {VOTE_QUESTIONS[question]}\nRispondi solo in JSON.",
             max_tokens=budget, temperature=llm_cfg.vote_temperature, json_mode=True,
         )
         aid = int(agent["agent_id"])

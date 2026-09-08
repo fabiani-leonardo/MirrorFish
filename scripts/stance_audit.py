@@ -44,17 +44,33 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Marcatori piu' larghi di quelli della sezione 1 di analyze_run, perche' qui
 # si classificano post e note scritti dagli agenti, non lanci d'agenzia.
+# CORRETTE il 2026-09-08 dopo un falso allarme grave. La versione precedente
+# classificava Fratelli d'Italia come contraria alla riforma (0 SI su 21
+# contenuti) quando i suoi post sono tutti espliciti a favore. Due errori,
+# entrambi nella stessa direzione:
+#   - RE_NO agganciava "separazione delle carriere non", che e' quasi sempre
+#     una costruzione PRO-riforma ("la separazione delle carriere non e'
+#     ingerenza");
+#   - RE_SI cercava "separare le carriere" mentre tutti scrivono "separazione
+#     delle carriere", e non riconosceva ne' "il SI garantisce" ne'
+#     "#SiReferendum".
+# Il risultato era un ambiente informativo che sembrava al 95% contrario
+# quando non lo era. Prima di rifidarsi di questa classificazione, provarla
+# su una ventina di post veri di ciascuna parte.
 RE_NO = re.compile(
-    r"\bvoto no\b|\bvotare no\b|#\w*no\b|contro la riforma|"
+    r"\bvot\w* (?:per il |il )?no\b|\bil no\b(?!\s+(?:tutela|protegge|blocca|conferma))|"
+    r"#\w*no(?:referendum|riforma)?\b|contro (?:la|questa) riforma|"
     r"indipendenza (?:della|dei) magistrat|autonomia della magistratura|"
-    r"controllo politic|sottomett|piegare i giudici|"
-    r"separazione delle carriere (?:non|no)|difendere la costituzione",
+    r"controllo politic\w+ (?:sui|della|dei)|sottomett|piegare i giudici|"
+    r"difendere la costituzione|riforma pericolosa|"
+    r"sorteggio (?:non|svilisce|umilia)",
     re.I)
 RE_SI = re.compile(
-    r"\bvoto s[iì]\b|\bvotare s[iì]\b|#\w*s[iì]\b|a favore della riforma|"
-    r"separare le carriere|giustizia pi[uù] (?:rapida|efficiente|giusta)|"
+    r"\bvot\w* (?:per il |il )?s[iì]\b|\bil s[iì]\b|#\w*s[iì]\w*\b|"
+    r"a favore della riforma|separa\w+ (?:le )?carriere (?:garantisce|serve|porta|e')|"
+    r"giustizia pi[uù] (?:rapida|efficiente|giusta)|tempi certi|"
     r"casta|privilegi dei magistrat|riforma necessaria|"
-    r"processo (?:pi[uù] )?(?:breve|veloce)",
+    r"processo (?:pi[uù] )?(?:breve|veloce)|immobilismo",
     re.I)
 
 

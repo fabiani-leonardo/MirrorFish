@@ -128,6 +128,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         counterfactual_from_tick=args.cf_from_tick,
         counterfactual_news_dir=args.cf_news,
         force_media_depth=args.force_media_depth,
+        vote_question=args.vote_question,
     )
 
 
@@ -294,7 +295,7 @@ async def main_async(args: argparse.Namespace) -> None:
                 store.conn.execute("DELETE FROM vote WHERE label = 'baseline'")
                 store.commit()
             await run_survey(store, client, llm_cfg, label="baseline",
-                             baseline=True)
+                             baseline=True, question=sim.vote_question)
 
         rec = Recommender(store, policy=sim.recommender,
                           out_of_network=sim.out_of_network, seed=sim.seed)
@@ -306,7 +307,8 @@ async def main_async(args: argparse.Namespace) -> None:
         start_tick = (store.get_meta("last_completed_tick", -1) + 1) if resuming else 0
         await engine.run(start_tick=start_tick)
 
-        await run_survey(store, client, llm_cfg, label="final", baseline=False)
+        await run_survey(store, client, llm_cfg, label="final",
+                         baseline=False, question=sim.vote_question)
     except EndpointDown as e:
         done = store.get_meta("last_completed_tick", -1) + 1
         store.close()
@@ -384,6 +386,12 @@ def parse_args() -> argparse.Namespace:
                    help="cartella notizie controfattuali (integrali)")
     p.add_argument("--cf-from-tick", type=int, default=None)
     p.add_argument("--max-news-per-tick", type=int, default=d.max_news_per_tick)
+    p.add_argument("--vote-question", default=d.vote_question,
+                   choices=["ballot", "minimal"],
+                   help="'ballot' mostra il quesito e il contenuto della "
+                        "legge, come la scheda vera. 'minimal' nomina solo il "
+                        "tema: con un modello che non conosce la riforma "
+                        "produce il suo prior, non un'opinione")
     p.add_argument("--force-media-depth", default=None,
                    choices=["integrale", "titolo", "nessuna"],
                    help="impone la stessa profondita' a tutti: serve a "

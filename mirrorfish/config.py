@@ -231,6 +231,12 @@ class SimConfig:
     # dal confondimento con il tipo di persona.
     force_media_depth: str | None = None
 
+    # Formulazione della domanda di voto: "ballot" riproduce il quesito e il
+    # contenuto della legge come li vede un elettore vero, "minimal" nomina
+    # solo il tema. Non e' una scelta di stile: e' cio' che determina se il
+    # baseline misuri un'opinione o il prior del modello. Vedi survey.py.
+    vote_question: str = "ballot"
+
     # Controfattuale: da questo tick in poi si usa lo stream di news alternativo
     counterfactual_from_tick: int | None = None
     counterfactual_news_dir: str | None = None

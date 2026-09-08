@@ -111,6 +111,20 @@ _TITOLO = re.compile(r"^TITOLO:\s*(.+)$", re.MULTILINE)
 _SEP = re.compile(r"^-{10,}\s*$", re.MULTILINE)
 
 
+_URL_DATE = re.compile(r"ansa\.it/\S*?/(\d{4})/(\d{2})/(\d{2})/")
+
+
+def _data_da_url(raw: str) -> date | None:
+    """Data ricavata dall'URL ANSA, che e' piu' affidabile del nome file."""
+    m = _URL_DATE.search(raw)
+    if not m:
+        return None
+    try:
+        return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    except ValueError:
+        return None
+
+
 def parse_full_article(text: str) -> tuple[str, str]:
     """
     Estrae titolo e corpo dal formato di `notizie_referendum`:
@@ -159,23 +173,49 @@ def load_news(news_dir: str | Path, *, min_body_ratio: float = 0.9) -> list[News
     items: list[NewsItem] = []
     scartati: list[str] = []
     senza_corpo: list[str] = []
+    data_discorde: list[str] = []
     for f in sorted(news_dir.glob("*.txt")):
         d = parse_date_from_filename(f.name)
         if d is None:
             scartati.append(f.name)
             continue
-        title, body = parse_full_article(
-            f.read_text(encoding="utf-8", errors="replace"))
+        raw = f.read_text(encoding="utf-8", errors="replace")
+        title, body = parse_full_article(raw)
         if not title:
             # Senza titolo la notizia non e' leggibile a nessuna profondita'.
             scartati.append(f.name)
             continue
         if not body:
             senza_corpo.append(f.name)
+        # La data del nome file decide QUANDO la notizia entra in
+        # simulazione, ed e' l'unica cosa che lo decide. Quando un articolo
+        # viene aggiunto a mano — e capita, per colmare buchi dell'archivio —
+        # il nome si scrive a mano, e una data segnaposto sbagliata sposta
+        # l'articolo di mesi o lo butta fuori dalla finestra senza che nulla
+        # lo segnali. Lo scraper non sbaglia: gli URL ANSA contengono la data
+        # di pubblicazione, e confrontarla col nome costa una regex.
+        # Il caso che ha motivato il controllo: i due articoli che spiegano il
+        # contenuto del quesito, aggiunti manualmente con anno 2025 invece di
+        # 2026, sarebbero finiti prima dell'inizio della simulazione.
+        # Resta valida la data del NOME: qui si avvisa soltanto, perche' un
+        # disallineamento puo' anche essere voluto (per esempio in un
+        # archivio controfattuale).
+        d_url = _data_da_url(raw)
+        if d_url is not None and d_url != d:
+            data_discorde.append(f"{f.name} (nome={d}, url={d_url})")
         items.append(NewsItem(news_id=f.stem, published=d, title=title, body=body))
 
     items.sort(key=lambda n: (n.published, n.news_id))
 
+    if data_discorde:
+        print(f"[news] {len(data_discorde)} file hanno nel nome una data "
+              f"diversa da quella dell'URL ANSA. Vale quella del NOME, quindi "
+              f"se non e' voluto quegli articoli entrano nel giorno sbagliato "
+              f"o restano fuori dalla finestra:")
+        for x in data_discorde[:8]:
+            print(f"         {x}")
+        if len(data_discorde) > 8:
+            print(f"         ... e altri {len(data_discorde) - 8}")
     if scartati:
         print(f"[news] {len(scartati)} file ignorati (data o titolo non "
               f"leggibili): {scartati[:5]}"
