@@ -37,14 +37,29 @@ from typing import Any
 #
 # Se finish_reason == "length" ricorre spesso il budget e' troppo stretto: la
 # telemetria in store.llm_call lo rende misurabile invece che opinabile.
-# Massimi OSSERVATI sul pilota da 14 giorni con modello vero (100 agenti,
-# 3.380 chiamate): action 327, reflection 404, vote 289.
+# Massimi OSSERVATI su quattro run reali da 14 giorni (100 agenti ciascuno):
+#   action      327, 312, 297, 348
+#   reflection  404, 386, 512*, 512*
+#   vote        289, 328, 512*, 242
+# Gli asterischi sono TRONCAMENTI: il massimo coincide col budget, quindi il
+# valore vero e' ignoto e maggiore. In expa-full un voto troncato e' diventato
+# un errore di parsing, e il run finale ha 99 voti validi invece di 100.
 #
-# I budget sono generosi DI PROPOSITO, e la ragione e' misurata. Il probe del
-# 2026-09-05 ha stabilito che questo gateway addebita i token REALMENTE usati,
-# non `max_tokens`: due richieste identiche con budget 128 e 640 hanno scalato
-# entrambe 39 token, cioe' 33 di prompt piu' 6 di output. Non c'e' alcuna
-# prenotazione.
+# I budget sono generosi DI PROPOSITO, e la ragione e' misurata. Due probe
+# indipendenti (2026-09-05 e 2026-09-08) hanno stabilito come il gateway
+# contabilizza: PRENOTA max_tokens all'arrivo della richiesta e RIMBORSA
+# (max_tokens - uso reale) alla conclusione della precedente. Il modello
+# spiega tutte e sei le osservazioni:
+#
+#   req  max_tokens  prenota  rimborso prec.  netto  osservato
+#     2         128      128              89     39         39
+#     3         640      640              89    551        551
+#     4         640      640             601     39         39
+#
+# A regime, quindi, si paga l'USO REALE: alzare max_tokens non costa quota, e
+# la prenotazione e' solo un transitorio pari a max_tokens per il numero di
+# chiamate in volo (con concorrenza 4 e budget 640, meno di 10.000 token
+# trattenuti contro un tetto di 750.000).
 #
 # Conseguenza pratica: alzare max_tokens non costa nulla in quota, mentre
 # abbassarlo costa risposte troncate — e una risposta troncata e' una chiamata
@@ -54,9 +69,9 @@ from typing import Any
 # Da riverificare se cambia il gateway:
 #     python scripts/endpoint.py probe --n 2 --max-tokens 128 640 --sleep 20
 DEFAULT_TOKEN_BUDGET = {
-    "action": 512,
-    "reflection": 640,
-    "vote": 448,
+    "action": 640,
+    "reflection": 768,
+    "vote": 640,
 }
 
 
@@ -98,15 +113,31 @@ class LLMConfig:
     )
 
     # --- controllo del carico ---------------------------------------------- #
-    # Tarati sugli header osservati il 2026-09-02:
-    #   x-ratelimit-api_key-limit-max_parallel_requests : 5
-    #   x-ratelimit-team_member-limit-requests          : 8   <- vincolante
-    #   x-ratelimit-team-limit-requests                 : 25  <- condiviso
-    # A 8 richieste/minuto ogni chiamata costa 7,5 s di orologio: la
-    # concorrenza oltre ~2 non serve a niente, serve il ritmo giusto.
-    # Da ritarare con `python scripts/endpoint.py ceiling`.
-    requests_per_minute: float = 8.0
-    concurrency: int = 2
+    # Header osservati il 2026-09-08, dopo l'intervento sui limiti:
+    #   x-ratelimit-api_key-limit-max_parallel_requests : 10
+    #   x-ratelimit-team-limit-requests                 : 40   <- vincolante
+    #   x-ratelimit-team-limit-tokens                   : 750000
+    # I limiti per membro (team_member-*) sono stati RIMOSSI: esiste solo il
+    # tetto di squadra, ed e' condiviso con colleghi e ricercatori.
+    #
+    # Il default e' 30, non 40, e la ragione non e' tecnica. Senza un limite
+    # per membro, un run che gira a 40 richieste/minuto prende TUTTA la
+    # capacita' della squadra per tutta la sua durata, e LiteLLM non ha code a
+    # priorita': le chiamate degli altri non vengono messe in attesa, cadono
+    # per timeout. Un run da 14 giorni simulati impiega 113 minuti a 30
+    # richieste/minuto contro 84 a 40: mezz'ora in piu' a fronte di lasciare
+    # un quarto della capacita' a chi lavora nello stesso momento. Alzare a 40
+    # e' ragionevole di notte o dopo essersi accordati.
+    #
+    # La concorrenza segue dal ritmo, non lo determina (legge di Little): a 40
+    # richieste/minuto parte una chiamata ogni 1,5 s, quindi con latenza p95
+    # di 6 s ne bastano 4 in volo e con 10 s ne bastano 7. Il tetto di 10
+    # chiamate parallele concesso dal professore e' su un totale di circa 16
+    # per tutto il laboratorio: usarne 10 quando ne servono 4 non fa andare
+    # piu' veloce e toglie slot agli altri. Ritarare sui dati veri con
+    #     python scripts/endpoint.py concurrency runs/<run>/run.db --rpm 30
+    requests_per_minute: float = 30.0
+    concurrency: int = 4
     min_interval_s: float = 0.0   # 0 = derivato da requests_per_minute
     timeout_s: float = 180.0
     # Timeout di CONNESSIONE, separato da quello di lettura. Un endpoint

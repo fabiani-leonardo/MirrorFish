@@ -143,7 +143,7 @@ async def main_async(args: argparse.Namespace) -> None:
         # supplemento e' largo: il gateway addebita i token usati, non il
         # budget richiesto (misurato con endpoint.py probe), quindi un tetto
         # alto non costa quota e previene i troncamenti.
-        llm_cfg.token_budget["action"] = 512 + 160 * (sim.max_actions - 1)
+        llm_cfg.token_budget["action"] = 640 + 192 * (sim.max_actions - 1)
     if args.max_action_tokens:
         llm_cfg.token_budget["action"] = args.max_action_tokens
 
@@ -167,6 +167,37 @@ async def main_async(args: argparse.Namespace) -> None:
                 pathlib.Path(str(db_path) + suffix).unlink(missing_ok=True)
 
     store = Store(db_path)
+
+    # Su --resume la configurazione DEVE coincidere. Il fingerprint esiste
+    # apposta e finora non era collegato a questo controllo, con una
+    # conseguenza silenziosa: `--resume` salta `store.add_agents`, quindi un
+    # `--force-media-depth` passato in ripresa modificava la lista in memoria
+    # e veniva buttato via. Il motore leggeva gli agenti dal DB, con le
+    # profondita' vecchie, e il run sembrava l'esperimento richiesto senza
+    # esserlo. Vale per qualunque parametro, non solo per quello.
+    if resuming:
+        atteso = store.get_meta("fingerprint")
+        if atteso and atteso != sim.fingerprint():
+            vecchia = store.get_meta("sim_config", {}) or {}
+            nuova = sim.to_dict()
+            diff = [k for k in set(vecchia) | set(nuova)
+                    if vecchia.get(k) != nuova.get(k)]
+            righe = "\n".join(
+                f"    {k}: era {vecchia.get(k)!r}, ora {nuova.get(k)!r}"
+                for k in sorted(diff))
+            store.close()
+            raise SystemExit(
+                f"ERRORE: --resume con una configurazione diversa.\n"
+                f"  fingerprint nel DB : {atteso}\n"
+                f"  fingerprint attuale: {sim.fingerprint()}\n"
+                f"Parametri cambiati:\n{righe}\n\n"
+                f"Riprendere un run cambiando i parametri produce un ibrido: "
+                f"i primi tick con una configurazione e i successivi con "
+                f"un'altra, sotto un unico fingerprint. Il risultato non e' "
+                f"riconducibile a nessuna delle due.\n"
+                f"Usa un --out nuovo, oppure --force per rifare da capo."
+            )
+
     store.set_meta("sim_config", sim.to_dict())
     store.set_meta("fingerprint", sim.fingerprint())
     store.set_meta("llm", {"model": llm_cfg.model, "budget": llm_cfg.token_budget,
@@ -202,12 +233,6 @@ async def main_async(args: argparse.Namespace) -> None:
         n_vot = len(store.agents(voters_only=True))
         print(f"[setup] {len(agents)} agenti ({n_vot} elettori), "
               f"{len(edges)} archi, fonte=agent_id {src_id}")
-        depths: dict[str, int] = {}
-        for a in store.agents():
-            depths[a["media_depth"]] = depths.get(a["media_depth"], 0) + 1
-        print("[setup] profondita' di lettura: " + ", ".join(
-            f"{k}={v} ({sim.news_slots_for(k)} slot)"
-            for k, v in sorted(depths.items())))
     else:
         done = store.get_meta("last_completed_tick", -1)
         wiped = store.truncate_after_tick(done)
@@ -215,6 +240,17 @@ async def main_async(args: argparse.Namespace) -> None:
               f"ultimo tick completo = {done + 1}")
         if wiped:
             print(f"[setup] ripulito il tick parziale: {wiped}")
+
+    # La distribuzione delle profondita' si stampa SEMPRE, letta dal DB, che
+    # e' cio' che il motore usera' davvero. Prima si stampava solo su un run
+    # nuovo, quindi in ripresa non c'era modo di accorgersi che l'esposizione
+    # non era quella richiesta.
+    depths: dict[str, int] = {}
+    for a in store.agents():
+        depths[a["media_depth"]] = depths.get(a["media_depth"], 0) + 1
+    print("[setup] profondita' di lettura NEL DB: " + ", ".join(
+        f"{k}={v} ({sim.news_slots_for(k)} slot)"
+        for k, v in sorted(depths.items())))
 
     # --- notizie ----------------------------------------------------------- #
     # `--news` e' la cartella degli ARTICOLI INTEGRALI: e' quella che fa da
@@ -364,9 +400,15 @@ def parse_args() -> argparse.Namespace:
                    help="survey intermedia ogni N tick, per la traiettoria "
                         "dell'opinione. Costa N chiamate ogni volta")
 
-    p.add_argument("--concurrency", type=int, default=2)
-    p.add_argument("--rpm", type=float, default=8.0,
-                   help="richieste/minuto concesse dalla quota")
+    p.add_argument("--concurrency", type=int, default=4,
+                   help="chiamate in volo. Oltre quelle che "
+                        "servono a saturare --rpm non accelera "
+                        "nulla e toglie slot agli altri")
+    p.add_argument("--rpm", type=float, default=30.0,
+                   help="richieste/minuto. Il tetto di squadra e' 40 ed e' "
+                        "CONDIVISO: a 40 prendi tutta la capacita' e le "
+                        "chiamate dei colleghi cadono per timeout, perche' "
+                        "LiteLLM non ha code a priorita'")
     p.add_argument("--max-action-tokens", type=int, default=None)
     p.add_argument("--stub", action="store_true", help="LLM finto, offline")
 

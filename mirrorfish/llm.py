@@ -250,6 +250,11 @@ class RateGate:
         # Il residuo di token va normalizzato prima di confrontarlo con quello
         # di richieste: si converte in "quante richieste ancora ci stanno",
         # dividendo per il costo tipico osservato.
+        # Dal 2026-09-08 il gateway espone solo lo scope `team`: i limiti
+        # per membro sono stati rimossi e `api_key` pubblica soltanto le
+        # chiamate parallele, non le richieste al minuto. Gli altri scope
+        # restano nel ciclo perche' costano nulla e sono tornati e spariti
+        # gia' due volte: se ricompaiono, il freno li vede subito.
         found: dict[str, float] = {}
         for scope in ("api_key", "team_member", "team"):
             raw = headers.get(f"x-ratelimit-{scope}-remaining-requests")

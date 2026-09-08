@@ -81,7 +81,7 @@ def main() -> None:
     ap.add_argument("--days", type=int, default=30)
     ap.add_argument("--reflect-every", type=int, default=4)
     ap.add_argument("--base-activity", type=float, default=0.35)
-    ap.add_argument("--rpm", type=float, default=8.0,
+    ap.add_argument("--rpm", type=float, default=30.0,
                     help="richieste al minuto concesse (header team_member)")
     ap.add_argument("--replicates", type=int, default=3)
     ap.add_argument("--conditions", type=int, default=4,
