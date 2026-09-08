@@ -109,6 +109,30 @@ def acquire_lock(out_dir: Path) -> Path:
     return lock_path
 
 
+def code_version() -> dict[str, str]:
+    """
+    Commit git e stato dell'albero, salvati nel run.db.
+
+    Il fingerprint copre la CONFIG, non il CODICE. Ma alcune modifiche al
+    codice cambiano il comportamento senza toccare un solo parametro: la
+    rotazione delle notizie introdotta l'8 settembre 2026 fa vedere agli
+    agenti notizie diverse a parita' di config, e la riscrittura del testo del
+    quesito cambia il voto a parita' di `vote_question`. Due run con lo stesso
+    fingerprint e commit diversi NON sono repliche, e senza questo campo non
+    c'e' modo di accorgersene mesi dopo, quando si scrive la tesi.
+    """
+    import subprocess
+    def git(*a: str) -> str:
+        try:
+            return subprocess.run(["git", *a], capture_output=True, text=True,
+                                  timeout=5).stdout.strip()
+        except Exception:
+            return ""
+    commit = git("rev-parse", "--short", "HEAD") or "sconosciuto"
+    sporco = bool(git("status", "--porcelain"))
+    return {"commit": commit, "modifiche_non_committate": sporco}
+
+
 def build_config(args: argparse.Namespace) -> SimConfig:
     start = date.fromisoformat(args.start)
     return SimConfig(
@@ -201,6 +225,7 @@ async def main_async(args: argparse.Namespace) -> None:
 
     store.set_meta("sim_config", sim.to_dict())
     store.set_meta("fingerprint", sim.fingerprint())
+    store.set_meta("code_version", code_version())
     store.set_meta("llm", {"model": llm_cfg.model, "budget": llm_cfg.token_budget,
                            "concurrency": llm_cfg.concurrency,
                            "stub": bool(args.stub)})
@@ -357,7 +382,10 @@ async def main_async(args: argparse.Namespace) -> None:
     store.close()
     print(f"\n[done] risultati in {out_dir}/  "
           f"(run.db, shift_report.json, graph.json)")
-    print(f"[done] fingerprint config: {sim.fingerprint()}")
+    cv = code_version()
+    print(f"[done] fingerprint config: {sim.fingerprint()}  "
+          f"codice: {cv['commit']}"
+          f"{' (albero sporco)' if cv['modifiche_non_committate'] else ''}")
 
 
 def parse_args() -> argparse.Namespace:
