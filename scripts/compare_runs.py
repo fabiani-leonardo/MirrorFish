@@ -75,6 +75,19 @@ def testi(c: sqlite3.Connection) -> list[str]:
         "WHERE p.kind != 'news' AND a.is_source = 0")]
 
 
+def metriche_per_agente(c: sqlite3.Connection) -> dict[int, dict[str, float]]:
+    """Media di ciascuna metrica sui post di ogni agente."""
+    per: dict[int, list[str]] = {}
+    for r in c.execute(
+            "SELECT p.agent_id, p.content FROM post p "
+            "JOIN agent a ON a.agent_id = p.agent_id "
+            "WHERE p.kind != 'news' AND a.is_source = 0"):
+        per.setdefault(r["agent_id"], []).append(r["content"])
+    return {a: {m: sum(fn(t) for t in ts) / len(ts)
+                for m, fn in METRICHE.items()}
+            for a, ts in per.items() if ts}
+
+
 def note_per_agente(c: sqlite3.Connection) -> dict[int, int]:
     return {r["agent_id"]: r["n"] for r in c.execute(
         "SELECT agent_id, COUNT(*) n FROM note GROUP BY agent_id")}
@@ -130,6 +143,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("db", nargs="+")
     ap.add_argument("--etichette", nargs="*", default=None)
+    ap.add_argument("--null", nargs=2, metavar=("DB_A", "DB_B"), default=None,
+                    help="coppia di run IDENTICI (stessa config, stesso seme, "
+                         "differiscono solo per il campionamento del modello). "
+                         "L'effetto vero fra i due e' ZERO, quindi le loro "
+                         "differenze misurano il rumore, e ogni differenza fra "
+                         "i bracci va confrontata con quella soglia")
     ap.add_argument("--news", default=None,
                     help="cartella degli articoli integrali. Attiva la "
                          "sezione 6: verifica se il CORPO degli articoli e' "
@@ -254,13 +273,71 @@ def main() -> None:
 
     if len(nomi) == 2:
         x, y = nomi
-        print(f"\n  Test di permutazione: {x} contro {y}")
-        print("  (10.000 rimescolamenti, nessuna assunzione di normalita')\n")
+
+        # --- confronto PER AGENTE ------------------------------------------ #
+        # I post non sono osservazioni indipendenti: sono raggruppati per
+        # agente, e due run con lo stesso seme hanno gli STESSI agenti. Il
+        # test sui post trattava 900 osservazioni come indipendenti quando le
+        # unita' vere sono 100, e questo e' metà della ragione per cui
+        # dichiarava significative differenze che erano rumore. Qui si
+        # confronta ciascun agente con se stesso nell'altro braccio e si
+        # permutano i SEGNI delle differenze, che e' il test appaiato.
+        per_ag = {n: metriche_per_agente(c) for n, c in zip(nomi, conn)}
+        comuni = sorted(set(per_ag[x]) & set(per_ag[y]))
+        print(f"\n  Test appaiato per agente ({len(comuni)} agenti in "
+              f"entrambi i bracci)")
+        print("  Ogni agente confrontato con se stesso: toglie la varianza")
+        print("  fra personaggi, che nel test sui post era confusa col segnale.\n")
         print(f"  {'metrica':<12}{'differenza':>12}{'p':>10}   esito")
+        rng = random.Random(1)
         for m in METRICHE:
-            d, p = permuta(valori[x][m], valori[y][m])
+            diff = [per_ag[x][a][m] - per_ag[y][a][m] for a in comuni]
+            oss = sum(diff) / len(diff)
+            estremi = 0
+            for _ in range(10000):
+                tot = sum(d if rng.random() < 0.5 else -d for d in diff)
+                if abs(tot / len(diff)) >= abs(oss):
+                    estremi += 1
+            p = (estremi + 1) / 10001
             esito = "significativo" if p < 0.05 else "non distinguibile"
-            print(f"  {m:<12}{d:>+12.3f}{p:>10.4f}   {esito}")
+            print(f"  {m:<12}{oss:>+12.3f}{p:>10.4f}   {esito}")
+
+        # --- calibrazione sul rumore --------------------------------------- #
+        if a.null:
+            print("\n  " + "-" * 66)
+            print("  CALIBRAZIONE SUL RUMORE")
+            print("  I due run passati con --null sono identici: config, seme e")
+            print("  popolazione uguali, cambia solo il campionamento del")
+            print("  modello. Fra loro l'effetto vero e' ZERO, quindi le loro")
+            print("  differenze sono il pavimento sotto cui nulla e' leggibile.\n")
+            cn = [apri(z) for z in a.null]
+            nv = [{m: [fn(t) for t in testi(z)] for m, fn in METRICHE.items()}
+                  for z in cn]
+            for z in cn:
+                z.close()
+            print(f"  {'metrica':<12}{'trattamento':>13}{'rumore':>10}"
+                  f"{'rapporto':>11}   verdetto")
+            for m in METRICHE:
+                dt, _ = permuta(valori[x][m], valori[y][m], giri=2000)
+                dn, _ = permuta(nv[0][m], nv[1][m], giri=2000)
+                if abs(dn) < 1e-9:
+                    # Rumore nullo: succede solo con lo StubLLM deterministico.
+                    v = "rumore nullo (stub?)"
+                    r_txt = "-"
+                else:
+                    r = abs(dt) / abs(dn)
+                    r_txt = f"{r:.2f}"
+                    if r >= 2:
+                        v = "sopra il rumore"
+                    elif r >= 1:
+                        v = "al limite, serve replicare"
+                    else:
+                        v = "DENTRO il rumore"
+                print(f"  {m:<12}{dt:>+13.3f}{dn:>+10.3f}{r_txt:>11}   {v}")
+            print("\n  Una differenza va considerata reale solo se e' almeno il")
+            print("  doppio di quella fra due run identici, e se il segno regge")
+            print("  su piu' repliche con semi diversi.")
+
         print(f"\n  Differenza positiva = {x} ha valori piu' alti.")
 
     # --- 6. il corpo dell'articolo e' stato letto davvero? --------------- #

@@ -41,6 +41,9 @@ from typing import Any
 #   action      327, 312, 297, 348
 #   reflection  404, 386, 512*, 512*
 #   vote        289, 328, 512*, 242
+# Aggiornato il 2026-09-09: nel run noise_a la riflessione ha toccato 768 con
+# budget 768, due troncamenti. Portata a 1024: il gateway addebita i token
+# usati e non il budget, quindi un tetto alto non costa nulla.
 # Gli asterischi sono TRONCAMENTI: il massimo coincide col budget, quindi il
 # valore vero e' ignoto e maggiore. In expa-full un voto troncato e' diventato
 # un errore di parsing, e il run finale ha 99 voti validi invece di 100.
@@ -70,7 +73,7 @@ from typing import Any
 #     python scripts/endpoint.py probe --n 2 --max-tokens 128 640 --sleep 20
 DEFAULT_TOKEN_BUDGET = {
     "action": 640,
-    "reflection": 768,
+    "reflection": 1024,
     "vote": 640,
 }
 
