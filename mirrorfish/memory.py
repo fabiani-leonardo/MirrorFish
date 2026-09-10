@@ -38,8 +38,22 @@ REFLECTION_SYSTEM = (
     "'commento 12' — l'agente non sa che esistono. Riferisciti all'autore "
     "quando e' noto, altrimenti al tema o all'affermazione. "
     "REGOLA 2: nota e motivazione vanno scritte in forma impersonale, "
-    "omettendo del tutto il nome dell'agente. Inizia direttamente dall'azione "
-    "(es. 'Rafforza la propria opposizione...', 'Sviluppa scetticismo verso...'). "
+    "omettendo del tutto il nome dell'agente. Inizia direttamente dall'azione. "
+    # I due esempi precedenti erano 'Rafforza la propria opposizione...' e
+    # 'Sviluppa scetticismo verso...': entrambi contrari. E' lo stesso guasto
+    # del prompt d'azione che non nominava POST — il modello copia lo schema
+    # che gli si da'. Nell'audit del run rep7_titolo il dibattito dei
+    # cittadini era al 22% pro-riforma e le note al 6%: la riflessione
+    # aggiungeva da sola uno sbilanciamento di quasi quattro volte, e
+    # 'Rafforza la propria opposizione' compariva verbatim nelle note.
+    # Gli esempi ora sono quattro e bilanciati per direzione.
+    "Esempi di apertura, senza preferenza fra loro: 'Si convince che...', "
+    "'Rafforza la propria posizione su...', 'Sviluppa una riserva verso...', "
+    "'Cambia idea riguardo a...'. "
+    "REGOLA 3: non attribuire all'agente una posizione che non risulti dalla "
+    "biografia o dalle note gia' scritte. Tu NON sai come voterebbe. Se i post "
+    "lo hanno colpito, descrivi cio' che ha trovato convincente o discutibile, "
+    "non una convinzione pregressa che potrebbe non avere. "
     "Rispondi solo con un oggetto JSON, in italiano, senza prosa attorno."
 )
 

@@ -244,6 +244,18 @@ class Engine:
                     self._apply(o)
                 self.store.commit()
 
+            if (self.sim.follow_drift_every
+                    and (tick + 1) % self.sim.follow_drift_every == 0):
+                nuovi = self.store.follow_candidates(
+                    tick, self.sim.follow_prob_per_like,
+                    self.sim.follow_max_new, self.sim.seed)
+                if nuovi:
+                    self.store.add_follows(nuovi)
+                    self.store.commit()
+                    if self.verbose:
+                        print(f"    [rete] {len(nuovi)} nuovi follow nati "
+                              f"dalle interazioni", flush=True)
+
             if self.sim.reflection_every and (tick + 1) % self.sim.reflection_every == 0:
                 await self._reflect_all(agents, tick)
 

@@ -219,6 +219,21 @@ class SimConfig:
     # Attivita': probabilita' che un agente agisca in un dato tick
     base_activity: float = 0.35
 
+    # Deriva del grafo sociale: ogni quanti tick si aggiungono follow nati
+    # dalle interazioni. None = grafo congelato, come e' sempre stato.
+    #
+    # Non e' un abbellimento. Con la rete fissa nessuno puo' guadagnare
+    # pubblico, quindi la figura dell'influencer non puo' emergere per
+    # costruzione: e' un esito escluso dal modello, non un esito che il
+    # modello non produce. Acceso, la rete evolve e si puo' misurare se
+    # qualcuno accumula seguito e se questo cambia l'esito del voto.
+    follow_drift_every: int | None = None
+    # Probabilita' che UN like verso la stessa persona faccia scattare il
+    # follow. Dopo k like la probabilita' cumulata e' 1-(1-p)^k: con 0,15
+    # sono il 15% dopo un like, il 39% dopo tre, il 62% dopo sei.
+    follow_prob_per_like: float = 0.15
+    follow_max_new: int = 2            # nuovi seguiti per agente per ciclo
+
     # Riflessione: ogni quanti tick gira il passo di memoria riflessiva
     reflection_every: int = 4
     max_notes_in_prompt: int = 8

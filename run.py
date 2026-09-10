@@ -148,6 +148,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         out_of_network=args.out_of_network,
         max_actions=args.max_actions,
         reflection_every=args.reflection_every,
+        follow_drift_every=args.follow_drift_every,
         survey_every=args.survey_every,
         counterfactual_from_tick=args.cf_from_tick,
         counterfactual_news_dir=args.cf_news,
@@ -444,6 +445,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-actions", type=int, default=d.max_actions,
                    help="azioni per agente per tick, in una sola chiamata")
     p.add_argument("--reflection-every", type=int, default=d.reflection_every)
+    p.add_argument("--follow-drift-every", type=int, default=d.follow_drift_every,
+                   help="ogni N tick chi interagisce ripetutamente con "
+                        "qualcuno inizia a seguirlo. Senza, il grafo resta "
+                        "congelato e nessuno puo' accumulare pubblico: la "
+                        "figura dell'influencer e' esclusa per costruzione")
     p.add_argument("--survey-every", type=int, default=d.survey_every,
                    help="survey intermedia ogni N tick, per la traiettoria "
                         "dell'opinione. Costa N chiamate ogni volta")

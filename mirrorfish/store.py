@@ -14,6 +14,7 @@ posteriori con networkx.
 from __future__ import annotations
 
 import json
+import random
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -266,6 +267,60 @@ class Store:
             WHERE p.tick <= ? AND a.is_source = 1
             ORDER BY p.tick DESC, p.post_id DESC LIMIT ?
             """, (tick, limit)).fetchall()
+
+    def follow_candidates(self, tick: int, prob_per_like: float,
+                          max_new_per_agent: int, seed: int) -> list[tuple[int, int]]:
+        """
+        Chi inizia a seguire chi, sulla base dei LIKE ricevuti.
+
+        Solo i like, non le risposte. Una risposta si scrive anche — anzi
+        soprattutto — a chi non si condivide: contarla come segnale di
+        avvicinamento premierebbe il litigio quanto il consenso, e in una
+        simulazione sulla polarizzazione e' proprio l'errore da non fare.
+        Il like invece e' approvazione quasi per definizione.
+
+        Forma probabilistica invece che a soglia: ogni like verso la stessa
+        persona e' un'occasione indipendente di seguirla, con probabilita'
+        `prob_per_like`. Dopo k like la probabilita' cumulata e'
+        1 - (1-p)^k, quindi cresce e satura invece di scattare di colpo a una
+        soglia arbitraria. Nessuno segue per forza al primo like, e nessuno
+        resta immune dopo il decimo.
+
+        L'estrazione e' deterministica su (seme, follower, seguito, tick):
+        il run resta riproducibile a parita' di seme.
+        """
+        rows = self.conn.execute(
+            """
+            SELECT r.agent_id AS follower, p.agent_id AS followee,
+                   COUNT(*) AS like_dati
+              FROM reaction r JOIN post p ON p.post_id = r.post_id
+             WHERE r.kind = 'like' AND r.tick <= :tick
+               AND r.agent_id != p.agent_id
+             GROUP BY r.agent_id, p.agent_id
+             ORDER BY r.agent_id, like_dati DESC
+            """, {"tick": tick}).fetchall()
+
+        gia = {(r["follower_id"], r["followee_id"]) for r in
+               self.conn.execute("SELECT follower_id, followee_id FROM follow")}
+        fonti = {r["agent_id"] for r in self.conn.execute(
+            "SELECT agent_id FROM agent WHERE is_source = 1")}
+
+        nuovi: list[tuple[int, int]] = []
+        per_agente: dict[int, int] = {}
+        for r in rows:
+            a, b = int(r["follower"]), int(r["followee"])
+            if a in fonti or (a, b) in gia:
+                continue
+            if per_agente.get(a, 0) >= max_new_per_agent:
+                continue
+            k = int(r["like_dati"])
+            p_cum = 1.0 - (1.0 - prob_per_like) ** k
+            rng = random.Random(f"{seed}|{a}|{b}|{tick}|follow")
+            if rng.random() >= p_cum:
+                continue
+            per_agente[a] = per_agente.get(a, 0) + 1
+            nuovi.append((a, b))
+        return nuovi
 
     def affinity_for(self, agent_id: int, tick: int) -> dict[int, float]:
         """
