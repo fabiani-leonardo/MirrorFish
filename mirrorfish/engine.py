@@ -196,7 +196,8 @@ class Engine:
                                     self.llm_cfg.token_budget["reflection"],
                                     resp, tick=tick, agent_id=res.agent_id)
             if res.note_added:
-                self.store.add_note(res.agent_id, tick, res.note, res.reasoning)
+                self.store.add_note(res.agent_id, tick, res.note, res.reasoning,
+                                    res.direzione)
                 self.stats["notes"] += 1
         self.store.commit()
         self._seen.clear()

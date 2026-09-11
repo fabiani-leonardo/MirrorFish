@@ -73,6 +73,14 @@ CREATE TABLE IF NOT EXISTS note (
     tick            INTEGER NOT NULL,
     note            TEXT NOT NULL,
     reasoning       TEXT NOT NULL DEFAULT '',
+    -- Direzione dichiarata dal modello: 'verso_si', 'verso_no', 'nessuna'.
+    -- Prima si deduceva dal testo con espressioni regolari, e sbagliava: una
+    -- nota puo' aprire con "rafforza la diffidenza" e poi sostenere che la
+    -- separazione delle carriere tutela l'indipendenza, cioe' una tesi
+    -- favorevole. Chiedere la direzione esplicitamente costringe il modello a
+    -- impegnarsi, e rende l'incoerenza fra nota e voto misurabile invece che
+    -- congetturabile.
+    direzione       TEXT NOT NULL DEFAULT 'nessuna',
     created_at      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_note_agent ON note(agent_id);
@@ -398,11 +406,13 @@ class Store:
         return [r["content"] for r in rows]
 
     # ----------------------------------------------------------------- note #
-    def add_note(self, agent_id: int, tick: int, note: str, reasoning: str = "") -> None:
+    def add_note(self, agent_id: int, tick: int, note: str,
+                 reasoning: str = "", direzione: str = "nessuna") -> None:
         self.conn.execute(
-            "INSERT INTO note (agent_id, tick, note, reasoning, created_at) "
-            "VALUES (?,?,?,?,?)",
-            (agent_id, tick, note, reasoning, datetime.now().isoformat()),
+            "INSERT INTO note (agent_id, tick, note, reasoning, direzione, "
+            "created_at) VALUES (?,?,?,?,?,?)",
+            (agent_id, tick, note, reasoning, direzione,
+             datetime.now().isoformat()),
         )
 
     def notes_for(self, agent_id: int, limit: int | None = None) -> list[str]:

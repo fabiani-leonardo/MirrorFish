@@ -143,6 +143,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         hours_per_tick=args.hours_per_tick,
         feed_size=args.feed_size,
         news_slots=args.news_slots,
+        news_slots_mode=args.news_slots_mode,
         max_news_per_tick=args.max_news_per_tick,
         recommender=args.recommender,
         out_of_network=args.out_of_network,
@@ -429,6 +430,14 @@ def parse_args() -> argparse.Namespace:
                         "separare l'effetto dell'esposizione da quello della "
                         "personalita'. Due run che differiscono SOLO per "
                         "questo sono un esperimento, non un'osservazione")
+    p.add_argument("--news-slots-mode", default=d.news_slots_mode,
+                   choices=["gradiente", "solo_profondita", "uniforme"],
+                   help="'gradiente': l'attivista riceve 2 notizie, il "
+                        "moderato 1, il disinteressato 0 (quantita' e "
+                        "profondita' variano insieme). 'solo_profondita': "
+                        "stessa quantita' per chi le riceve, cambia solo "
+                        "quanto testo ne legge. 'uniforme': una notizia a "
+                        "tutti, disinteressati compresi")
     p.add_argument("--news-slots", type=int, default=d.news_slots,
                    help="TETTO agli slot notizia. Quelli effettivi dipendono "
                         "dalla profondita' di lettura dell'agente")

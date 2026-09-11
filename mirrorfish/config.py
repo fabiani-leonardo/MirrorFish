@@ -90,11 +90,29 @@ DEFAULT_TOKEN_BUDGET = {
 # ricevevano la STESSA quantita' di notizie e differivano solo per lunghezza
 # del testo: la profondita' di lettura non era una variabile di esposizione,
 # era una variabile tipografica.
-NEWS_SLOTS_BY_DEPTH = {
-    "integrale": 2,   # attivista: apre l'articolo e ne legge il corpo
-    "titolo": 1,      # moderato: scorre i titoli
-    "nessuna": 0,     # disinteressato: non riceve notizie, ne sente parlare
+# Tre modi di distribuire gli slot notizia, perche' quale sia giusto e' una
+# scelta di modello e non un fatto, e va quindi testata invece che decisa.
+#
+#   gradiente        chi segue la politica riceve PIU' notizie e le legge
+#                    piu' a fondo. Realistico, ma confonde due meccanismi:
+#                    quantita' di esposizione e profondita' di lettura. Un
+#                    moderato e' penalizzato due volte.
+#   solo_profondita  stessa quantita' per chi riceve notizie, cambia solo
+#                    quanto testo ne legge. Isola la profondita' come unica
+#                    variabile, che e' l'ipotesi della tesi.
+#   uniforme         tutti ricevono una notizia, disinteressati compresi.
+#                    Serve a misurare quanto pesa l'esclusione totale.
+#
+# Il disinteressato a zero slot non e' una sfumatura: significa restare fuori
+# dal flusso informativo per l'intera campagna e venire a sapere del
+# referendum solo da quello che ne dicono gli altri. In cambio riceve un post
+# sociale in piu', quindi non ha MENO esposizione: ne ha una diversa.
+NEWS_SLOTS_MODES = {
+    "gradiente":       {"integrale": 2, "titolo": 1, "nessuna": 0},
+    "solo_profondita": {"integrale": 1, "titolo": 1, "nessuna": 0},
+    "uniforme":        {"integrale": 1, "titolo": 1, "nessuna": 1},
 }
+NEWS_SLOTS_BY_DEPTH = NEWS_SLOTS_MODES["gradiente"]   # compatibilita'
 
 
 @dataclass
@@ -197,6 +215,10 @@ class SimConfig:
     # Tetto agli slot notizia. Quelli EFFETTIVI dipendono dalla profondita' di
     # lettura dell'agente: vedi NEWS_SLOTS_BY_DEPTH e news_slots_for().
     news_slots: int = 2
+    # Come la quantita' di notizie dipende dalla profondita' di lettura.
+    # Vedi NEWS_SLOTS_MODES: e' un parametro del modello, quindi sta qui ed
+    # entra nel fingerprint.
+    news_slots_mode: str = "gradiente"
     max_news_per_tick: int = 3
     # Politica di ranking. NON e' un dettaglio implementativo, e' il
     # trattamento sperimentale principale. Vedi recommender.py.
@@ -269,7 +291,8 @@ class SimConfig:
 
     def news_slots_for(self, media_depth: str) -> int:
         """Slot notizia effettivi per un agente, dato quanto a fondo legge."""
-        return min(self.news_slots, NEWS_SLOTS_BY_DEPTH.get(media_depth, 1))
+        tab = NEWS_SLOTS_MODES.get(self.news_slots_mode, NEWS_SLOTS_BY_DEPTH)
+        return min(self.news_slots, tab.get(media_depth, 1))
 
     def to_dict(self) -> dict[str, Any]:
         d = asdict(self)

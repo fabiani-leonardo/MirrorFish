@@ -50,6 +50,21 @@ REFLECTION_SYSTEM = (
     "Esempi di apertura, senza preferenza fra loro: 'Si convince che...', "
     "'Rafforza la propria posizione su...', 'Sviluppa una riserva verso...', "
     "'Cambia idea riguardo a...'. "
+    # Vincolo nato da due casi reali del run fix7. Una nota apriva con
+    # "Rafforza la diffidenza verso il referendum" e proseguiva sostenendo che
+    # la separazione delle carriere tutela dall'ingerenza politica, che e' la
+    # tesi del SI: verbo di apertura e contenuto dicevano il contrario. Il voto
+    # finale ha seguito il contenuto, ed e' passato da NO a SI mentre la nota
+    # sembrava confermare il NO. Imporre un'apertura "dall'azione" fa scegliere
+    # il verbo prima di sapere cosa si scrivera' dopo.
+    "REGOLA 4: il verbo di apertura deve concordare con l'argomento che "
+    "riporti. Se l'argomento che ha colpito l'agente e' a FAVORE della "
+    "riforma, non aprire con 'rafforza la diffidenza'. "
+    "Indica poi in `direzione` da che parte spinge quanto hai scritto: "
+    "'verso_si' se avvicina all'approvazione della riforma, 'verso_no' se "
+    "l'allontana, 'nessuna' se e' solo una sfumatura senza direzione. "
+    "Ricorda che la riforma IN VOTO introduce la separazione delle carriere: "
+    "chi la sostiene vota SI, chi la osteggia vota NO. "
     "REGOLA 3: non attribuire all'agente una posizione che non risulti dalla "
     "biografia o dalle note gia' scritte. Tu NON sai come voterebbe. Se i post "
     "lo hanno colpito, descrivi cio' che ha trovato convincente o discutibile, "
@@ -74,7 +89,9 @@ Se e solo se qualcosa e' davvero cambiato, scrivi UNA frase breve (max {max_char
 caratteri) in forma impersonale.
 
 Rispondi esattamente in questa forma:
-{{"note_added": true/false, "note": "la frase, o stringa vuota", "reasoning": "una proposizione"}}"""
+{{"note_added": true/false, "note": "la frase, o stringa vuota",
+  "direzione": "verso_si" | "verso_no" | "nessuna",
+  "reasoning": "una proposizione"}}"""
 
 
 @dataclass
@@ -82,6 +99,7 @@ class ReflectionResult:
     agent_id: int
     note_added: bool = False
     note: str = ""
+    direzione: str = "nessuna"
     reasoning: str = ""
     error: str | None = None
 
@@ -129,7 +147,11 @@ class ReflectionEngine:
         if added and not note:
             added = False
 
+        direzione = str(data.get("direzione") or "nessuna").strip().lower()
+        if direzione not in ("verso_si", "verso_no", "nessuna"):
+            direzione = "nessuna"
+
         return ReflectionResult(
             agent_id=agent_id, note_added=added, note=note,
-            reasoning=str(data.get("reasoning") or ""),
+            reasoning=str(data.get("reasoning") or ""), direzione=direzione,
         ), resp
