@@ -1,0 +1,331 @@
+[setup] RIPRESA: 105 agenti in DB, ultimo tick completo = 1
+[setup] ripulito il tick parziale: {'post': 3}
+[setup] profondita' di lettura NEL DB: integrale=22 (2 slot), nessuna=34 (0 slot), titolo=49 (1 slot)
+[news] 1 notizie senza corpo integrale (0.2%): a quelle gli agenti 'integrale' vedono solo il titolo.
+[news] finestra simulata: 2026-03-07 -> 2026-03-20
+[news] 112 notizie schedulate su 42 tick (max 3/tick)
+[news] ATTENZIONE: 418 notizie PRIMA di 2026-03-07 scartate. Se le vuoi, sposta --start indietro.
+[news] 2 notizie dopo 2026-03-20 scartate.
+[news] 77 notizie scartate per superamento di max_per_tick.
+  [baseline] 1/100 voti (43.1/min, ~2 min alla fine)
+  [baseline] 10/100 voti (33.9/min, ~3 min alla fine)
+  [baseline] 20/100 voti (33.8/min, ~2 min alla fine)
+  [baseline] 30/100 voti (33.5/min, ~2 min alla fine)
+  [baseline] 40/100 voti (33.4/min, ~2 min alla fine)
+  [baseline] 50/100 voti (33.0/min, ~2 min alla fine)
+  [baseline] 60/100 voti (33.3/min, ~1 min alla fine)
+  [baseline] 70/100 voti (33.2/min, ~1 min alla fine)
+  [baseline] 80/100 voti (33.2/min, ~1 min alla fine)
+  [baseline] 90/100 voti (33.0/min, ~0 min alla fine)
+  [baseline] 100/100 voti (33.1/min, ~0 min alla fine)
+
+--- RISULTATI [baseline] ---
+  SI           41   41.0%
+  NO           23   23.0%
+  ASTENUTO     36   36.0%
+  ERRORI        0
+  validi      100
+[feed] politica: recency, fuori-rete 15%, 8 post per tick
+[engine] RIPRESA dal tick 2/42
+[engine] 105 agenti, 42 tick, seed=11
+[engine] 112 notizie su 42 tick (da 2026-03-07 a 2026-03-20)
+    tick 2: 12/64 agenti (34.5/min)
+    tick 2: 23/64 agenti (33.7/min)
+    tick 2: 35/64 agenti (33.0/min)
+    tick 2: 46/64 agenti (33.0/min)
+    tick 2: 58/64 agenti (33.1/min)
+  tick   2/42 2026-03-07 08h  attivi= 64 news= 3  post=11 reply=34 like=105 note=0 err=0  ETA 1.3h
+    tick 3: 12/70 agenti (34.1/min)
+    tick 3: 23/70 agenti (32.8/min)
+    tick 3: 35/70 agenti (33.4/min)
+    tick 3: 47/70 agenti (33.1/min)
+    tick 3: 59/70 agenti (33.3/min)
+  tick   3/42 2026-03-07 16h  attivi= 70 news= 3  post=17 reply=57 like=179 note=0 err=0  ETA 1.3h
+    tick 4: 11/21 agenti (32.8/min)
+  tick   4/42 2026-03-08 00h  attivi= 21 news= 2  post=17 reply=62 like=202 note=28 err=0  ETA 1.6h
+    tick 5: 12/69 agenti (33.8/min)
+    tick 5: 23/69 agenti (33.3/min)
+    tick 5: 35/69 agenti (32.7/min)
+    tick 5: 47/69 agenti (33.1/min)
+    tick 5: 58/69 agenti (32.8/min)
+    tick 5: 69/69 agenti (32.8/min)
+  tick   5/42 2026-03-08 08h  attivi= 69 news= 1  post=25 reply=90 like=266 note=28 err=0  ETA 1.5h
+    tick 6: 12/71 agenti (34.1/min)
+    tick 6: 23/71 agenti (33.4/min)
+    tick 6: 35/71 agenti (33.4/min)
+    tick 6: 46/71 agenti (33.2/min)
+    tick 6: 58/71 agenti (33.2/min)
+    tick 6: 70/71 agenti (33.1/min)
+  tick   6/42 2026-03-08 16h  attivi= 71 news= 1  post=28 reply=112 like=333 note=28 err=0  ETA 1.4h
+    tick 7: 11/24 agenti (32.3/min)
+    tick 7: 23/24 agenti (32.6/min)
+  tick   7/42 2026-03-09 00h  attivi= 24 news= 3  post=30 reply=121 like=349 note=28 err=0  ETA 1.2h
+    tick 8: 12/72 agenti (32.1/min)
+    tick 8: 24/72 agenti (33.0/min)
+    tick 8: 35/72 agenti (33.0/min)
+    tick 8: 47/72 agenti (32.9/min)
+    tick 8: 58/72 agenti (32.7/min)
+    tick 8: 70/72 agenti (32.9/min)
+  tick   8/42 2026-03-09 08h  attivi= 72 news= 3  post=35 reply=141 like=412 note=50 err=0  ETA 1.4h
+    tick 9: 12/65 agenti (33.6/min)
+    tick 9: 24/65 agenti (33.5/min)
+    tick 9: 35/65 agenti (33.1/min)
+    tick 9: 47/65 agenti (33.2/min)
+    tick 9: 59/65 agenti (33.0/min)
+  tick   9/42 2026-03-09 16h  attivi= 65 news= 3  post=44 reply=163 like=470 note=50 err=0  ETA 1.4h
+    tick 10: 12/15 agenti (33.1/min)
+  tick  10/42 2026-03-10 00h  attivi= 15 news= 2  post=47 reply=169 like=482 note=50 err=1  ETA 1.2h
+    tick 11: 11/72 agenti (32.7/min)
+    tick 11: 22/72 agenti (32.8/min)
+    tick 11: 34/72 agenti (32.3/min)
+    tick 11: 46/72 agenti (33.1/min)
+    tick 11: 58/72 agenti (32.9/min)
+    tick 11: 70/72 agenti (33.0/min)
+  tick  11/42 2026-03-10 08h  attivi= 72 news= 2  post=53 reply=192 like=548 note=50 err=2  ETA 1.2h
+    tick 12: 11/66 agenti (32.0/min)
+    tick 12: 22/66 agenti (32.1/min)
+    tick 12: 34/66 agenti (33.0/min)
+    tick 12: 46/66 agenti (33.0/min)
+    tick 12: 58/66 agenti (32.7/min)
+  tick  12/42 2026-03-10 16h  attivi= 66 news= 1  post=58 reply=217 like=611 note=64 err=2  ETA 1.3h
+    tick 13: 12/18 agenti (34.4/min)
+  tick  13/42 2026-03-11 00h  attivi= 18 news= 3  post=58 reply=222 like=626 note=64 err=2  ETA 1.1h
+    tick 14: 11/71 agenti (33.0/min)
+    tick 14: 22/71 agenti (32.8/min)
+    tick 14: 34/71 agenti (31.9/min)
+    tick 14: 47/71 agenti (33.0/min)
+    tick 14: 58/71 agenti (32.8/min)
+    tick 14: 70/71 agenti (32.8/min)
+  tick  14/42 2026-03-11 08h  attivi= 71 news= 3  post=70 reply=243 like=696 note=64 err=2  ETA 1.1h
+    tick 15: 11/66 agenti (32.6/min)
+    tick 15: 23/66 agenti (33.1/min)
+    tick 15: 35/66 agenti (33.4/min)
+    tick 15: 46/66 agenti (32.8/min)
+    tick 15: 58/66 agenti (33.2/min)
+  tick  15/42 2026-03-11 16h  attivi= 66 news= 3  post=79 reply=267 like=765 note=64 err=2  ETA 1.0h
+    tick 16: 12/23 agenti (33.4/min)
+    tick 16: 23/23 agenti (33.0/min)
+    [rate-limit] freno preventivo: team/token a 1 residue, pausa 12s
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 2324. Limit resets at: 2026-09-13 15:07:57 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 104,951 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+    [rate-limit] 10 richieste pulite: ritmo 2.45s -> 2.08s
+  tick  16/42 2026-03-12 00h  attivi= 23 news= 3  post=83 reply=273 like=791 note=79 err=2  ETA 1.1h
+    tick 17: 11/69 agenti (32.7/min)
+    tick 17: 22/69 agenti (32.8/min)
+    tick 17: 34/69 agenti (32.5/min)
+    tick 17: 46/69 agenti (33.1/min)
+    tick 17: 58/69 agenti (32.8/min)
+  tick  17/42 2026-03-12 08h  attivi= 69 news= 3  post=90 reply=302 like=869 note=79 err=2  ETA 1.0h
+    tick 18: 11/68 agenti (31.3/min)
+    tick 18: 23/68 agenti (32.3/min)
+    tick 18: 35/68 agenti (33.0/min)
+    tick 18: 46/68 agenti (33.0/min)
+    tick 18: 58/68 agenti (33.0/min)
+  tick  18/42 2026-03-12 16h  attivi= 68 news= 3  post=100 reply=325 like=946 note=79 err=2  ETA 1.0h
+    tick 19: 11/13 agenti (32.2/min)
+  tick  19/42 2026-03-13 00h  attivi= 13 news= 3  post=100 reply=326 like=962 note=79 err=2  ETA 0.9h
+    tick 20: 12/75 agenti (32.6/min)
+    tick 20: 24/75 agenti (33.3/min)
+    tick 20: 35/75 agenti (32.7/min)
+    tick 20: 47/75 agenti (32.8/min)
+    tick 20: 59/75 agenti (33.0/min)
+    tick 20: 70/75 agenti (32.9/min)
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 3388. Limit resets at: 2026-09-13 15:19:35 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 118,872 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+  tick  20/42 2026-03-13 08h  attivi= 75 news= 3  post=108 reply=354 like=1063 note=97 err=2  ETA 0.9h
+    tick 21: 12/61 agenti (34.9/min)
+    tick 21: 23/61 agenti (33.2/min)
+    tick 21: 35/61 agenti (33.2/min)
+    tick 21: 47/61 agenti (33.6/min)
+    tick 21: 59/61 agenti (33.4/min)
+  tick  21/42 2026-03-13 16h  attivi= 61 news= 3  post=113 reply=375 like=1119 note=97 err=3  ETA 0.9h
+    tick 22: 12/13 agenti (32.5/min)
+  tick  22/42 2026-03-14 00h  attivi= 13 news= 3  post=114 reply=380 like=1135 note=97 err=3  ETA 0.8h
+    tick 23: 11/76 agenti (31.6/min)
+    tick 23: 23/76 agenti (33.1/min)
+    tick 23: 34/76 agenti (32.7/min)
+    tick 23: 46/76 agenti (33.1/min)
+    tick 23: 57/76 agenti (32.9/min)
+    tick 23: 69/76 agenti (32.8/min)
+  tick  23/42 2026-03-14 08h  attivi= 76 news= 3  post=116 reply=415 like=1212 note=97 err=3  ETA 0.8h
+    tick 24: 11/71 agenti (32.8/min)
+    tick 24: 23/71 agenti (33.7/min)
+    tick 24: 34/71 agenti (33.5/min)
+    tick 24: 45/71 agenti (33.0/min)
+    tick 24: 56/71 agenti (32.9/min)
+    tick 24: 68/71 agenti (33.0/min)
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 1443. Limit resets at: 2026-09-13 15:30:50 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 119,400 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+    [rate-limit] 10 richieste pulite: ritmo 2.45s -> 2.08s
+  tick  24/42 2026-03-14 16h  attivi= 71 news= 3  post=122 reply=441 like=1280 note=113 err=3  ETA 0.8h
+    tick 25: 12/18 agenti (32.9/min)
+  tick  25/42 2026-03-15 00h  attivi= 18 news= 2  post=124 reply=449 like=1298 note=113 err=3  ETA 0.7h
+    tick 26: 11/69 agenti (32.4/min)
+    tick 26: 23/69 agenti (33.2/min)
+    tick 26: 34/69 agenti (32.8/min)
+    tick 26: 45/69 agenti (32.8/min)
+    tick 26: 56/69 agenti (32.8/min)
+    tick 26: 68/69 agenti (33.0/min)
+  tick  26/42 2026-03-15 08h  attivi= 69 news= 1  post=131 reply=474 like=1362 note=113 err=3  ETA 0.7h
+    tick 27: 11/75 agenti (32.3/min)
+    tick 27: 22/75 agenti (32.6/min)
+    tick 27: 33/75 agenti (32.7/min)
+    tick 27: 45/75 agenti (33.1/min)
+    tick 27: 57/75 agenti (32.8/min)
+    tick 27: 69/75 agenti (32.9/min)
+  tick  27/42 2026-03-15 16h  attivi= 75 news= 1  post=141 reply=504 like=1429 note=113 err=3  ETA 0.6h
+    tick 28: 11/15 agenti (32.0/min)
+    [rate-limit] freno preventivo: team/token a 1 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 1301. Limit resets at: 2026-09-13 15:41:50 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 121,832 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 1301. Limit resets at: 2026-09-13 15:42:50 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 2.45s, consumo stimato 90,246 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 3.31s fra le richieste
+  tick  28/42 2026-03-16 00h  attivi= 15 news= 3  post=143 reply=512 like=1452 note=122 err=3  ETA 0.6h
+    [rate-limit] 10 richieste pulite: ritmo 2.39s -> 2.03s
+    tick 29: 9/76 agenti (25.9/min)
+    tick 29: 19/76 agenti (27.8/min)
+    tick 29: 31/76 agenti (29.3/min)
+    tick 29: 43/76 agenti (30.6/min)
+    tick 29: 54/76 agenti (30.7/min)
+    tick 29: 66/76 agenti (31.3/min)
+  tick  29/42 2026-03-16 08h  attivi= 76 news= 3  post=155 reply=537 like=1539 note=122 err=3  ETA 0.6h
+    tick 30: 12/66 agenti (32.6/min)
+    tick 30: 24/66 agenti (33.0/min)
+    tick 30: 35/66 agenti (32.8/min)
+    tick 30: 47/66 agenti (33.1/min)
+    tick 30: 59/66 agenti (33.2/min)
+  tick  30/42 2026-03-16 16h  attivi= 66 news= 3  post=161 reply=557 like=1606 note=122 err=3  ETA 0.5h
+    tick 31: 12/15 agenti (34.2/min)
+  tick  31/42 2026-03-17 00h  attivi= 15 news= 3  post=162 reply=561 like=1622 note=122 err=3  ETA 0.5h
+    tick 32: 12/64 agenti (33.8/min)
+    tick 32: 24/64 agenti (33.9/min)
+    tick 32: 35/64 agenti (33.5/min)
+    tick 32: 47/64 agenti (33.4/min)
+    tick 32: 58/64 agenti (33.1/min)
+    [rate-limit] freno preventivo: team/token a 1 residue, pausa 12s
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 2862. Limit resets at: 2026-09-13 15:54:26 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 133,268 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+  tick  32/42 2026-03-17 08h  attivi= 64 news= 3  post=169 reply=580 like=1697 note=130 err=3  ETA 0.4h
+    tick 33: 11/71 agenti (32.7/min)
+    tick 33: 23/71 agenti (32.9/min)
+    tick 33: 35/71 agenti (33.3/min)
+    tick 33: 47/71 agenti (33.3/min)
+    tick 33: 58/71 agenti (33.0/min)
+    tick 33: 69/71 agenti (33.0/min)
+  tick  33/42 2026-03-17 16h  attivi= 71 news= 3  post=176 reply=605 like=1781 note=130 err=3  ETA 0.4h
+    tick 34: 11/14 agenti (32.1/min)
+  tick  34/42 2026-03-18 00h  attivi= 14 news= 3  post=179 reply=611 like=1799 note=130 err=3  ETA 0.3h
+    tick 35: 11/74 agenti (32.4/min)
+    tick 35: 22/74 agenti (32.4/min)
+    tick 35: 34/74 agenti (33.1/min)
+    tick 35: 46/74 agenti (32.8/min)
+    tick 35: 57/74 agenti (32.8/min)
+    tick 35: 68/74 agenti (32.8/min)
+  tick  35/42 2026-03-18 08h  attivi= 74 news= 3  post=185 reply=635 like=1882 note=130 err=3  ETA 0.3h
+    tick 36: 11/75 agenti (32.3/min)
+    tick 36: 23/75 agenti (33.0/min)
+    tick 36: 34/75 agenti (33.0/min)
+    tick 36: 46/75 agenti (33.0/min)
+    tick 36: 57/75 agenti (32.7/min)
+    tick 36: 69/75 agenti (32.9/min)
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 4180. Limit resets at: 2026-09-13 16:05:44 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 135,269 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+    [rate-limit] 10 richieste pulite: ritmo 2.45s -> 2.08s
+  tick  36/42 2026-03-18 16h  attivi= 75 news= 3  post=191 reply=658 like=1962 note=145 err=3  ETA 0.3h
+    tick 37: 12/23 agenti (33.6/min)
+    tick 37: 23/23 agenti (33.1/min)
+  tick  37/42 2026-03-19 00h  attivi= 23 news= 3  post=197 reply=663 like=1991 note=145 err=3  ETA 0.2h
+    tick 38: 12/74 agenti (34.2/min)
+    tick 38: 23/74 agenti (33.0/min)
+    tick 38: 34/74 agenti (33.0/min)
+    tick 38: 45/74 agenti (32.8/min)
+    tick 38: 57/74 agenti (33.2/min)
+    tick 38: 69/74 agenti (33.2/min)
+  tick  38/42 2026-03-19 08h  attivi= 74 news= 3  post=206 reply=687 like=2084 note=145 err=3  ETA 0.2h
+    tick 39: 12/73 agenti (33.8/min)
+    tick 39: 24/73 agenti (33.9/min)
+    tick 39: 35/73 agenti (33.5/min)
+    tick 39: 47/73 agenti (33.1/min)
+    tick 39: 59/73 agenti (33.4/min)
+    tick 39: 70/73 agenti (33.2/min)
+  tick  39/42 2026-03-19 16h  attivi= 73 news= 3  post=215 reply=714 like=2163 note=145 err=3  ETA 0.1h
+    tick 40: 12/19 agenti (33.0/min)
+  tick  40/42 2026-03-20 00h  attivi= 19 news= 3  post=217 reply=718 like=2189 note=150 err=3  ETA 0.1h
+    [rate-limit] freno preventivo: team/token a 1 residue, pausa 12s
+    tick 41: 9/68 agenti (20.3/min)
+    [rate-limit] freno preventivo: team/token a 0 residue, pausa 12s
+    [429] {"error":{"message":"Rate limit exceeded for team: eb81f94d-74b8-4efc-8970-be784dac3122. Limit type: tokens. Current limit: 750000, Remaining: 780. Limit resets at: 2026-09-13 16:17:24 UTC","type":"throttling_error","param":null,"code":"429"}}
+    [429] questa richiesta: 1024 token di budget, ritmo corrente 1.82s, consumo stimato 121,112 token/min
+    [rate-limit] 429: pausa globale 60s, ritmo -> 2.45s fra le richieste
+    tick 41: 11/68 agenti (6.5/min)
+    tick 41: 20/68 agenti (9.6/min)
+    tick 41: 30/68 agenti (12.4/min)
+    tick 41: 42/68 agenti (15.0/min)
+    tick 41: 53/68 agenti (16.9/min)
+    tick 41: 65/68 agenti (18.6/min)
+  tick  41/42 2026-03-20 08h  attivi= 68 news= 3  post=228 reply=736 like=2275 note=150 err=3  ETA 0.0h
+    tick 42: 12/62 agenti (32.6/min)
+    tick 42: 24/62 agenti (32.9/min)
+    tick 42: 36/62 agenti (32.8/min)
+    tick 42: 48/62 agenti (33.0/min)
+    tick 42: 60/62 agenti (33.0/min)
+  tick  42/42 2026-03-20 16h  attivi= 62 news= 3  post=231 reply=754 like=2350 note=150 err=3  ETA 0.0h
+  [final] 1/100 voti (20.1/min, ~5 min alla fine)
+  [final] 10/100 voti (30.8/min, ~3 min alla fine)
+  [final] 20/100 voti (32.0/min, ~3 min alla fine)
+  [final] 30/100 voti (31.9/min, ~2 min alla fine)
+  [final] 40/100 voti (32.6/min, ~2 min alla fine)
+  [final] 50/100 voti (32.5/min, ~2 min alla fine)
+  [final] 60/100 voti (32.7/min, ~1 min alla fine)
+  [final] 70/100 voti (32.7/min, ~1 min alla fine)
+  [final] 80/100 voti (32.7/min, ~1 min alla fine)
+  [final] 90/100 voti (32.8/min, ~0 min alla fine)
+  [final] 100/100 voti (32.8/min, ~0 min alla fine)
+
+--- RISULTATI [final] ---
+  SI           34   34.0%
+  NO           40   40.0%
+  ASTENUTO     26   26.0%
+  ERRORI        0
+  validi      100
+
+--- SPOSTAMENTI ---
+  cambiato idea : 39/100 (39.0%)
+    SI->NO             22
+    ASTENUTO->SI       8
+    NO->SI             7
+    ASTENUTO->NO       2
+
+--- VOTO FINALE PER FASCIA D'ETA' ---
+  18-34    ASTENUTO  9
+  18-34    NO        10
+  18-34    SI        5
+  35-54    ASTENUTO  9
+  35-54    NO        9
+  35-54    SI        9
+  55+      ASTENUTO  8
+  55+      NO        21
+  55+      SI        20
+
+--- TELEMETRIA LLM ---
+  scopo        chiamate  out medio  out max  budget  troncate  errori
+  action           2202       88.9      466    1024         0       0
+  reflection       1008      115.8      731    1024         0       0
+  vote              300      167.8      640     640         1       0
+  token di output totali: 362,766
+  rate limit: 8 interventi, 480.0s di pausa totale, ritmo finale 1.816s/richiesta
+
+[done] risultati in runs/chars500_s11/  (run.db, shift_report.json, graph.json)
+[done] fingerprint config: 962df92b4374  codice: 675e4b4 (albero sporco)

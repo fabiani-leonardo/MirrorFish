@@ -136,6 +136,7 @@ class Engine:
             max_tokens=self.llm_cfg.token_budget["action"],
             temperature=self.llm_cfg.temperature,
             max_actions=self.sim.max_actions,
+            max_chars=self.sim.max_post_chars,
         )
         if feed_lines:
             bucket = self._seen.setdefault(agent_id, [])

@@ -256,34 +256,199 @@ def source_agent(agent_id: int = 0, username: str = "ANSA") -> dict[str, Any]:
     }
 
 
+# Relazioni dichiarate nelle biografie. I profili generati per questo studio
+# contengono frasi come "vive con il figlio Carlo Martinelli" oppure "e' amica
+# di Barbara Giordano e Stefano Lombardi": e' una rete sociale gia' scritta nei
+# dati, e fino a questa revisione veniva ignorata e sostituita da archi
+# casuali.
+_SEGMENTI = (
+    re.compile(r"vive con ([^.]+)", re.I),
+    re.compile(r"[èe]' amic[oa] di ([^.]+)", re.I),
+    re.compile(r"è amic[oa] di ([^.]+)", re.I),
+)
+_NOME_PROPRIO = re.compile(r"\b([A-ZÀ-Ù][a-zà-ù']+(?:\s+[A-ZÀ-Ù][a-zà-ù']+)+)")
+
+
+def _chiave_nome(testo: str) -> str:
+    """'Barbara Giordano' -> 'barbara_giordano', per agganciarlo allo username."""
+    return "_".join(testo.lower().split())
+
+
+def relazioni_dichiarate(
+    agents: list[dict[str, Any]]
+) -> tuple[list[tuple[int, int]], int, int]:
+    """
+    Archi ricavati dalle relazioni scritte nelle biografie.
+
+    Restituisce (archi, risolte, non_risolte). Gli archi sono RECIPROCI:
+    famiglia e amicizie non sono relazioni a senso unico come il follow di un
+    personaggio pubblico.
+
+    Perche' vale la pena. Il grado medio e l'omofilia sono due numeri che non
+    poggiano su nulla: li ho scelti io e potevo sceglierne altri. Le relazioni
+    dichiarate invece vengono dalla stessa fonte da cui viene tutto il resto
+    della popolazione, quindi spostano una parte della rete da parametro
+    arbitrario a dato. Cio' che resta parametrico — quanti legami deboli
+    aggiungere oltre a quelli familiari e amicali — e' molto meno, e si puo'
+    dichiarare per quello che e'.
+    """
+    per_nome: dict[str, int] = {}
+    for a in agents:
+        if a.get("is_source"):
+            continue
+        # federica_martinelli_81 -> federica_martinelli
+        parti = str(a.get("username", "")).rsplit("_", 1)
+        base = parti[0] if len(parti) == 2 and parti[1].isdigit() else a.get("username", "")
+        per_nome.setdefault(base.lower(), a["agent_id"])
+
+    archi: set[tuple[int, int]] = set()
+    risolte = non_risolte = 0
+    for a in agents:
+        if a.get("is_source"):
+            continue
+        me = a["agent_id"]
+        bio = a.get("static_bio") or ""
+        for rx in _SEGMENTI:
+            for seg in rx.findall(bio):
+                for nome in _NOME_PROPRIO.findall(seg):
+                    altro = per_nome.get(_chiave_nome(nome))
+                    if altro is None:
+                        non_risolte += 1
+                        continue
+                    if altro == me:
+                        continue
+                    risolte += 1
+                    archi.add((me, altro))
+                    archi.add((altro, me))     # reciproco
+    return sorted(archi), risolte, non_risolte
+
+
+def diagnosi_grafo(agents: list[dict[str, Any]],
+                   edges: list[tuple[int, int]]) -> dict[str, Any]:
+    """
+    Salute della rete: e' percorribile o si spezza in isole?
+
+    Una rete costruita solo da famiglia e amicizie e' molto piu' rada e molto
+    piu' raggruppata di una casuale. Va bene, e' realistica, ma se si frammenta
+    in componenti che non comunicano l'informazione non circola e la
+    polarizzazione diventa un artefatto della topologia invece che un
+    risultato. Questi numeri vanno guardati PRIMA di lanciare un run lungo.
+    """
+    ids = [a["agent_id"] for a in agents if not a.get("is_source")]
+    uscita: dict[int, set[int]] = {i: set() for i in ids}
+    entrata: dict[int, set[int]] = {i: set() for i in ids}
+    vicini: dict[int, set[int]] = {i: set() for i in ids}
+    for x, y in edges:
+        if x in uscita and y in entrata:
+            uscita[x].add(y)
+            entrata[y].add(x)
+            vicini[x].add(y)
+            vicini[y].add(x)
+
+    visti: set[int] = set()
+    componenti: list[int] = []
+    for i in ids:
+        if i in visti:
+            continue
+        pila, n = [i], 0
+        visti.add(i)
+        while pila:
+            k = pila.pop()
+            n += 1
+            for v in vicini[k]:
+                if v not in visti:
+                    visti.add(v)
+                    pila.append(v)
+        componenti.append(n)
+    componenti.sort(reverse=True)
+    g = sorted(len(uscita[i]) for i in ids)
+    return {
+        "agenti": len(ids),
+        "archi": len(edges),
+        "grado_medio": round(sum(g) / max(len(g), 1), 2),
+        "grado_mediano": g[len(g) // 2] if g else 0,
+        "non_seguono_nessuno": sum(1 for i in ids if not uscita[i]),
+        "senza_pubblico": sum(1 for i in ids if not entrata[i]),
+        "componenti": len(componenti),
+        "componente_maggiore": componenti[0] if componenti else 0,
+    }
+
+
 def build_follow_graph(
     agents: list[dict[str, Any]],
     seed: int = 0,
-    avg_degree: int = 12,
+    avg_degree: int | None = None,
     homophily: float = 0.6,
+    usa_relazioni: bool = True,
+    verbose: bool = True,
 ) -> list[tuple[int, int]]:
     """
-    Grafo dei follow con omofilia su regione + orientamento.
+    Grafo dei follow. Due modalita' ALTERNATIVE, non cumulative.
 
-    `homophily` e' la probabilita' che un arco venga scelto dentro il gruppo
-    simile invece che a caso. E' un parametro della simulazione, quindi va
-    dichiarato e variato nella sensitivity analysis: la struttura della rete
-    influenza la diffusione tanto quanto il contenuto delle notizie.
+    DICHIARATA (`avg_degree` non specificato, relazioni presenti nelle bio).
+    La rete e' esattamente quella scritta nelle biografie: famiglia e amicizie,
+    reciproche. Non c'e' nessun parametro da giustificare, perche' non c'e'
+    nessuna scelta: la struttura sociale viene dalla stessa fonte da cui viene
+    la popolazione.
+
+    GENERATA (`avg_degree` specificato). La rete e' costruita a caso con
+    l'omofilia richiesta. Se le relazioni dichiarate esistono fanno da base e
+    si aggiungono legami deboli fino al grado richiesto, dove `avg_degree` e'
+    il grado COMPLESSIVO: chi ha molte relazioni dichiarate riceve meno
+    sconosciuti. Senza questa correzione i due strati si sommerebbero e chi ha
+    piu' amici finirebbe anche con piu' estranei, che e' il contrario di come
+    funziona.
+
+    La scelta fra le due modalita' va dichiarata in tesi, perche' cambia lo
+    statuto del grafo: nel primo caso e' un dato, nel secondo un'ipotesi.
     """
     rng = random.Random(f"follow|{seed}")
     people = [a for a in agents if not a.get("is_source")]
+    edges: set[tuple[int, int]] = set()
+
+    gradi: dict[int, int] = {a["agent_id"]: 0 for a in people}
+    n_dichiarati = 0
+    if usa_relazioni:
+        dichiarati, risolte, non_risolte = relazioni_dichiarate(agents)
+        edges.update(dichiarati)
+        n_dichiarati = len(dichiarati)
+        for x, _ in dichiarati:
+            gradi[x] = gradi.get(x, 0) + 1
+        if verbose:
+            copertura = f"{risolte}/{risolte + non_risolte}" if (risolte + non_risolte) else "0/0"
+            print(f"[setup] relazioni dichiarate nelle biografie: {len(dichiarati)} "
+                  f"archi reciproci, nomi risolti {copertura}")
+            if non_risolte > risolte:
+                print("[setup] ATTENZIONE: piu' nomi NON risolti che risolti. "
+                      "Probabilmente le biografie citano persone che non fanno "
+                      "parte della popolazione, oppure il formato dello "
+                      "username non corrisponde al nome scritto in biografia.")
+
+    # Modalita' DICHIARATA: nessun arco casuale. Si entra qui solo se
+    # l'utente non ha chiesto un grado e le biografie hanno prodotto una rete.
+    if avg_degree is None and n_dichiarati:
+        if verbose:
+            print("[setup] rete costruita SOLO dalle relazioni dichiarate "
+                  "(nessun --avg-degree richiesto)")
+        return sorted(edges)
+    if avg_degree is None:
+        avg_degree = 12
+        if verbose:
+            print("[setup] nessuna relazione dichiarata nelle biografie: "
+                  f"ripiego su una rete generata con grado {avg_degree}")
+
     by_key: dict[tuple, list[int]] = {}
     for a in people:
         key = (a.get("region"), (a.get("attrs") or {}).get("lean"))
         by_key.setdefault(key, []).append(a["agent_id"])
 
     ids = [a["agent_id"] for a in people]
-    edges: set[tuple[int, int]] = set()
     for a in people:
         me = a["agent_id"]
         key = (a.get("region"), (a.get("attrs") or {}).get("lean"))
         similar = [x for x in by_key.get(key, []) if x != me]
-        for _ in range(avg_degree):
+        mancanti = max(0, avg_degree - gradi.get(me, 0))
+        for _ in range(mancanti):
             if similar and rng.random() < homophily:
                 other = rng.choice(similar)
             else:

@@ -1,0 +1,283 @@
+[setup] 106 agenti (100 elettori), 1197 archi, fonte=agent_id 0
+[setup] profondita' di lettura NEL DB: integrale=22 (2 slot), nessuna=34 (0 slot), titolo=49 (1 slot)
+[news] 1 notizie senza corpo integrale (0.2%): a quelle gli agenti 'integrale' vedono solo il titolo.
+[news] finestra simulata: 2026-03-07 -> 2026-03-20
+[news] 112 notizie schedulate su 42 tick (max 3/tick)
+[news] ATTENZIONE: 418 notizie PRIMA di 2026-03-07 scartate. Se le vuoi, sposta --start indietro.
+[news] 2 notizie dopo 2026-03-20 scartate.
+[news] 77 notizie scartate per superamento di max_per_tick.
+  [baseline] 1/100 voti (43.0/min, ~2 min alla fine)
+  [baseline] 10/100 voti (33.1/min, ~3 min alla fine)
+  [baseline] 20/100 voti (33.7/min, ~2 min alla fine)
+  [baseline] 30/100 voti (33.4/min, ~2 min alla fine)
+  [baseline] 40/100 voti (33.3/min, ~2 min alla fine)
+  [baseline] 50/100 voti (33.2/min, ~2 min alla fine)
+  [baseline] 60/100 voti (33.2/min, ~1 min alla fine)
+  [baseline] 70/100 voti (33.2/min, ~1 min alla fine)
+  [baseline] 80/100 voti (33.1/min, ~1 min alla fine)
+  [baseline] 90/100 voti (33.0/min, ~0 min alla fine)
+  [baseline] 100/100 voti (33.1/min, ~0 min alla fine)
+
+--- RISULTATI [baseline] ---
+  SI           37   37.0%
+  NO           28   28.0%
+  ASTENUTO     35   35.0%
+  ERRORI        0
+  validi      100
+[feed] politica: recency, fuori-rete 15%, 8 post per tick
+[engine] 105 agenti, 42 tick, seed=53
+[engine] 112 notizie su 42 tick (da 2026-03-07 a 2026-03-20)
+    tick 1: 12/13 agenti (33.0/min)
+  tick   1/42 2026-03-07 00h  attivi= 13 news= 3  post=3 reply=1 like=5 note=0 err=0  ETA 0.3h
+    tick 2: 11/66 agenti (31.8/min)
+    tick 2: 23/66 agenti (32.7/min)
+    tick 2: 34/66 agenti (32.7/min)
+    tick 2: 45/66 agenti (32.7/min)
+    tick 2: 57/66 agenti (32.9/min)
+  tick   2/42 2026-03-07 08h  attivi= 66 news= 3  post=12 reply=32 like=82 note=0 err=1  ETA 0.8h
+    tick 3: 11/66 agenti (30.8/min)
+    tick 3: 23/66 agenti (33.1/min)
+    tick 3: 35/66 agenti (32.9/min)
+    tick 3: 47/66 agenti (32.8/min)
+    tick 3: 59/66 agenti (33.0/min)
+  tick   3/42 2026-03-07 16h  attivi= 66 news= 3  post=16 reply=54 like=139 note=0 err=2  ETA 0.9h
+    tick 4: 12/20 agenti (33.1/min)
+  tick   4/42 2026-03-08 00h  attivi= 20 news= 2  post=18 reply=59 like=161 note=31 err=2  ETA 1.3h
+    tick 5: 12/62 agenti (34.0/min)
+    tick 5: 24/62 agenti (33.9/min)
+    tick 5: 35/62 agenti (33.3/min)
+    tick 5: 47/62 agenti (33.5/min)
+    tick 5: 58/62 agenti (33.4/min)
+  tick   5/42 2026-03-08 08h  attivi= 62 news= 1  post=30 reply=79 like=222 note=31 err=2  ETA 1.2h
+    tick 6: 11/70 agenti (32.4/min)
+    tick 6: 22/70 agenti (32.5/min)
+    tick 6: 34/70 agenti (33.0/min)
+    tick 6: 45/70 agenti (32.8/min)
+    tick 6: 57/70 agenti (33.0/min)
+    tick 6: 68/70 agenti (32.6/min)
+  tick   6/42 2026-03-08 16h  attivi= 70 news= 1  post=36 reply=103 like=279 note=31 err=2  ETA 1.2h
+    tick 7: 11/19 agenti (32.0/min)
+  tick   7/42 2026-03-09 00h  attivi= 19 news= 3  post=38 reply=112 like=298 note=31 err=2  ETA 1.0h
+    tick 8: 11/67 agenti (32.9/min)
+    tick 8: 23/67 agenti (33.2/min)
+    tick 8: 35/67 agenti (33.2/min)
+    tick 8: 47/67 agenti (33.3/min)
+    tick 8: 59/67 agenti (33.1/min)
+  tick   8/42 2026-03-09 08h  attivi= 67 news= 3  post=46 reply=139 like=358 note=48 err=2  ETA 1.2h
+    tick 9: 12/59 agenti (34.2/min)
+    tick 9: 23/59 agenti (33.2/min)
+    tick 9: 34/59 agenti (33.0/min)
+    tick 9: 46/59 agenti (33.3/min)
+    tick 9: 57/59 agenti (33.0/min)
+  tick   9/42 2026-03-09 16h  attivi= 59 news= 3  post=54 reply=159 like=411 note=48 err=3  ETA 1.2h
+    tick 10: 11/18 agenti (32.8/min)
+  tick  10/42 2026-03-10 00h  attivi= 18 news= 2  post=57 reply=164 like=433 note=48 err=3  ETA 1.1h
+    tick 11: 12/70 agenti (32.5/min)
+    tick 11: 24/70 agenti (32.7/min)
+    tick 11: 35/70 agenti (32.7/min)
+    tick 11: 47/70 agenti (33.1/min)
+    tick 11: 59/70 agenti (33.1/min)
+    tick 11: 70/70 agenti (33.0/min)
+  tick  11/42 2026-03-10 08h  attivi= 70 news= 2  post=62 reply=187 like=504 note=48 err=3  ETA 1.0h
+    tick 12: 11/64 agenti (32.3/min)
+    tick 12: 23/64 agenti (33.3/min)
+    tick 12: 34/64 agenti (32.8/min)
+    tick 12: 46/64 agenti (33.0/min)
+    tick 12: 57/64 agenti (33.0/min)
+  tick  12/42 2026-03-10 16h  attivi= 64 news= 1  post=67 reply=214 like=553 note=62 err=3  ETA 1.1h
+    tick 13: 12/13 agenti (34.0/min)
+  tick  13/42 2026-03-11 00h  attivi= 13 news= 3  post=69 reply=217 like=564 note=62 err=3  ETA 1.0h
+    tick 14: 12/80 agenti (34.2/min)
+    tick 14: 23/80 agenti (33.2/min)
+    tick 14: 35/80 agenti (33.0/min)
+    tick 14: 47/80 agenti (33.2/min)
+    tick 14: 59/80 agenti (33.2/min)
+    tick 14: 70/80 agenti (33.2/min)
+  tick  14/42 2026-03-11 08h  attivi= 80 news= 3  post=81 reply=242 like=633 note=62 err=3  ETA 1.0h
+    tick 15: 11/72 agenti (32.9/min)
+    tick 15: 22/72 agenti (32.9/min)
+    tick 15: 33/72 agenti (32.9/min)
+    tick 15: 45/72 agenti (32.7/min)
+    tick 15: 56/72 agenti (32.6/min)
+    tick 15: 68/72 agenti (33.0/min)
+  tick  15/42 2026-03-11 16h  attivi= 72 news= 3  post=86 reply=268 like=691 note=62 err=3  ETA 1.0h
+    tick 16: 11/18 agenti (32.5/min)
+  tick  16/42 2026-03-12 00h  attivi= 18 news= 3  post=90 reply=271 like=710 note=73 err=3  ETA 1.0h
+    tick 17: 12/76 agenti (33.8/min)
+    tick 17: 23/76 agenti (33.2/min)
+    tick 17: 35/76 agenti (33.5/min)
+    tick 17: 46/76 agenti (33.3/min)
+    tick 17: 58/76 agenti (33.3/min)
+    tick 17: 69/76 agenti (33.1/min)
+  tick  17/42 2026-03-12 08h  attivi= 76 news= 3  post=97 reply=299 like=781 note=73 err=3  ETA 0.9h
+    tick 18: 12/73 agenti (34.6/min)
+    tick 18: 24/73 agenti (33.8/min)
+    tick 18: 35/73 agenti (33.4/min)
+    tick 18: 47/73 agenti (33.2/min)
+    tick 18: 59/73 agenti (33.3/min)
+    tick 18: 70/73 agenti (33.1/min)
+  tick  18/42 2026-03-12 16h  attivi= 73 news= 3  post=107 reply=321 like=846 note=73 err=3  ETA 0.9h
+    tick 19: 12/15 agenti (32.0/min)
+  tick  19/42 2026-03-13 00h  attivi= 15 news= 3  post=107 reply=332 like=867 note=73 err=3  ETA 0.8h
+    tick 20: 12/60 agenti (32.8/min)
+    tick 20: 23/60 agenti (32.9/min)
+    tick 20: 35/60 agenti (33.1/min)
+    tick 20: 46/60 agenti (33.0/min)
+    tick 20: 57/60 agenti (33.0/min)
+  tick  20/42 2026-03-13 08h  attivi= 60 news= 3  post=118 reply=355 like=922 note=85 err=3  ETA 0.8h
+    tick 21: 12/67 agenti (32.9/min)
+    tick 21: 24/67 agenti (33.3/min)
+    tick 21: 35/67 agenti (33.1/min)
+    tick 21: 46/67 agenti (33.1/min)
+    tick 21: 58/67 agenti (33.1/min)
+  tick  21/42 2026-03-13 16h  attivi= 67 news= 3  post=124 reply=382 like=980 note=85 err=3  ETA 0.8h
+    tick 22: 12/21 agenti (33.0/min)
+  tick  22/42 2026-03-14 00h  attivi= 21 news= 3  post=126 reply=389 like=1004 note=85 err=3  ETA 0.7h
+    tick 23: 12/71 agenti (33.2/min)
+    tick 23: 23/71 agenti (32.6/min)
+    tick 23: 35/71 agenti (33.1/min)
+    tick 23: 47/71 agenti (32.8/min)
+    tick 23: 59/71 agenti (33.0/min)
+    tick 23: 71/71 agenti (32.9/min)
+  tick  23/42 2026-03-14 08h  attivi= 71 news= 3  post=137 reply=412 like=1073 note=85 err=3  ETA 0.7h
+    tick 24: 12/63 agenti (33.5/min)
+    tick 24: 24/63 agenti (33.7/min)
+    tick 24: 35/63 agenti (33.4/min)
+    tick 24: 46/63 agenti (33.2/min)
+    tick 24: 58/63 agenti (33.2/min)
+  tick  24/42 2026-03-14 16h  attivi= 63 news= 3  post=144 reply=427 like=1139 note=97 err=3  ETA 0.7h
+    tick 25: 12/21 agenti (33.6/min)
+  tick  25/42 2026-03-15 00h  attivi= 21 news= 2  post=144 reply=434 like=1160 note=97 err=3  ETA 0.6h
+    tick 26: 11/76 agenti (31.8/min)
+    tick 26: 23/76 agenti (32.8/min)
+    tick 26: 35/76 agenti (33.0/min)
+    tick 26: 46/76 agenti (33.0/min)
+    tick 26: 58/76 agenti (32.7/min)
+    tick 26: 70/76 agenti (32.9/min)
+  tick  26/42 2026-03-15 08h  attivi= 76 news= 1  post=150 reply=462 like=1237 note=97 err=3  ETA 0.6h
+    tick 27: 12/71 agenti (33.7/min)
+    tick 27: 23/71 agenti (33.2/min)
+    tick 27: 35/71 agenti (33.3/min)
+    tick 27: 47/71 agenti (33.2/min)
+    tick 27: 58/71 agenti (32.8/min)
+    tick 27: 70/71 agenti (33.2/min)
+  tick  27/42 2026-03-15 16h  attivi= 71 news= 1  post=155 reply=488 like=1292 note=97 err=6  ETA 0.6h
+    tick 28: 11/20 agenti (31.6/min)
+  tick  28/42 2026-03-16 00h  attivi= 20 news= 3  post=158 reply=497 like=1312 note=104 err=6  ETA 0.5h
+    tick 29: 12/60 agenti (33.8/min)
+    tick 29: 23/60 agenti (33.3/min)
+    tick 29: 35/60 agenti (33.1/min)
+    tick 29: 46/60 agenti (33.0/min)
+    tick 29: 58/60 agenti (33.3/min)
+  tick  29/42 2026-03-16 08h  attivi= 60 news= 3  post=165 reply=516 like=1380 note=104 err=6  ETA 0.5h
+    tick 30: 12/71 agenti (32.8/min)
+    tick 30: 23/71 agenti (32.8/min)
+    tick 30: 35/71 agenti (33.0/min)
+    tick 30: 46/71 agenti (32.7/min)
+    tick 30: 58/71 agenti (33.0/min)
+    tick 30: 69/71 agenti (33.0/min)
+  tick  30/42 2026-03-16 16h  attivi= 71 news= 3  post=174 reply=535 like=1444 note=104 err=6  ETA 0.5h
+    tick 31: 12/19 agenti (33.2/min)
+  tick  31/42 2026-03-17 00h  attivi= 19 news= 3  post=177 reply=539 like=1463 note=104 err=6  ETA 0.4h
+    tick 32: 11/76 agenti (31.5/min)
+    tick 32: 23/76 agenti (33.0/min)
+    tick 32: 34/76 agenti (32.5/min)
+    tick 32: 46/76 agenti (32.9/min)
+    tick 32: 58/76 agenti (33.0/min)
+    tick 32: 69/76 agenti (32.8/min)
+  tick  32/42 2026-03-17 08h  attivi= 76 news= 3  post=188 reply=565 like=1547 note=109 err=6  ETA 0.4h
+    tick 33: 11/66 agenti (32.7/min)
+    tick 33: 23/66 agenti (32.7/min)
+    tick 33: 34/66 agenti (32.6/min)
+    tick 33: 46/66 agenti (32.8/min)
+    tick 33: 58/66 agenti (33.1/min)
+  tick  33/42 2026-03-17 16h  attivi= 66 news= 3  post=196 reply=592 like=1607 note=109 err=6  ETA 0.3h
+    tick 34: 12/18 agenti (33.1/min)
+  tick  34/42 2026-03-18 00h  attivi= 18 news= 3  post=198 reply=600 like=1624 note=109 err=6  ETA 0.3h
+    tick 35: 11/72 agenti (32.5/min)
+    tick 35: 23/72 agenti (33.3/min)
+    tick 35: 34/72 agenti (32.8/min)
+    tick 35: 46/72 agenti (33.0/min)
+    tick 35: 57/72 agenti (32.9/min)
+    tick 35: 69/72 agenti (33.0/min)
+  tick  35/42 2026-03-18 08h  attivi= 72 news= 3  post=211 reply=624 like=1700 note=109 err=7  ETA 0.3h
+    tick 36: 11/62 agenti (32.2/min)
+    tick 36: 23/62 agenti (32.3/min)
+    tick 36: 34/62 agenti (32.2/min)
+    tick 36: 46/62 agenti (32.9/min)
+    tick 36: 57/62 agenti (32.7/min)
+  tick  36/42 2026-03-18 16h  attivi= 62 news= 3  post=220 reply=648 like=1766 note=116 err=7  ETA 0.2h
+    tick 37: 11/19 agenti (32.9/min)
+  tick  37/42 2026-03-19 00h  attivi= 19 news= 3  post=222 reply=656 like=1786 note=116 err=7  ETA 0.2h
+    tick 38: 12/66 agenti (32.2/min)
+    tick 38: 24/66 agenti (32.4/min)
+    tick 38: 36/66 agenti (33.0/min)
+    tick 38: 47/66 agenti (32.7/min)
+    tick 38: 59/66 agenti (32.8/min)
+  tick  38/42 2026-03-19 08h  attivi= 66 news= 3  post=231 reply=680 like=1863 note=116 err=7  ETA 0.2h
+    tick 39: 11/67 agenti (32.4/min)
+    tick 39: 23/67 agenti (33.1/min)
+    tick 39: 34/67 agenti (32.6/min)
+    tick 39: 46/67 agenti (32.9/min)
+    tick 39: 58/67 agenti (33.0/min)
+  tick  39/42 2026-03-19 16h  attivi= 67 news= 3  post=243 reply=699 like=1931 note=116 err=7  ETA 0.1h
+    tick 40: 11/18 agenti (32.7/min)
+  tick  40/42 2026-03-20 00h  attivi= 18 news= 3  post=245 reply=707 like=1945 note=123 err=7  ETA 0.1h
+    tick 41: 12/71 agenti (32.4/min)
+    tick 41: 24/71 agenti (33.2/min)
+    tick 41: 35/71 agenti (32.8/min)
+    tick 41: 47/71 agenti (32.9/min)
+    tick 41: 59/71 agenti (32.8/min)
+    tick 41: 71/71 agenti (33.1/min)
+  tick  41/42 2026-03-20 08h  attivi= 71 news= 3  post=253 reply=737 like=2019 note=123 err=7  ETA 0.0h
+    tick 42: 11/63 agenti (32.4/min)
+    tick 42: 22/63 agenti (32.6/min)
+    tick 42: 33/63 agenti (32.7/min)
+    tick 42: 44/63 agenti (32.7/min)
+    tick 42: 56/63 agenti (32.9/min)
+  tick  42/42 2026-03-20 16h  attivi= 63 news= 3  post=263 reply=760 like=2088 note=123 err=7  ETA 0.0h
+  [final] 1/100 voti (18.6/min, ~5 min alla fine)
+  [final] 10/100 voti (31.4/min, ~3 min alla fine)
+  [final] 20/100 voti (32.0/min, ~3 min alla fine)
+  [final] 30/100 voti (32.1/min, ~2 min alla fine)
+  [final] 40/100 voti (32.5/min, ~2 min alla fine)
+  [final] 50/100 voti (32.6/min, ~2 min alla fine)
+  [final] 60/100 voti (32.6/min, ~1 min alla fine)
+  [final] 70/100 voti (32.7/min, ~1 min alla fine)
+  [final] 80/100 voti (32.8/min, ~1 min alla fine)
+  [final] 90/100 voti (32.7/min, ~0 min alla fine)
+  [final] 100/100 voti (32.7/min, ~0 min alla fine)
+
+--- RISULTATI [final] ---
+  SI           34   34.0%
+  NO           36   36.0%
+  ASTENUTO     30   30.0%
+  ERRORI        0
+  validi      100
+
+--- SPOSTAMENTI ---
+  cambiato idea : 29/100 (29.0%)
+    SI->NO             16
+    NO->SI             8
+    ASTENUTO->SI       5
+
+--- VOTO FINALE PER FASCIA D'ETA' ---
+  18-34    ASTENUTO  10
+  18-34    NO        4
+  18-34    SI        10
+  35-54    ASTENUTO  9
+  35-54    NO        10
+  35-54    SI        8
+  55+      ASTENUTO  11
+  55+      NO        22
+  55+      SI        16
+
+--- TELEMETRIA LLM ---
+  scopo        chiamate  out medio  out max  budget  troncate  errori
+  action           2159       82.9      668    1024         0       0
+  reflection       1003      113.2     1024    1024         1       0
+  vote              200      168.2      332     640         0       0
+  token di output totali: 326,135
+
+[done] risultati in runs/grafo12_s53/  (run.db, shift_report.json, graph.json)
+[done] fingerprint config: 836aa20d0750  codice: 675e4b4 (albero sporco)

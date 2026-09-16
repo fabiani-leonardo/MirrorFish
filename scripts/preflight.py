@@ -22,6 +22,7 @@ entrambi scoperti solo leggendo i risultati a run finito.
 
 from __future__ import annotations
 
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -122,8 +123,28 @@ def check_prompt() -> None:
     from mirrorfish.agent import (SYSTEM_TEMPLATE, SYSTEM_INSTITUTIONAL,
                                   VALID_ACTIONS)
 
-    testo = SYSTEM_TEMPLATE.format(username="x", bio="y", notes_block="",
-                                   max_actions=3)
+    def rendi(template: str) -> str:
+        """
+        Riempie un template con valori fittizi.
+
+        Passa da qui perche' gli argomenti erano ripetuti in tre punti, e
+        quando al template e' stato aggiunto {max_chars} il preflight e'
+        andato in KeyError: proprio lo strumento che doveva accorgersi dei
+        guasti si rompeva per primo. Con un punto solo, un segnaposto nuovo
+        si aggiunge una volta.
+        """
+        import string
+        campi = {n for _, n, _, _ in string.Formatter().parse(template) if n}
+        valori = {"username": "x", "bio": "y", "notes_block": "",
+                  "max_actions": 3, "max_chars": 280}
+        mancanti = campi - set(valori)
+        if mancanti:
+            warn("segnaposto sconosciuti nel prompt",
+                 f"{sorted(mancanti)}: il preflight non li verifica")
+            valori.update({m: f"<{m}>" for m in mancanti})
+        return template.format(**{k: v for k, v in valori.items() if k in campi})
+
+    testo = rendi(SYSTEM_TEMPLATE)
     assenti = [a for a in sorted(VALID_ACTIONS) if a not in testo]
     if assenti:
         fail("azioni non nominate nel prompt",
@@ -139,8 +160,7 @@ def check_prompt() -> None:
         fail("esempio JSON parziale",
              f"mostra solo {scrivibili}: il modello copia lo schema")
 
-    ist = SYSTEM_INSTITUTIONAL.format(username="x", bio="y", notes_block="",
-                                      max_actions=3)
+    ist = rendi(SYSTEM_INSTITUTIONAL)
     if "Non sei un elettore" in ist:
         ok("prompt separato per gli account istituzionali")
     else:
@@ -151,8 +171,7 @@ def check_prompt() -> None:
     # formulazione, lo stub torna silenziosamente a una sola azione e tutti
     # gli smoke test smettono di esercitare il percorso multi-azione.
     import re
-    if re.search(r"fino a 3 azioni", SYSTEM_TEMPLATE.format(
-            username="x", bio="y", notes_block="", max_actions=3)):
+    if re.search(r"fino a 3 azioni", testo):
         ok("formulazione attesa dallo StubLLM presente")
     else:
         warn("formulazione cambiata", "lo stub non riconoscera' max_actions")
@@ -196,7 +215,9 @@ def check_notizie(news_dir: str) -> None:
 
 def check_popolazione(profiles: str) -> None:
     from mirrorfish.config import SimConfig
-    from mirrorfish.population import load_mirofish_profiles
+    from mirrorfish.population import (build_follow_graph, diagnosi_grafo,
+                                       load_mirofish_profiles,
+                                       relazioni_dichiarate)
 
     agents = load_mirofish_profiles(profiles)
     sim = SimConfig()
@@ -221,6 +242,33 @@ def check_popolazione(profiles: str) -> None:
     if len(depths) == 1:
         fail("profondita' di lettura uniforme",
              "e' una costante, non una variabile: non potrai misurarne l'effetto")
+
+    # --- la rete sociale ---------------------------------------------- #
+    archi, risolte, non_risolte = relazioni_dichiarate(agents)
+    tot = risolte + non_risolte
+    if tot == 0:
+        warn("nessuna relazione dichiarata nelle biografie",
+             "la rete sara' generata a caso: serve --avg-degree")
+    elif risolte / tot < 0.8:
+        fail("nomi non risolti nelle biografie",
+             f"solo {risolte}/{tot} agganciati a un profilo esistente. Le "
+             f"biografie citano persone fuori popolazione, oppure lo username "
+             f"non corrisponde al nome scritto")
+    else:
+        ok("relazioni dichiarate", f"{len(archi)} archi reciproci, "
+           f"{risolte}/{tot} nomi risolti")
+
+    for etichetta, deg in (("rete dichiarata", None), ("rete + grado 12", 12)):
+        e = build_follow_graph(agents, seed=42, avg_degree=deg, verbose=False)
+        d = diagnosi_grafo(agents, e)
+        riga = (f"{d['archi']} archi, grado medio {d['grado_medio']}, "
+                f"{d['componenti']} componenti, {d['senza_pubblico']} senza pubblico")
+        if d["componente_maggiore"] < d["agenti"] * 0.9:
+            fail(f"{etichetta}: frammentata", riga)
+        elif d["senza_pubblico"] > d["agenti"] * 0.1:
+            warn(f"{etichetta}: molti senza pubblico", riga)
+        else:
+            ok(etichetta, riga)
 
 
 # --------------------------------------------------------------------------- #

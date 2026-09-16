@@ -231,6 +231,21 @@ class SimConfig:
     # solo qualche token di output.
     max_actions: int = 3
 
+    # Caratteri massimi per contenuto scritto. NON e' un dettaglio tecnico:
+    # e' la definizione del mezzo. 280 e' il limite di X/Twitter, 500 quello
+    # di Mastodon e Threads.
+    #
+    # Ed e' anche una variabile sperimentale a se'. Se l'ipotesi della tesi e'
+    # che informarsi a fondo porti ad argomentare invece di ripetere slogan,
+    # un mezzo che tronca a 280 caratteri limita l'argomentazione per tutti
+    # allo stesso modo e puo' mascherare l'effetto. Nei run osservati il 30%
+    # dei post tocca il tetto: la lunghezza media e' censurata e inutilizzabile
+    # come misura. Confrontare 280 con 500 risponde a una domanda classica
+    # degli studi sui media — il formato del mezzo vincola il discorso
+    # politico? — e rende di nuovo misurabile la lunghezza.
+    max_post_chars: int = 280
+
+
     # Caratteri di articolo mostrati a chi legge l'integrale. Ero sceso a 900
     # temendo un tetto sui token al minuto; il probe ha mostrato che i token
     # non sono il vincolo (al ritmo di 25 richieste/minuto si consuma il 31%

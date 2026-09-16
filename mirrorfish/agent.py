@@ -27,6 +27,11 @@ from .llm import LLMClient, LLMResponse, parse_json_response
 
 VALID_ACTIONS = {"POST", "REPLY", "LIKE", "IGNORE"}
 
+# Limite predefinito di caratteri per contenuto. Il valore che conta a
+# runtime e' SimConfig.max_post_chars: questo serve solo da default per
+# le funzioni chiamate fuori dal motore (test, script di analisi).
+MAX_CHARS = 280
+
 # NOTA (bug corretto il 2026-09-04): fino a questa revisione il prompt non
 # nominava mai l'azione POST e l'unico esempio JSON mostrava solo LIKE e
 # REPLY. Il modello copia lo schema che gli si da': in un run da 312 tick i
@@ -48,7 +53,8 @@ COSA PUOI FARE:
 
 REGOLE:
 - Scrivi in italiano, in prima persona, con il registro linguistico che ti e' proprio.
-- Massimo 280 caratteri per ogni contenuto che scrivi.
+- Massimo {max_chars} caratteri: CONTALI, e chiudi la frase entro il limite.
+  Un messaggio tagliato a meta' parola non lo legge nessuno.
 - Non menzionare mai di essere un'IA o una simulazione.
 - Non citare mai identificatori numerici tipo "post 47": tu non li vedi.
 - Puoi anche non fare nulla: IGNORE e' una risposta legittima e frequente.
@@ -92,7 +98,8 @@ REGOLE:
 - Scrivi in italiano, al plurale o in forma impersonale, mai in prima persona singolare.
 - Non sei un elettore: non dire MAI "voto", "votero'", "la mia scheda".
   Puoi chiedere un voto agli altri, sostenere una posizione, contestarne una.
-- Massimo 280 caratteri per ogni contenuto che scrivi.
+- Massimo {max_chars} caratteri: CONTALI, e chiudi la frase entro il limite.
+  Un messaggio tagliato a meta' parola non lo legge nessuno.
 - Non menzionare mai di essere un'IA o una simulazione.
 - Non citare mai identificatori numerici tipo "post 47".
 
@@ -117,6 +124,7 @@ class AgentAction:
     content: str = ""
     target_post_id: int | None = None
     error: str | None = None
+    troncato: bool = False        # il modello ha scritto oltre il limite
 
     @property
     def is_noop(self) -> bool:
@@ -196,6 +204,7 @@ def build_prompts(
     own_posts: list[str],
     sim_date: str,
     max_actions: int = 1,
+    max_chars: int = MAX_CHARS,
 ) -> tuple[str, str]:
     notes_block = ""
     if notes:
@@ -215,6 +224,7 @@ def build_prompts(
         bio=(agent["static_bio"] or "")[:1500],
         notes_block=notes_block,
         max_actions=max_actions,
+        max_chars=max_chars,
     )
     user = USER_TEMPLATE.format(
         sim_date=sim_date,
@@ -225,7 +235,8 @@ def build_prompts(
 
 
 def parse_actions(
-    resp: LLMResponse, valid_post_ids: set[int], max_actions: int = 1
+    resp: LLMResponse, valid_post_ids: set[int], max_actions: int = 1,
+    max_chars: int = MAX_CHARS,
 ) -> list[AgentAction]:
     """
     Estrae la lista di azioni.
@@ -258,7 +269,7 @@ def parse_actions(
             break
         if not isinstance(item, dict):
             continue
-        act = _one_action(item, valid_post_ids)
+        act = _one_action(item, valid_post_ids, max_chars)
         if act.error or act.action == "IGNORE":
             if not out and act.error:
                 out.append(act)
@@ -266,8 +277,18 @@ def parse_actions(
         key = (act.action, act.target_post_id or -1)
         if key in seen_targets:
             continue
-        # Al massimo un contenuto scritto per sessione: due post nello stesso
-        # momento sono spam, non partecipazione.
+        # Al massimo un contenuto scritto per sessione: due messaggi nello
+        # stesso momento sono spam, non partecipazione.
+        #
+        # NOTA PER LA TESI. Sulle piattaforme reali chi non entra nel limite
+        # di caratteri lo aggira: risponde al proprio post, ne pubblica uno
+        # consecutivo, allega un'immagine, linka un testo piu' lungo. Qui
+        # quei comportamenti non sono modellati, quindi il tetto morde piu'
+        # che nella realta'. La compensazione scelta e' calibrare il LIMITE
+        # EFFETTIVO con SimConfig.max_post_chars invece di riprodurre i modi
+        # di aggirarlo: una versione con thread e' stata scritta e scartata
+        # perche' toccava sei punti del codice e cambiava l'unita' di analisi,
+        # a fronte di un parametro che non e' oggetto dello studio.
         if act.action in ("POST", "REPLY"):
             if wrote_content:
                 continue
@@ -278,7 +299,42 @@ def parse_actions(
     return out or [AgentAction(action="IGNORE")]
 
 
-def _one_action(data: dict, valid_post_ids: set[int]) -> AgentAction:
+def _tronca(testo: str, limite: int = MAX_CHARS) -> tuple[str, bool]:
+    """
+    Taglia a `limite` caratteri rispettando i confini di frase o di parola.
+
+    Prima si tagliava con `[:280]` secco, e nei feed si leggevano post che
+    finivano a meta' parola: "non per i magi", "lasciarci scalare i nostri
+    diritti da q". Due conseguenze, e la seconda e' la peggiore.
+
+    Il testo mutilato entra nel feed degli ALTRI agenti, che quindi leggono e
+    commentano frasi interrotte: e' rumore iniettato dentro la simulazione,
+    non solo output brutto.
+
+    E la lunghezza del post diventa una variabile CENSURATA a 280. Se una
+    quota rilevante di post tocca il tetto, la media si comprime verso il
+    limite e qualunque differenza vera di lunghezza fra due condizioni viene
+    schiacciata. E' il motivo per cui la metrica `lunghezza` non e' mai
+    risultata distinguibile in nessuna delle sei repliche: potrebbe non
+    esserci effetto, oppure esserci e non essere misurabile. Finche' la
+    censura resta alta quella metrica non va usata.
+    """
+    if len(testo) <= limite:
+        return testo, False
+    taglio = testo[:limite]
+    # Preferisci la fine di una frase, se ne resta abbastanza.
+    for sep in (". ", "! ", "? ", ".", "!", "?"):
+        i = taglio.rfind(sep)
+        if i >= limite * 0.6:
+            return taglio[: i + len(sep)].strip(), True
+    i = taglio.rfind(" ")
+    if i >= limite * 0.5:
+        return taglio[:i].strip(), True
+    return taglio.strip(), True
+
+
+def _one_action(data: dict, valid_post_ids: set[int],
+                max_chars: int = MAX_CHARS) -> AgentAction:
     """
     Converte la risposta grezza in un'azione validata.
 
@@ -292,7 +348,8 @@ def _one_action(data: dict, valid_post_ids: set[int]) -> AgentAction:
     if action not in VALID_ACTIONS:
         return AgentAction(error=f"parse:bad_action:{action[:20]}")
 
-    content = str(data.get("content") or "").strip()[:280]
+    content, troncato = _tronca(str(data.get("content") or "").strip(),
+                                max_chars)
     raw_target = data.get("target_post_id")
     target: int | None = None
     if raw_target is not None:
@@ -308,7 +365,8 @@ def _one_action(data: dict, valid_post_ids: set[int]) -> AgentAction:
     if action in ("POST", "REPLY") and not content:
         return AgentAction(error="parse:empty_content")
 
-    return AgentAction(action=action, content=content, target_post_id=target)
+    return AgentAction(action=action, content=content, target_post_id=target,
+                       troncato=troncato)
 
 
 async def decide(
@@ -322,11 +380,12 @@ async def decide(
     max_tokens: int,
     temperature: float,
     max_actions: int = 1,
+    max_chars: int = MAX_CHARS,
 ) -> tuple[list[AgentAction], LLMResponse]:
     system, user = build_prompts(agent, feed_lines, notes, own_posts,
-                                 sim_date, max_actions)
+                                 sim_date, max_actions, max_chars)
     resp = await client.complete(
         system, user, max_tokens=max_tokens, temperature=temperature, json_mode=True
     )
     valid_ids = {pid for pid, _ in feed_lines}
-    return parse_actions(resp, valid_ids, max_actions), resp
+    return parse_actions(resp, valid_ids, max_actions, max_chars), resp

@@ -45,8 +45,8 @@ from mirrorfish.engine import Engine
 from mirrorfish.llm import EndpointDown, build_client
 from mirrorfish.news import NewsStream, NewsItem, load_news
 from mirrorfish.population import (
-    build_follow_graph, force_media_depth, load_mirofish_profiles,
-    source_agent, synthetic,
+    build_follow_graph, diagnosi_grafo, force_media_depth,
+    load_mirofish_profiles, source_agent, synthetic,
 )
 from mirrorfish.recommender import POLICIES, Recommender, explain_policies
 from mirrorfish.store import Store
@@ -148,6 +148,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         recommender=args.recommender,
         out_of_network=args.out_of_network,
         max_actions=args.max_actions,
+        max_post_chars=args.max_post_chars,
         reflection_every=args.reflection_every,
         follow_drift_every=args.follow_drift_every,
         survey_every=args.survey_every,
@@ -266,8 +267,24 @@ async def main_async(args: argparse.Namespace) -> None:
         store.add_agents(agents)
         edges = build_follow_graph(agents, seed=sim.seed,
                                    avg_degree=args.avg_degree,
-                                   homophily=args.homophily)
+                                   homophily=args.homophily,
+                                   usa_relazioni=not args.no_relazioni)
         store.add_follows(edges)
+        d = diagnosi_grafo(agents, edges)
+        print(f"[setup] rete: {d['archi']} archi, grado medio "
+              f"{d['grado_medio']}, mediano {d['grado_mediano']}")
+        print(f"[setup] {d['non_seguono_nessuno']} non seguono nessuno, "
+              f"{d['senza_pubblico']} non hanno pubblico, "
+              f"{d['componenti']} componenti "
+              f"(la maggiore ne contiene {d['componente_maggiore']}/{d['agenti']})")
+        if d["componente_maggiore"] < d["agenti"] * 0.9:
+            print("[setup] ATTENZIONE: la rete e' frammentata. Un'informazione "
+                  "non puo' raggiungere tutti, e l'eventuale polarizzazione "
+                  "sarebbe un effetto della topologia invece che della "
+                  "dinamica. Valuta --avg-degree per aggiungere legami deboli.")
+        if d["senza_pubblico"] > d["agenti"] * 0.1:
+            print("[setup] ATTENZIONE: molti agenti non hanno alcun pubblico: "
+                  "scrivono e non li legge nessuno.")
         n_vot = len(store.agents(voters_only=True))
         print(f"[setup] {len(agents)} agenti ({n_vot} elettori), "
               f"{len(edges)} archi, fonte=agent_id {src_id}")
@@ -406,8 +423,20 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--profiles", default=None, help="reddit_profiles.json")
     p.add_argument("--agents", type=int, default=None,
                    help="tronca la popolazione ai primi N profili")
-    p.add_argument("--avg-degree", type=int, default=12)
-    p.add_argument("--homophily", type=float, default=0.6)
+    p.add_argument("--avg-degree", type=int, default=None,
+                   help="se OMESSO la rete e' esattamente quella dichiarata "
+                        "nelle biografie, senza alcun arco casuale. Se "
+                        "specificato, si aggiungono legami deboli fino a "
+                        "questo grado COMPLESSIVO. Le due modalita' sono "
+                        "alternative e vanno dichiarate in tesi")
+    p.add_argument("--homophily", type=float, default=0.6,
+                   help="quanto i legami DEBOLI tendano a formarsi fra simili. "
+                        "Non tocca famiglia e amicizie, che vengono lette "
+                        "dalle biografie")
+    p.add_argument("--no-relazioni", action="store_true",
+                   help="ignora le relazioni dichiarate nelle biografie e "
+                        "costruisce la rete solo a caso. Serve a misurare "
+                        "quanto pesa la struttura sociale reale del campione")
 
     p.add_argument("--news", default=None,
                    help="cartella degli ARTICOLI INTEGRALI (notizie_referendum). "
@@ -453,6 +482,11 @@ def parse_args() -> argparse.Namespace:
 
     p.add_argument("--max-actions", type=int, default=d.max_actions,
                    help="azioni per agente per tick, in una sola chiamata")
+    p.add_argument("--max-post-chars", type=int, default=d.max_post_chars,
+                   help="limite di caratteri per contenuto: 280 come X, 500 "
+                        "come Mastodon. Definisce il mezzo ed e' una "
+                        "variabile sperimentale: col tetto attuale il 30%% dei "
+                        "post lo tocca, e la lunghezza diventa censurata")
     p.add_argument("--reflection-every", type=int, default=d.reflection_every)
     p.add_argument("--follow-drift-every", type=int, default=d.follow_drift_every,
                    help="ogni N tick chi interagisce ripetutamente con "

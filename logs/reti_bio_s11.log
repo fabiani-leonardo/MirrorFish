@@ -1,0 +1,48 @@
+[setup] relazioni dichiarate nelle biografie: 486 archi reciproci, nomi risolti 342/342
+[setup] rete costruita SOLO dalle relazioni dichiarate (nessun --avg-degree richiesto)
+[setup] rete: 486 archi, grado medio 4.63, mediano 5
+[setup] 5 non seguono nessuno, 5 non hanno pubblico, 6 componenti (la maggiore ne contiene 100/105)
+[setup] 106 agenti (100 elettori), 486 archi, fonte=agent_id 0
+[setup] profondita' di lettura NEL DB: integrale=22 (2 slot), nessuna=34 (0 slot), titolo=49 (1 slot)
+[news] 1 notizie senza corpo integrale (0.2%): a quelle gli agenti 'integrale' vedono solo il titolo.
+[news] finestra simulata: 2026-03-07 -> 2026-03-20
+[news] 112 notizie schedulate su 42 tick (max 3/tick)
+[news] ATTENZIONE: 418 notizie PRIMA di 2026-03-07 scartate. Se le vuoi, sposta --start indietro.
+[news] 2 notizie dopo 2026-03-20 scartate.
+[news] 77 notizie scartate per superamento di max_per_tick.
+  [baseline] 1/100 voti (41.6/min, ~2 min alla fine)
+  [baseline] 10/100 voti (34.9/min, ~3 min alla fine)
+  [baseline] 20/100 voti (34.9/min, ~2 min alla fine)
+  [baseline] 30/100 voti (34.7/min, ~2 min alla fine)
+  [baseline] 40/100 voti (34.9/min, ~2 min alla fine)
+  [baseline] 50/100 voti (34.8/min, ~1 min alla fine)
+  [baseline] 60/100 voti (34.7/min, ~1 min alla fine)
+  [baseline] 70/100 voti (34.9/min, ~1 min alla fine)
+  [baseline] 80/100 voti (34.8/min, ~1 min alla fine)
+  [baseline] 90/100 voti (34.8/min, ~0 min alla fine)
+  [baseline] 100/100 voti (34.8/min, ~0 min alla fine)
+
+--- RISULTATI [baseline] ---
+  SI           33   33.0%
+  NO           32   32.0%
+  ASTENUTO     35   35.0%
+  ERRORI        0
+  validi      100
+[feed] politica: recency, fuori-rete 15%, 8 post per tick
+[engine] 105 agenti, 42 tick, seed=11
+[engine] 112 notizie su 42 tick (da 2026-03-07 a 2026-03-20)
+    tick 1: 8/18 agenti (19.4/min)
+  tick   1/42 2026-03-07 00h  attivi= 18 news= 3  post=4 reply=1 like=5 note=0 err=0  ETA 0.4h
+    tick 2: 12/64 agenti (35.8/min)
+    tick 2: 22/64 agenti (32.5/min)
+    tick 2: 36/64 agenti (34.7/min)
+    tick 2: 48/64 agenti (34.5/min)
+    tick 2: 60/64 agenti (34.7/min)
+  tick   2/42 2026-03-07 08h  attivi= 64 news= 3  post=10 reply=24 like=59 note=0 err=0  ETA 0.8h
+    tick 3: 12/70 agenti (34.9/min)
+    tick 3: 24/70 agenti (34.5/min)
+    tick 3: 36/70 agenti (34.6/min)
+    tick 3: 48/70 agenti (34.4/min)
+    tick 3: 60/70 agenti (34.5/min)
+  tick   3/42 2026-03-07 16h  attivi= 70 news= 3  post=17 reply=47 like=129 note=0 err=0  ETA 1.0h
+    tick 4: 12/21 agenti (34.8/min)
