@@ -55,6 +55,7 @@ class Engine:
         self.news = news
         self.source_agent_id = source_agent_id
         self.verbose = verbose
+        self.quesito = ""   # testo della domanda, impostato dal runner
         self.reflector = ReflectionEngine(client)
         self.recommender = recommender or Recommender(
             store, policy=sim.recommender,
@@ -271,7 +272,7 @@ class Engine:
                 if tick + 1 < total:      # l'ultimo punto e' gia' `final`
                     await run_survey(self.store, self.client, self.llm_cfg,
                                      label=f"tick_{tick}", baseline=False,
-                                     question=self.sim.vote_question,
+                                     question=self.quesito,
                                      tick=tick, verbose=self.verbose)
 
             # Checkpoint a ogni tick: con un endpoint a rate limit un run

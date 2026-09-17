@@ -1,0 +1,86 @@
+flowchart TD
+
+subgraph group_control["Run control"]
+  node_cli["Simulation CLI<br/>Python entry point<br/>[run.py]"]
+  node_config["Run configuration<br/>configuration model<br/>[config.py]"]
+  node_planner["Experiment planner<br/>planning entry point<br/>[plan_run.py]"]
+end
+
+subgraph group_simulation["Simulation core"]
+  node_engine{{"Tick engine<br/>simulation coordinator<br/>[engine.py]"}}
+  node_population["Population &amp; follow graph<br/>network builder<br/>[population.py]"]
+  node_agent["Agent action layer<br/>prompt and validation<br/>[agent.py]"]
+  node_memory["Reflective memory<br/>agent context<br/>[memory.py]"]
+  node_news["News scheduler<br/>dated event stream<br/>[news.py]"]
+  node_survey["Voting surveys<br/>outcome measurement<br/>[survey.py]"]
+end
+
+subgraph group_inputs["Population &amp; news inputs"]
+  node_profiles["Profile datasets<br/>static persona inputs"]
+  node_news_corpus["ANSA news corpus<br/>dated source corpus"]
+  node_news_prep["News preparation<br/>ingestion utility"]
+end
+
+subgraph group_runtime["Runtime services"]
+  node_llm["LLM client / StubLLM<br/>model gateway<br/>[llm.py]"]
+  node_endpoint(("OpenAI-compatible endpoint<br/>external inference service"))
+  node_store[("Run SQLite store<br/>persistence boundary<br/>[store.py]")]
+end
+
+subgraph group_outputs["Results &amp; analysis"]
+  node_snapshot["Run state snapshot<br/>persisted state<br/>[state.json]"]
+  node_analysis["Run analysis<br/>reporting script<br/>[analyze_run.py]"]
+  node_comparison["Run comparison<br/>experiment reporting<br/>[compare_runs.py]"]
+  node_graph_export["Network graph export<br/>node-link JSON"]
+end
+
+node_cli -->|"loads"| node_config
+node_cli -->|"starts"| node_engine
+node_planner -.->|"plans runs for"| node_cli
+node_config -->|"parameters and seed"| node_engine
+node_engine -->|"initializes"| node_population
+node_profiles -->|"source personas"| node_population
+node_engine -->|"schedules per tick"| node_news
+node_news_corpus -->|"raw articles"| node_news_prep
+node_news_prep -->|"prepared dated stream"| node_news
+node_engine -->|"requests actions"| node_agent
+node_agent -->|"uses and updates notes"| node_memory
+node_agent -->|"model requests"| node_llm
+node_llm -.->|"live mode"| node_endpoint
+node_engine -->|"baseline and final measures"| node_survey
+node_engine -->|"persists runtime state"| node_store
+node_llm -->|"call telemetry"| node_store
+node_store -->|"run state"| node_snapshot
+node_store -->|"exports network"| node_graph_export
+node_store -->|"run data"| node_analysis
+node_analysis -.->|"outcomes"| node_comparison
+
+click node_cli "https://github.com/fabiani-leonardo/mirrorfish/blob/main/run.py"
+click node_config "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/config.py"
+click node_planner "https://github.com/fabiani-leonardo/mirrorfish/blob/main/scripts/plan_run.py"
+click node_engine "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/engine.py"
+click node_population "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/population.py"
+click node_agent "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/agent.py"
+click node_memory "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/memory.py"
+click node_news "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/news.py"
+click node_survey "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/survey.py"
+click node_profiles "https://github.com/fabiani-leonardo/mirrorfish/blob/main/start/A/reddit_profiles.json"
+click node_news_prep "https://github.com/fabiani-leonardo/mirrorfish/blob/main/start/notizieansa/pre_process_news.py"
+click node_llm "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/llm.py"
+click node_store "https://github.com/fabiani-leonardo/mirrorfish/blob/main/mirrorfish/store.py"
+click node_snapshot "https://github.com/fabiani-leonardo/mirrorfish/blob/main/simulations/sim_14/state.json"
+click node_analysis "https://github.com/fabiani-leonardo/mirrorfish/blob/main/scripts/analyze_run.py"
+click node_comparison "https://github.com/fabiani-leonardo/mirrorfish/blob/main/scripts/compare_runs.py"
+
+classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
+classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
+classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
+classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
+classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
+classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
+classDef toneTeal fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#134e4a
+class node_cli,node_config,node_planner toneBlue
+class node_engine,node_population,node_agent,node_memory,node_news,node_survey toneAmber
+class node_profiles,node_news_corpus,node_news_prep toneMint
+class node_llm,node_endpoint,node_store toneRose
+class node_snapshot,node_analysis,node_comparison,node_graph_export toneIndigo

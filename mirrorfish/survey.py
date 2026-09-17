@@ -18,6 +18,9 @@ Due aggiunte:
 
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+
 import asyncio
 import sqlite3
 import time
@@ -30,85 +33,68 @@ from .store import Store
 # --------------------------------------------------------------------------- #
 # La domanda di voto
 # --------------------------------------------------------------------------- #
-# Questa e' la variabile piu' sottovalutata dell'intero impianto.
+# E' la variabile piu' sottovalutata dell'intero impianto, e per questo NON e'
+# scritta nel codice: sta in file di testo sotto mirrorfish/quesiti/, e
+# `--vote-question` accetta o il nome di uno di quelli inclusi o il percorso di
+# un file qualsiasi. Chi volesse usare questo framework per un altro
+# referendum, o per una domanda che non sia un referendum affatto, scrive un
+# file e non tocca una riga di Python.
 #
-# La versione MINIMAL e' quella usata fino al 2026-09-08: nomina il tema ma non
-# dice cosa la legge preveda, ne' cosa significhino SI e NO. Un modello con
-# cutoff 2024 non ha alcun modo di saperlo. Davanti a una parola come "riforma"
-# ricade sul proprio prior — riforma uguale efficienza, efficienza uguale bene —
-# e risponde SI quasi a tutti. La firma di questo comportamento e' nei dati:
-# nei profili B, dove il voto non e' scritto in biografia, il baseline dava
-# SI 87% al centrodestra e SI 96% al centrosinistra. Non e' un orientamento
-# politico: e' la stessa risposta data a chiunque, cioe' nessuna risposta.
+# I quesiti inclusi sono i livelli di informativita' e di inquadramento usati
+# nella tesi:
+#   minimal                nomina solo il tema. Un modello che non conosce il
+#                          referendum ricade sul proprio prior: nei profili
+#                          senza voto in biografia dava SI al 96% del
+#                          centrosinistra, cioe' piu' che al centrodestra.
+#                          Non e' un orientamento, e' assenza di risposta.
+#   ballot                 la formula reale della scheda, che nei referendum
+#                          costituzionali italiani non riassume il contenuto.
+#                          E' cio' che un elettore ha davanti, e non basta: il
+#                          modello resta a 3,3 a 1 per il SI. La fedelta'
+#                          all'artefatto non e' la fedelta' alla situazione.
+#   informed               scheda piu' contenuto della legge, in termini neutri.
+#   informed_sottrazione   stessi fatti con verbi di sottrazione
+#   informed_garanzia      stessi fatti con verbi di garanzia
 #
-# La versione BALLOT riproduce cio' che un elettore vero ha davanti nella
-# cabina: la formula del quesito e il contenuto della legge costituzionale su
-# cui si vota. Non e' informazione aggiuntiva rispetto alla realta', e' il
-# minimo perche' la domanda sia rispondibile. Il contenuto e' tratto dai due
-# articoli ANSA di spiegazione del quesito (23 febbraio e 19 marzo 2026).
-#
-# Sono tenute entrambe perche' il confronto fra le due E' un risultato: dice
-# quanta parte del voto simulato dipenda dall'aver posto la domanda in modo
-# rispondibile, e non dalla dinamica sociale che si intende misurare. Si
-# sceglie con --vote-question, ed e' coperta dal fingerprint.
+# Le ultime due servono a misurare quanto pesa l'INQUADRAMENTO a parita' di
+# informazione trasmessa: la sola stesura per sottrazione sposta il risultato
+# di 22 punti verso il NO. Il file effettivamente usato va allegato alla tesi,
+# perche' e' parte della condizione sperimentale quanto il seme.
 
-VOTE_QUESTION_MINIMAL = (
-    "Oggi si tiene il Referendum Costituzionale sulla separazione delle "
-    "carriere dei magistrati e ogni cittadino italiano sopra i 18 anni e' "
-    "chiamato alle urne. TU voterai SI, NO, o ASTENUTO?"
-)
+QUESITI_DIR = Path(__file__).resolve().parent / "quesiti"
 
-# Formula reale della scheda: e' letteralmente cio' che un elettore trova
-# davanti, cioe' il titolo della legge e nessuna spiegazione. Nei referendum
-# costituzionali italiani la scheda NON riassume il contenuto.
-VOTE_QUESTION_BALLOT = """Oggi, 22 marzo 2026, si vota il referendum \
-costituzionale sulla giustizia. Sulla scheda c'e' scritto:
 
-  \u00abApprovate il testo della legge costituzionale concernente
-  \u00abNorme in materia di ordinamento giurisdizionale e di istituzione
-  della Alta Corte disciplinare\u00bb, approvato dal Parlamento e pubblicato
-  nella Gazzetta Ufficiale?\u00bb
+def carica_quesito(riferimento: str) -> tuple[str, str, str]:
+    """
+    Carica il testo della domanda di voto.
 
-Votando SI si approva la legge, votando NO la si respinge.
+    Accetta il percorso di un file oppure il nome di uno dei quesiti inclusi.
+    Restituisce (testo, origine, impronta).
 
-TU cosa voti: SI, NO, o ASTENUTO?"""
-
-# Scheda piu' il contenuto della legge: e' cio' che sa un elettore che si e'
-# informato.
-#
-# LA FORMULAZIONE E' UNA VARIABILE, NON UN DETTAGLIO. La prima stesura di
-# questo testo, scritta il 2026-09-08, descriveva le modifiche con verbi di
-# sottrazione — "non sono piu' eletti", "toglie ai Csm", "non sono
-# ricorribili" — e metteva ESTRATTI A SORTE in maiuscolo. Sono tutte scelte
-# che orientano verso il NO, e il baseline che ne e' uscito (NO 53 su 100)
-# potrebbe rifletterle. Qui le stesse modifiche sono descritte con verbi
-# neutri di sostituzione. Chi legge questo codice deve poter vedere che il
-# testo e' stato riscritto e perche': confrontare i baseline ottenuti con le
-# tre varianti e' una analisi di sensibilita', ed e' un risultato da
-# riportare, non un passaggio da nascondere.
-VOTE_QUESTION_INFORMED = VOTE_QUESTION_BALLOT.replace(
-    "\nTU cosa voti", """
-COSA CAMBIA LA LEGGE, RISPETTO A OGGI:
-- i magistrati sono distinti in due carriere, giudicante e requirente, e la
-  distinzione viene inserita in Costituzione;
-- all'attuale Consiglio superiore della magistratura subentrano due Consigli,
-  uno per ciascuna carriera, entrambi presieduti dal Presidente della
-  Repubblica;
-- i componenti dei due Consigli sono designati per sorteggio anziche' per
-  elezione, per un terzo da un elenco di giuristi compilato dal Parlamento e
-  per due terzi fra i magistrati;
-- la funzione disciplinare passa dai Consigli a una nuova Alta Corte
-  disciplinare di quindici membri, in parte nominati e in parte sorteggiati;
-- le decisioni dell'Alta Corte si impugnano davanti alla stessa Corte in
-  diversa composizione.
-
-TU cosa voti""")
-
-VOTE_QUESTIONS = {
-    "minimal": VOTE_QUESTION_MINIMAL,     # solo il tema: misura il prior
-    "ballot": VOTE_QUESTION_BALLOT,       # la scheda reale, senza sintesi
-    "informed": VOTE_QUESTION_INFORMED,   # scheda + contenuto, in neutro
-}
+    L'impronta e' l'hash del CONTENUTO. Serve perche' il fingerprint della
+    configurazione registra il percorso, non il testo: due run che puntano allo
+    stesso file modificato nel frattempo avrebbero lo stesso fingerprint pur
+    avendo posto domande diverse. E' la stessa classe di problema per cui e'
+    stato aggiunto il commit git, e si risolve allo stesso modo.
+    """
+    p = Path(riferimento)
+    if p.is_file():
+        testo = p.read_text(encoding="utf-8").strip()
+        origine = str(p)
+    else:
+        incluso = QUESITI_DIR / f"{riferimento}.txt"
+        if not incluso.is_file():
+            disponibili = sorted(x.stem for x in QUESITI_DIR.glob("*.txt"))
+            raise SystemExit(
+                f"Quesito non trovato: {riferimento!r}.\n"
+                f"Passa il percorso di un file di testo, oppure uno dei "
+                f"quesiti inclusi: {', '.join(disponibili)}")
+        testo = incluso.read_text(encoding="utf-8").strip()
+        origine = f"incluso:{riferimento}"
+    if not testo:
+        raise SystemExit(f"Il quesito in {origine} e' vuoto.")
+    impronta = hashlib.sha256(testo.encode("utf-8")).hexdigest()[:12]
+    return testo, origine, impronta
 
 VOTE_SYSTEM = """Sei {username}, professione: {profession}.
 
@@ -150,7 +136,7 @@ async def run_survey(
     *,
     label: str,
     baseline: bool = False,
-    question: str = "ballot",
+    question: str = "",
     tick: int | None = None,
     verbose: bool = True,
 ) -> dict[str, int]:
@@ -167,7 +153,7 @@ async def run_survey(
         )
         resp = await client.complete(
             system,
-            f"DOMANDA DI VOTO: {VOTE_QUESTIONS[question]}\nRispondi solo in JSON.",
+            f"DOMANDA DI VOTO: {question}\nRispondi solo in JSON.",
             max_tokens=budget, temperature=llm_cfg.vote_temperature, json_mode=True,
         )
         aid = int(agent["agent_id"])

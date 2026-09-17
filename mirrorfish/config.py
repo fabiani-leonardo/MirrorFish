@@ -291,6 +291,11 @@ class SimConfig:
     # solo il tema. Non e' una scelta di stile: e' cio' che determina se il
     # baseline misuri un'opinione o il prior del modello. Vedi survey.py.
     vote_question: str = "informed"
+    # Impronta del CONTENUTO del quesito. Il campo sopra registra il percorso,
+    # e un file puo' cambiare fra un run e l'altro restando allo stesso posto:
+    # senza questo, due run con domande diverse avrebbero lo stesso
+    # fingerprint. Lo imposta il runner dopo aver letto il file.
+    vote_question_sha: str = ""
 
     # Controfattuale: da questo tick in poi si usa lo stream di news alternativo
     counterfactual_from_tick: int | None = None

@@ -50,7 +50,8 @@ from mirrorfish.population import (
 )
 from mirrorfish.recommender import POLICIES, Recommender, explain_policies
 from mirrorfish.store import Store
-from mirrorfish.survey import crosstab, run_survey, shift_report
+from mirrorfish.survey import (carica_quesito, crosstab, run_survey,
+                               shift_report)
 
 
 def synth_news(start: date, days: int, per_day: int = 3) -> list[NewsItem]:
@@ -156,6 +157,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
         counterfactual_news_dir=args.cf_news,
         force_media_depth=args.force_media_depth,
         vote_question=args.vote_question,
+        vote_question_sha=args.vote_question_sha,
     )
 
 
@@ -163,6 +165,9 @@ async def main_async(args: argparse.Namespace) -> None:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    testo_quesito, origine_quesito, impronta_quesito = carica_quesito(
+        args.vote_question)
+    args.vote_question_sha = impronta_quesito
     sim = build_config(args)
     llm_cfg = LLMConfig.from_env(concurrency=args.concurrency,
                                  requests_per_minute=args.rpm)
@@ -229,6 +234,12 @@ async def main_async(args: argparse.Namespace) -> None:
     store.set_meta("sim_config", sim.to_dict())
     store.set_meta("fingerprint", sim.fingerprint())
     store.set_meta("code_version", code_version())
+    # Il TESTO del quesito va nel database, non solo il suo percorso: e'
+    # parte della condizione sperimentale quanto il seme, e un file puo'
+    # cambiare dopo il run.
+    store.set_meta("vote_question", {"origine": origine_quesito,
+                                     "sha": impronta_quesito,
+                                     "testo": testo_quesito})
     store.set_meta("llm", {"model": llm_cfg.model, "budget": llm_cfg.token_budget,
                            "concurrency": llm_cfg.concurrency,
                            "stub": bool(args.stub)})
@@ -339,7 +350,7 @@ async def main_async(args: argparse.Namespace) -> None:
                 store.conn.execute("DELETE FROM vote WHERE label = 'baseline'")
                 store.commit()
             await run_survey(store, client, llm_cfg, label="baseline",
-                             baseline=True, question=sim.vote_question)
+                             baseline=True, question=testo_quesito)
 
         rec = Recommender(store, policy=sim.recommender,
                           out_of_network=sim.out_of_network, seed=sim.seed)
@@ -348,11 +359,12 @@ async def main_async(args: argparse.Namespace) -> None:
               f"{sim.feed_size} post per tick")
         engine = Engine(store, client, sim, llm_cfg, stream, src_id,
                         verbose=not args.quiet, recommender=rec)
+        engine.quesito = testo_quesito
         start_tick = (store.get_meta("last_completed_tick", -1) + 1) if resuming else 0
         await engine.run(start_tick=start_tick)
 
         await run_survey(store, client, llm_cfg, label="final",
-                         baseline=False, question=sim.vote_question)
+                         baseline=False, question=testo_quesito)
     except EndpointDown as e:
         done = store.get_meta("last_completed_tick", -1) + 1
         store.close()
@@ -402,6 +414,7 @@ async def main_async(args: argparse.Namespace) -> None:
     print(f"\n[done] risultati in {out_dir}/  "
           f"(run.db, shift_report.json, graph.json)")
     cv = code_version()
+    print(f"[quesito] {origine_quesito} (sha {impronta_quesito})")
     print(f"[done] fingerprint config: {sim.fingerprint()}  "
           f"codice: {cv['commit']}"
           f"{' (albero sporco)' if cv['modifiche_non_committate'] else ''}")
@@ -446,13 +459,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cf-from-tick", type=int, default=None)
     p.add_argument("--max-news-per-tick", type=int, default=d.max_news_per_tick)
     p.add_argument("--vote-question", default=d.vote_question,
-                   choices=["minimal", "ballot", "informed"],
                    help="'minimal' nomina solo il tema e con un modello che "
                         "non conosce la riforma produce il suo prior; "
                         "'ballot' riproduce la scheda reale, che non riassume "
                         "nulla; 'informed' aggiunge il contenuto della legge "
-                        "in termini neutri. Confrontare i tre baseline e' una "
-                        "analisi di sensibilita' alla formulazione")
+                        "in termini neutri. Accetta anche il PERCORSO di un "
+                        "file di testo, cosi' il framework si riusa per un "
+                        "altro quesito senza toccare il codice")
     p.add_argument("--force-media-depth", default=None,
                    choices=["integrale", "titolo", "nessuna"],
                    help="impone la stessa profondita' a tutti: serve a "
