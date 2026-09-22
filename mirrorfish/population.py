@@ -265,6 +265,8 @@ _SEGMENTI = (
     re.compile(r"vive con ([^.]+)", re.I),
     re.compile(r"[èe]' amic[oa] di ([^.]+)", re.I),
     re.compile(r"è amic[oa] di ([^.]+)", re.I),
+    re.compile(r"vota ([^.]+)", re.I),
+    re.compile(r"sostiene ([^.]+)", re.I),
 )
 _NOME_PROPRIO = re.compile(r"\b([A-ZÀ-Ù][a-zà-ù']+(?:\s+[A-ZÀ-Ù][a-zà-ù']+)+)")
 

@@ -1,0 +1,923 @@
+{
+ "runs/campagna_completa1b/run.db": [
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero un po' confuso, ma dopo aver seguito un po' di più la questione mi sono reso conto che questa riforma è un passo indietro pericoloso. Creare l'Alta Corte Disciplinare con membri nominati dal Parlamento significa mettere la politica dentro la magistratura. Io ho sempre pensato che l'indipendenza dei giudici sia fondamentale per uno Stato di diritto, e qui si rischia di trasformare la giustizia in un gioco di potere tra partiti. I benefici in termini di efficienza non valgono il rischio di perdere l'autonomia della magistratura. Meglio NO per tutelare le garanzie costituzionali.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "Creare l'Alta Corte Disciplinare... mettere la politica dentro la magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Ho votato NO. Anche se capisco l'esigenza di rendere tutto più efficiente e veloce, come si diceva in campagna elettorale, ho riflettuto a lungo e temo che separare le carriere dei magistrati sia un passo indietro pericoloso. Un operaio come me, che ha sempre creduto nelle tutele costituzionali, sa bene che l'indipendenza della magistratura è un pilastro fondamentale dello Stato di diritto. Se si crea una gerarchia rigida o si separano i ruoli in modo troppo netto, si rischia di compromettere quella libertà di giudizio che ci protegge tutti. Meglio restare sul sicuro e difendere le garanzie esistenti piuttosto che rischiare di indebolire la giustizia.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X3"
+   ],
+   "prova": "temo che separare le carriere dei magistrati sia un passo indietro pericoloso"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non mi interessa granché di queste riforme costituzionali sulla giustizia. Sono cose che leggo sui giornali o sento in TV, ma poi passo il tempo ai concerti o con gli amici. Non mi sento preparato per capire tutte le implicazioni di questa legge e, visto che spesso non vado nemmeno a votare alle elezioni normali, tanto vale che mi astengo. Non è che abbia una posizione forte contro o a favore, è più che non mi riguarda abbastanza da spendere energie per studiarla.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non mi interessa granché di queste riforme"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ingegnere, so bene che la struttura deve essere solida e che separare le carriere significa creare una frammentazione che indebolisce il sistema. Mio padre, medico, mi ha sempre insegnato che la prudenza e la lentezza garantiscono la qualità e la sicurezza, mentre le riforme affrettate rischiano di compromettere l'indipendenza della magistratura. Non voglio correre rischi inutili: meglio mantenere l'equilibrio attuale che affidarsi a un'efficienza che potrebbe essere solo apparente.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "compromettere l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come infermiere, ho imparato che la chiarezza dei ruoli è fondamentale per il buon funzionamento di qualsiasi sistema. Questa riforma mi preoccupa perché sembra confondere i piani: separare la disciplina dalla giurisdizione non è solo una questione tecnica, ma rischia di creare un organo politico che potrebbe influenzare l'indipendenza della magistratura. Non voglio che la giustizia diventi un campo di battaglia partitico. Meglio mantenere le garanzie costituzionali attuali che correre rischi inutili sull'indipendenza dei giudici.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N1"
+   ],
+   "prova": "rischia di creare un organo politico che potrebbe influenzare l'indipendenza"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un rider e conosco bene il valore dell'indipendenza e della libertà di movimento, cose che qui sembrano minacciate. Questa riforma sulla Alta Corte disciplinare mi sembra un modo per mettere la politica dentro la magistratura, togliendo l'autonomia ai giudici. Visto che simpatizzo per il Movimento 5 Stelle e che la mia famiglia mi ha sempre detto di diffidare quando i poteri si mescolano, non posso che votare NO. È un rischio troppo grande per la nostra indipendenza.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "Alta Corte disciplinare... mettere la politica dentro la magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un capotreno, conosco il valore del rispetto dei tempi e delle regole, ma non a qualsiasi costo. Dopo aver letto con attenzione e seguito le discussioni, temo che questa riforma, pur promettendo efficienza, metta a rischio l'indipendenza della magistratura. La mia esperienza diretta mi ha insegnato che la giustizia deve essere lenta se necessario per essere giusta, e non vorrei che l'urgenza di snellire i procedimenti portasse a una politicizzazione del potere giudiziario. Meglio mantenere le garanzie costituzionali attuali che correre il rischio di perdere l'equilibrio tra i poteri dello Stato.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "temo che questa riforma... metta a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Non posso votare SI. Come ex insegnante e cittadina che ha sempre creduto nelle istituzioni democratiche, non posso accettare una riforma che, secondo i pareri autorevoli di giuristi come Grosso e De Pascale, e ora confermato anche da mia figlia Laura, mette a rischio l'indipendenza della magistratura. L'ingerenza politica nell'ordine giudiziario è un passo indietro pericoloso per lo Stato di diritto. Non voterei mai per una legge che indebolisce i controlli e le garanzie costituzionali, per quanto riguarda l'efficienza. La mia diffidenza è ormai totale e condivisa da chi tiene alla Costituzione.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1",
+    "N1"
+   ],
+   "prova": "mette a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate che cosa ci stanno combinando! Ho seguito bene la questione e le parole di Conte e del comitato 'Giusto dire no' mi hanno aperto gli occhi. Non è una semplice riforma, è un attacco diretto all'indipendenza della magistratura. Vogliono creare un 'governo sopra la legge' con questa Alta Corte disciplinare che non è altro che un modo per depotenziare i giudici e mettere la politica al comando. Io sono un operaio, so cosa significa avere le regole chiare e non subire gli ordini di chi ha il potere. Se approviamo questo testo, stiamo svuotando la Costituzione. Non posso votare SI per una cosa che mina le basi della nostra democrazia. Voto NO per difendere lo Stato di diritto.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1",
+    "N5",
+    "N1"
+   ],
+   "prova": "attacco diretto all'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un capotreno, conosco il valore delle regole e della stabilità. All'inizio pensavo che separare le carriere potesse rendere tutto più efficiente, come quando i treni partono puntuali. Ma dopo averci pensato, mi sono convinto che questo rischio è troppo alto. Separare le carriere mette a rischio l'indipendenza della magistratura e lo Stato di Diritto. Meglio la lentezza del sistema attuale, che garantisce le nostre tutele, piuttosto che perdere queste garanzie fondamentali per una presunta efficienza. Non voto SI.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "Separare le carriere mette a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come insegnante di liceo, ho passato anni a spiegare ai miei studenti il principio fondamentale dello Stato di diritto: la separazione dei poteri non è un ostacolo, ma la garanzia della nostra libertà. Questa riforma, che istituisce un'Alta Corte disciplinare con poteri così ampi, mi preoccupa profondamente. Il principio secondo cui chi giudica non deve essere anche chi accusa o disciplina è sacro per l'indipendenza della magistratura. Temiamo che, dietro la promessa di efficienza, si nasconda il rischio di politizzare la giustizia, trasformando i magistrati in bersagli politici e minando la fiducia dei cittadini nelle istituzioni. Non posso votare a favore di un cambiamento che, a mio avviso, indebolisce le garanzie democratiche invece di rafforzarle.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "istituisce un'Alta Corte disciplinare con poteri così ampi"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guarda, io sono sempre stato uno che vota Fratelli d'Italia, mi trovo bene con loro, ma questa volta devo essere onesto con me stesso e con la mia esperienza di artigiano. Ho seguito un po' la questione e mi hanno fatto riflettere. La semplificazione della giustizia sembra una bella idea sulla carta, come quando vuoi tagliare corto per finire un lavoro, ma qui si parla di Costituzione. Mi hanno spiegato che togliere potere alla magistratura indipendente o creare una Corte disciplinare troppo vicina al potere politico potrebbe essere pericoloso, che si rischia di politicizzare tutto. Io, che ho lavorato con le mie mani e conosco il valore delle regole chiare e imparziali, non voglio correre rischi. Meglio stare sul sicuro e dire di no, per non compromettere l'indipendenza di chi deve fare la giustizia. Non è che non mi fidi dei miei, ma su questo tema la prudenza vince.",
+   "fiducia": 0.85,
+   "codici": [
+    "N1",
+    "N5",
+    "X1"
+   ],
+   "prova": "togliere potere alla magistratura indipendente o creare una Corte disciplinare"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un artigiano, ho sempre creduto nel lavoro onesto e nelle regole chiare. Ma questa riforma sulla giustizia non è efficienza, è un colpo all'indipendenza della magistratura. La separazione delle carriere, che ci viene venduta come una misura tecnica, in realtà serve a rendere i giudici dipendenti dal politico, a creare una gerarchia dove l'esecutivo ha la mano sul destino professionale di chi deve giudicare. Non voglio uno Stato di Diritto debole, dove la giustizia diventa strumento di controllo. Ho visto troppe promesse non mantenute in questi anni. La mia convinzione è ormai salda: questa riforma indebolisce le garanzie costituzionali senza risolvere i veri problemi. Voto NO per difendere l'equilibrio dei poteri e l'indipendenza di chi deve applicare la legge senza timori.",
+   "fiducia": 0.95,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono contraria a questo referendum perché ritengo che la separazione delle carriere sia una manovra politica che indebolisce l'indipendenza della magistratura. Creare una gerarchia pericolosa e allineare i giudici significa mettere a rischio la Costituzione e favorire la politicizzazione del sistema giudiziario. Non posso votare SI per una legge che mina i principi fondamentali di imparzialità e autonomia della magistratura.",
+   "fiducia": 0.95,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un'insegnante precaria a Milano, e la mia vita è già una costante incertezza economica e abitativa. Anche se questa riforma riguarda la giustizia e non l'istruzione, il clima politico che la sostiene mi fa pensare a un'ulteriore erosione delle tutele per chi, come me, lavora con contratti instabili. La separazione delle carriere e l'Alta Corte disciplinare promettono ordine, ma non risolvono la mia insicurezza quotidiana. Non posso votare SI per una riforma che, nel mio sentire disilluso, sembra prioritizzare il controllo e l'efficienza a scapito delle persone reali e delle loro condizioni di vita. Voto NO per non dare legittimità a un sistema che continua a lasciare indietro chi ha meno.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ingegnere, ho sempre cercato soluzioni tecniche che garantissero stabilità e certezza del diritto, non incertezze. Leggere le argomentazioni di mia moglie Martina, avvocata, e i commenti di chi teme per l'indipendenza della magistratura mi hanno fatto capire che questa riforma è un rischio concreto per le garanzie costituzionali. Non posso votare SI per un testo che, invece di semplificare, introduce complessità e potenziali conflitti di interessi con l'Alta Corte disciplinare. La diffidenza è troppa, specialmente dopo aver visto come la situazione economica ci premi con bollette salate mentre si cambia le regole del gioco senza una reale necessità tecnica.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "potenziali conflitti di interessi con l'Alta Corte disciplinare"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, ho passato quarant'anni a gestire aziende e a rispettare le regole, e vi dico una cosa: questa riforma mi preoccupa profondamente. Mio figlio Giuseppe e i miei amici, come Fabio Villa, mi hanno spiegato che separare la carriera da quella disciplinare non è una semplificazione, ma un'apertura pericolosa. Ho paura che la giustizia diventi un servizio politico, dove i magistrati devono guardare in faccia chi comanda invece di guardare solo la legge. Io ho sempre votato Lega, sì, perché voglio ordine e legalità, ma non a costo di svendere l'indipendenza dei giudici. Se togliamo le garanzie, siamo fritti. Meglio restare come siamo, pur con i difetti, che rischiare di trasformare la giustizia in un'arma di parte. Quindi, no, non approvo.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N1"
+   ],
+   "prova": "giustizia diventi un servizio politico"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un insegnante precario, conosco bene il peso della stabilità e dell'indipendenza. Anche se la separazione delle carriere sembrava un'idea di efficienza, ora temo che trasformi la giustizia in un servizio controllato politicamente. Non voglio che l'arbitrio o le pressioni esterne influenzino chi deve fare la giustizia, proprio come temo per la mia precarietà. Meglio mantenere l'indipendenza della magistratura, anche se imperfetta.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "trasformi la giustizia in un servizio controllato politicamente"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un'infermiera e vedo ogni giorno quanto sia lento e burocratico il nostro sistema. Capisco la frustrazione di tutti per le attese infinite, ma leggendo bene il testo della riforma mi viene da pensare che non risolva il problema della lentezza, ma che metta a rischio l'indipendenza della magistratura. Non posso votare sì a una modifica costituzionale che potrebbe compromettere le libertà fondamentali e l'equità delle sentenze, anche se la situazione attuale è insostenibile. Meglio un sistema lento ma giusto, che uno veloce ma controllato da altri poteri.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "metta a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un vecchio insegnante e ho sempre creduto nell'importanza delle regole e dell'ordine, ma anche nell'equilibrio dei poteri. Dopo aver riflettuto con mia moglie Lucia e mio figlio Giuseppe, e aver letto le argomentazioni di un collega che condivideva le mie preoccupazioni, sono giunto alla conclusione che questa riforma rischia di indebolire l'indipendenza della magistratura. La separazione tra chi giudica e chi accusa è un principio nobile, ma il rischio che la politica si intrometta troppo nel funzionamento della giustizia è troppo alto. Non voglio correre il pericolo di vedere lo Stato di Diritto eroso da interessi partitici. Per tutelare la nostra democrazia e l'autonomia dei giudici, voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischio che la politica si intrometta troppo"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono una geometra, mi occupo di numeri e ordine, ma ho studiato la Costituzione e so che la separazione delle carriere non è una semplice questione di 'pulizia' o efficienza tecnica come dice mio marito Domenico. Ho letto con attenzione le argomentazioni di Lucia Mancini e temo che questa riforma, spacciata per necessaria, sia in realtà un attacco all'indipendenza della magistratura, un baluardo costituzionale che non possiamo mettere in discussione per accontentare le logiche di partito. Sebbene capisca l'esigenza di rendere la giustizia più celere per i cittadini, come quella infermiera di cui parlavamo, non posso votare SI per una legge che rischia di politicizzare il potere giudiziario e indebolire le garanzie democratiche. La mia diffidenza verso le strumentalizzazioni politiche, vista anche la polemica su Gratteri, prevale sulla promessa di un 'ordine' che non sento garantito. Voto NO per tutelare lo Stato di Diritto.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "attacco all'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come avvocata e cittadina che ha sempre difeso lo Stato di Diritto, non posso che esprimere il mio più profondo dissenso. La riforma in oggetto non è una semplice modifica tecnica, ma un attacco frontale all'indipendenza della magistratura, pilastro fondamentale della nostra democrazia. L'istituzione di una Alta Corte disciplinare, con le modalità previste, rischia di trasformare il controllo sui giudici in un meccanismo di pressione politica, minando la separazione dei poteri. Ho letto con allarme le critiche mosse da colleghe e giuristi: questa legge erode la fiducia dei cittadini nelle istituzioni e apre la porta a ingerenze indebithe. Voto NO per tutelare l'autonomia della giustizia e per non tradire i principi costituzionali che ho giurato di difendere ogni giorno nel mio studio legale.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1",
+    "N5"
+   ],
+   "prova": "attacco frontale all'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, io ho passato la vita a lavorare la terra e so bene che se ti cambiano le regole del gioco a metà partita, non ci si trova mai bene. Questa riforma della giustizia mi fa un po' paura. Mi hanno detto che serve per essere più efficienti, ma io diffido sempre di questi cambiamenti che promettono tutto e rischiano di togliere l'indipendenza dei giudici, che è una cosa sacra nella nostra Costituzione. Meglio stare con i piedi per terra e non rischiare di indebolire le garanzie che abbiamo. Voto NO, per prudenza e per rispetto di ciò che ci siamo costruiti.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischiano di togliere l'indipendenza dei giudici"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, la giustizia è un mondo che non mi tocca e non ho mai studiato queste cose. Non guardo i telegiornali e non mi interessa la politica, preferisco stare sui social a vedere i video su TikTok. Votare per me è solo un obbligo noioso, quindi stavolta non mi presento alle urne.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non mi interessa la politica"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, io sono una che guarda solo le bollette e mi diverto un po' sui social, non mi intendo di politica. Ma stavolta ho sentito parlare con Andrea e ho capito che c'è qualcosa che non torna. Mi hanno detto che questa fretta di approvare la riforma è solo un tranello per far stare tutti zitti e alzare l'astensionismo. Poi, la cosa che mi ha fatto riflettere di più è che separando il disciplinare dall'operativo si indebolisce l'indipendenza della magistratura. Se la giustizia non è indipendente, non è giustizia. Meglio stare alla larga e votare NO, così evitiamo di fare il gioco di chi vuole cambiare le regole a nostro discapito.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "separando il disciplinare dall'operativo si indebolisce l'indipendenza"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come grafica, apprezzo l'ordine e la chiarezza, ma questa riforma mi preoccupa. Ho seguito la discussione con attenzione e mi sono convinta che separare le carriere, pur promettendo efficienza, metta a rischio l'indipendenza della magistratura. È un valore costituzionale fondamentale che non possiamo compromettere, nemmeno di fronte alla lentezza del sistema. Non posso votare SI.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "metta a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero convinto che la separazione delle carriere fosse solo una questione di efficienza e ordine, come sostenevano i miei contatti di centro e mia moglie. Ma ho cambiato idea leggendo le analisi più approfondite e ascoltando le voci di chi la magistratura la vive ogni giorno. L'urgenza del referendum a marzo non mi sembra più una necessità tecnica, ma un calcolo politico di Meloni per distogliere l'attenzione dai risarcimenti ai migranti e dal rischio per il suo consenso. Le parole di Nicola Gratteri e di Loredana, mia amica, mi hanno fatto capire che non si tratta di modernizzare, ma di 'smantellare' l'indipendenza della magistratura, esponendo i PM a pressioni politiche come negli USA. Non posso votare Sì per una riforma che umilia la giurisdizione e mette a rischio lo Stato di diritto, anche se mi piaceva l'idea di un'amministrazione più snella. La fretta è sospetta, i rischi costituzionali sono reali.",
+   "fiducia": 0.9,
+   "codici": [
+    "N3",
+    "X1"
+   ],
+   "prova": "calcolo politico di Meloni"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non me ne frega niente di queste cose. Sono 23 anni, vivo di corsa tra le strade di Roma e quando ho tempo libero vado ai concerti o sto con gli amici, non leggo le Gazzette Ufficiali. La politica mi lascia freddo, tanto poi le cose non cambiano mai per gente come me. Non ho idea di cosa ci sia scritto in quella legge, non ho tempo di informarmi e non ho voglia di perdere ore a studiare testi giuridici. Quindi non vado a votare, è la mia scelta.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "La politica mi lascia freddo, tanto poi le cose non cambiano mai"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Onestamente, la politica non mi interessa e non vado quasi mai a votare, ma questa volta ho sentito parlare della cosa al lavoro. C'è chi dice che separando i ruoli si fa prima, ma a me sembra il contrario: più burocrazia e più lentezza. Io faccio l'apprendista meccanico e vedo come funziona la pratica, se si crea un altro livello di controllo o una commissione separata, rischiano solo di bloccare tutto e rendere la vita più dura a chi lavora sul campo, come i rider o noi tecnici. Meglio non complicare le cose con riforme che non capisco bene ma che sento come un peso in più.",
+   "fiducia": 0.85,
+   "codici": [
+    "X2"
+   ],
+   "prova": "più burocrazia e più lentezza"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un commercialista e conosco bene il valore della certezza del diritto e dell'efficienza. Dopo aver seguito la discussione, sono convinto che questa riforma non porti gli investimenti reali che servono al sistema, ma crei solo una giustizia a due velocità. La separazione delle carriere, lungi dall'essere una garanzia, rischia di trasformare l'indipendenza della magistratura in un privilegio di casta e in una subordinazione politica. Non voto per una riforma strutturale che vedo come discutibile e potenzialmente pericolosa per l'equilibrio dei poteri.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "crei solo una giustizia a due velocità"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava nulla di politica, pensavo solo alle mie bollette e a stare lontana dai post di Loredana ed Elisa che parlavano solo di questo. Ma dopo aver letto bene e aver parlato con Elisa, mi sono resa conto che questa riforma non è solo burocrazia. Separare le carriere significa che i giudici potrebbero avere paura di fare le loro scelte se sanno che il loro futuro dipende da chi ha il potere politico. Io lavoro in Comune, conosco il valore dell'indipendenza e della lentezza giusta per fare le cose bene. Se togliamo questa indipendenza, perdiamo una garanzia fondamentale per tutti noi cittadini. Meglio una giustizia lenta ma libera, piuttosto che una veloce ma controllata. Per questo voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "giudici potrebbero avere paura... futuro dipende da chi ha il potere politico"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un commerciante di Bergamo, ho 60 anni e ho sempre seguito la politica con cautela, ma questa volta la questione mi tocca da vicino. Ho parlato con i miei amici Michele e Dario e abbiamo riflettuto bene: separare le carriere dei magistrati significa creare due categorie, una di 'prima' e una di 'seconda', e questo è un rischio concreto per l'indipendenza della magistratura. Preferisco un sistema che sia lento ma garantista, che tuteli lo Stato di Diritto, piuttosto che uno che prometta efficienza ma che potrebbe diventare politicizzato. Non voglio correre il rischio di indebolire le garanzie che abbiamo costruito negli anni. Per questo voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "creare due categorie... rischio concreto per l'indipendenza"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero tentata dal SI perché, come barista, odio quando le cose sono lente e caotiche; l'idea di una giustizia più efficiente e certa del diritto mi sembrava sensata, soprattutto con la mia simpatia per Fratelli d'Italia. Però, parlando con Alessia, mi ha fatto riflettere sul fatto che separare le carriere potrebbe creare una casta di magistrati 'superiori' e lasciare i giovani in una precarietà ancora più grande, proprio come quella che vivo io a Milano. Non voglio che la giustizia diventi un privilegio per pochi o che peggiori le condizioni di chi inizia la carriera. Alla fine, la diffidenza verso le conseguenze sociali ha vinto sulla promessa di efficienza.",
+   "fiducia": 0.85,
+   "codici": [
+    "X2",
+    "X3"
+   ],
+   "prova": "odio quando le cose sono lente e caotiche"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come impiegata comunale e cittadina che segue la politica solo quando i temi mi toccano da vicino, ho studiato bene la proposta. Inizialmente ero aperta al cambiamento, ma ora ho sviluppato una forte riserva. La separazione delle carriere rischia di compromettere l'indipendenza della magistratura, trasformando la giustizia in un servizio politicizzato. Inoltre, genera una grande incertezza economica, specialmente per i precari del settore. Non posso votare SI.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischia di compromettere l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio pensavo che separare le carriere fosse solo una questione tecnica per fare prima e avere ordine, come quando si mettono a posto gli attrezzi in fabbrica. Ma poi ho capito che non è così semplice. Se il Pubblico Ministero dipende dall'esecutivo, diventa come un capo che ti dice cosa fare, un 'super-poliziotto' senza controlli. L'efficienza non vale se perdiamo lo Stato di diritto e la democrazia. Meglio avere un sistema lento ma giusto, piuttosto che uno veloce ma controllato dai politici. Per questo voto NO.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "Meglio avere un sistema lento ma giusto, piuttosto che uno veloce ma controllato dai politici."
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un'operaia tessile, la mia vita è fatta di turni e bollette che salgono ogni mese. Non sono un esperto di diritto, ma ho imparato a diffidare quando parlano di 'efficienza' a scapito delle regole. Questa riforma sulla giustizia mi fa pensare a come gestiscono le fabbriche: tagliano i costi e si dimenticano che senza regole chiare e indipendenti, i più deboli finiscono sempre per pagare. Ho paura che questa 'Alta Corte' serva a proteggere chi comanda e non a garantire giustizia per tutti. Con le cose che costano tanto, non posso permettermi di rischiare che si indebolisca lo Stato di Diritto. Voto NO per prudenza e per non fidarmi di chi promette efficienza ma cambia le regole del gioco.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "Ho paura che questa 'Alta Corte' serva a proteggere chi comanda"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardi, io non mi intendo di queste cose complicate che dicono al telegiornale, ma quando si parla di cambiare le regole del gioco, specialmente quando riguardano chi deve far rispettare la legge, mi viene da diffidare. Io ho passato la vita a fare l'infermiera, a vedere come funziona il mondo reale, e so che quando si toglie l'equilibrio e si creano nuove gerarchie senza controlli chiari, alla fine sono i soliti a soffrire. Mi hanno detto che questa riforma toglie indipendenza e crea caos, e a me il caos non mi piace proprio. Meglio stare con quello che si conosce, anche se non è perfetto, piuttosto che rischiare di perdere la sicurezza di quello che c'è ora. Non voto SI.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X3"
+   ],
+   "prova": "Mi hanno detto che questa riforma toglie indipendenza"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero scettica, ma dopo averci pensato bene mi sono resa conto che la fretta con cui spingono questa riforma è sospetta. Sembra un tranello per farci stare zitti e alzare l'astensionismo. La separazione delle carriere, come la stanno proponendo, rischia di indebolire l'indipendenza della magistratura invece di migliorarla. Meglio non correre rischi e votare NO per mantenere la prudenza.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischia di indebolire l'indipendenza della magistratura"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Guardi, io di queste cose non ci capisco molto e non mi ci metto mai. Sono una che ha passato la vita a insegnare e ora goda la pensione, ma la politica e le leggi complicate non mi interessano. Non vado a votare da anni, tanto per me è solo un impegno che non sento mio. Meglio stare alla larga.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "la politica e le leggi complicate non mi interessano"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, io sono una che non sta a leggere le Gazzette Ufficiali o a seguire le chiacchiere dei politici in TV, ma questa storia della separazione delle carriere mi suona male. Se stacchi il Pubblico Ministero dal resto della magistratura, rischi di trasformarlo in un super-poliziotto che dipende dall'esecutivo, cioè dal governo di turno. Io preferisco un sistema che forse è lento e macchinoso, ma che resta imparziale e indipendente, piuttosto che uno efficiente ma politicizzato. Non voglio che la giustizia dipenda dai favori di chi comanda oggi. Quindi, no, non la apro.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero convinto che la riforma di Fratelli d'Italia fosse necessaria per togliere il potere ai giudici di sinistra, ma dopo aver parlato con il babbo e con Noemi, ho capito che c'è una trappola. Creare l'Alta Corte Disciplinare significa permettere ai politici di controllare chi punisce i magistrati. Se vincono loro, possono licenziare o punire chi non pensa come loro. Non voglio che la giustizia diventi un giocattolo del governo. Meglio un sistema imperfetto ma indipendente che uno dove il potere politico decide chi va in galera e chi no. Quindi voto NO, per tutelare l'indipendenza della magistratura.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come insegnante di liceo, ho passato anni a spiegare ai miei studenti il valore dello Stato di Diritto e l'importanza di una magistratura indipendente, libera da pressioni politiche o gerarchiche eccessive. Questa riforma, con l'istituzione di un'Alta Corte disciplinare che sembra più un organo di controllo politico che di garanzia, mi preoccupa profondamente. Ho seguito la discussione con scetticismo: sembra un'operazione per indebolire i magistrati invece di tutelare i cittadini. Non posso votare SI per una modifica costituzionale che, a mio avviso, compromette l'equilibrio dei poteri e la nostra democrazia. La mia disillusione verso queste manovre politiche mi porta a respingere il testo.",
+   "fiducia": 0.9,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Ho votato NO. Come ex insegnante, ho sempre creduto che la giustizia debba essere lenta ma giusta, non veloce come una catena di montaggio. Valentina Longo mi ha convinto: c'è il rischio concreto che questa 'efficienza' messa in piedi da Roma comprometta l'indipendenza dei giudici, rendendoli dipendenti dal potere politico. A 79 anni, ho visto troppe promesse non mantenute. Meglio la prudenza costituzionale che la fretta di chi vuole solo apparire efficiente. Diffido di entrambe le parti, ma questa volta il rischio per le garanzie individuali è troppo alto.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come farmacista, ho imparato che la sicurezza e l'equilibrio sono fondamentali: non si toccano i pilastri strutturali senza conseguenze gravi. La separazione delle carriere, pur promettendo efficienza, rappresenta un rischio concreto per l'indipendenza della magistratura e per la democrazia stessa. Non posso votare a favore di una riforma che minaccia questi principi costituzionali, preferisco mantenere lo status quo che garantisce le garanzie esistenti.",
+   "fiducia": 0.9,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come avvocato e cittadino che segue la politica con cautela, ho valutato attentamente il testo. Sebbene comprenda l'esigenza di snellire i tempi processuali, la separazione delle carriere e l'istituzione di questa Alta Corte rischiano di compromettere l'indipendenza della magistratura, introducendo un controllo politico indiretto che temo sia inaccettabile per le garanzie costituzionali. La mia diffidenza verso questa riforma si è rafforzata: non posso votare SI.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, la giustizia è un argomento che mi lascia completamente indifferente. Sono un farmacista, ho i miei pazienti e la mia vita, e non ho mai seguito con attenzione le discussioni parlamentari su queste riforme. Non mi sento preparato per giudicare se questa 'Alta Corte disciplinare' sia una buona idea o meno, e non ho mai avuto l'abitudine di informarmi a fondo su questi temi tecnici. Visto che non mi interessa la politica e che non ho le competenze per valutare l'impatto di questa legge, preferisco non partecipare al voto. Mi limito a seguire il calcio e a stare alla larga dai dibattiti politici.",
+   "fiducia": 0.95,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come avvocata e cittadina che segue la politica con prudenza, non posso che esprimere il mio voto contrario. La mia diffidenza iniziale verso le polemiche si è trasformata in una ferma opposizione tecnica dopo aver ascoltato le riflessioni di colleghi e familiari, anch'essi giuristi. La riforma promette efficienza, ma a costo di erodere l'indipendenza della magistratura, un pilastro costituzionale che non può essere sacrificato sull'altare della 'celerità' politica. La complessità del sistema giuridico richiede garanzie, non semplificazioni demagogiche. Non posso approvare un testo che mette a rischio l'equilibrio dei poteri, indipendentemente dalle intenzioni dichiarate.",
+   "fiducia": 0.95,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ex insegnante e persona che tiene molto all'ordine e alle regole, ho seguito con attenzione questa riforma. All'inizio ero scettica, ma leggendo bene i testi e ascoltando le argomentazioni tecniche, mi sono convinta che il rischio è troppo alto. Non si può confondere l'efficienza con la rimozione delle garanzie costituzionali fondamentali. L'indipendenza della magistratura è un pilastro dello Stato di Diritto che non va compromesso per una presunta celerità. Non posso votare SI su qualcosa che mina le basi della nostra democrazia.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "indipendenza della magistratura non va compromesso per una presunta celerità"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non mi interessa granché. Non guardo i telegiornali e la politica non mi tocca, preferisco seguire il calcio e fare il mio lavoro da estetista. Non vado mai a votare perché non ho voglia di perdere tempo per cose che non capisco bene o che non mi riguardano direttamente. Quindi mi astengo.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "politica non mi tocca"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non seguo molto queste questioni di diritto costituzionale e riforme della giustizia. Sono un ingegnere, mi occupo di calcoli e strutture, non di politica. Ho visto che se ne parla tanto, ma alla fine non mi sento di avere un'opinione formata su questi testi complessi. Preferisco dedicare il mio tempo a cucinare qualcosa di buono per cena piuttosto che studiare le implicazioni di questa legge. Quindi, non vado a votare.",
+   "fiducia": 0.95,
+   "codici": [
+    "X0"
+   ],
+   "prova": "non seguo molto queste questioni di diritto costituzionale"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero tentata, pensavo che separare i ruoli avrebbe reso le cose più chiare e veloci, come volevo io che lavoravo sodo in fabbrica. Ma Valentina, che ne sa più di me di queste cose, mi ha aperto gli occhi. Mi ha fatto capire che separare la carriera da quella giudiziaria non è efficienza, è un rischio per la nostra indipendenza e per le libertà che abbiamo conquistato. Non posso votare a favore di qualcosa che mette in pericolo l'indipendenza della magistratura. Quindi, per sicurezza e per non correre rischi inutili, voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "mette in pericolo l'indipendenza della magistratura"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, di queste riforme costituzionali e di quella 'Alta Corte' non ne capisco molto e non mi ci perdo. Io sono una che guarda la strada, non i giornali o le tv, e preferisco passare il mio tempo libero a pianificare le prossime tappe in camper con la mia amica Federica. La politica mi lascia indifferente e spesso non vado nemmeno a votare alle elezioni normali, figuriamoci per un referendum tecnico che non mi riguarda direttamente nella mia vita di tutti i giorni. Quindi mi astengo.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "La politica mi lascia indifferente"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come avvocata e cittadina che segue la politica con cautela, non posso che confermare la mia diffidenza verso questa riforma. Leggere le argomentazioni di colleghi magistrati e giuristi come Roberta Conti mi ha convinto: il rischio non è solo burocratico, ma costituzionale. Sostituire i meccanismi di autogoverno con una Alta Corte disciplinare di nomina politica significa mettere a rischio l'indipendenza della magistratura, pilastro dello Stato di Diritto. L'efficienza invocata dai sostenitori non giustifica il prezzo di una politicizzazione che potrebbe erodere le garanzie per tutti noi. Non voto per un cambiamento che preferisco evitare.",
+   "fiducia": 0.9,
+   "codici": [
+    "N5",
+    "X1"
+   ],
+   "prova": "Alta Corte disciplinare di nomina politica"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava granché, preferivo occuparmi delle mie pratiche e delle bollette, ma dopo aver approfondito la questione mi sono convinta che separare le carriere dei magistrati sia un errore grave. Rischiamo di perdere l'indipendenza della magistratura e di introdurre logiche di controllo politico che minano lo Stato di Diritto. Meglio restare sulla certezza delle garanzie che già abbiamo piuttosto che rischiare tutto per una presunta efficienza.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "N1"
+   ],
+   "prova": "Rischiamo di perdere l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, io ho passato la vita a fare il commerciante e conosco bene quanto sia importante avere regole chiare e un sistema che funzioni senza intoppi. All'inizio, onestamente, pensavo che questa riforma potesse servire a snellire le cose, perché è vero che la giustizia a volte è lenta e questo fa male a tutti. Ma poi ho ascoltato bene le spiegazioni e mi sono reso conto che non è solo una questione di efficienza. Separare le carriere dei magistrati e creare questa Alta Corte disciplinare mi sembra un modo per mettere le mani sull'indipendenza della magistratura. Io sono un uomo moderato, non sono di parte, ma quando si tratta di Stato di Diritto e di come vengono giudicate le persone, non posso stare zitto. Temiamo che questa riforma, invece di velocizzare i processi, crei solo più burocrazia e rischi per l'equità. Meglio restare su quello che c'è, pur con i suoi difetti, piuttosto che rischiare di indebolire le garanzie fondamentali. Quindi, per me, la risposta è NO.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "N5",
+    "X2"
+   ],
+   "prova": "mettere le mani sull'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come insegnante e cittadino, non posso che esprimere la mia profonda preoccupazione per questa riforma. L'indebolimento dell'indipendenza della magistratura è un passo indietro pericoloso per lo Stato di diritto. La creazione di questa Alta Corte disciplinare rischia di essere uno strumento di strumentalizzazione politica, minando la separazione dei poteri che abbiamo faticosamente costruito. Non è una questione di efficienza, ma di democrazia. Voto NO per tutelare l'autonomia della giustizia.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "N5"
+   ],
+   "prova": "indebolimento dell'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un cuoco, non un giurista, ma vedo che si perde tempo a cambiare le regole del gioco invece di risolvere i problemi veri come gli affitti che mi mangiano lo stipendio e le bollette. Questa riforma sulla giustizia sembra una manovra pericolosa che sacrifica l'indipendenza per un'efficienza che non si vede. La politica ci distrae dalle emergenze economiche reali. Non mi fido di questi cambiamenti strutturali che promettono efficienza ma rischiano di compromettere l'equità. Meglio concentrarsi su ciò che conta per la vita quotidiana.",
+   "fiducia": 0.85,
+   "codici": [
+    "X3"
+   ],
+   "prova": "Non mi fido di questi cambiamenti strutturali"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, la politica e le riforme istituzionali non sono il mio pane quotidiano. Sono un'insegnante e passo la maggior parte del tempo tra i banchi di scuola o pianificando le prossime tappe del nostro camper per la prossima vacanza. Mi trovo meglio a parlare di itinerari e di vita all'aria aperta che di ordinamento giurisdizionale o Alta Corte disciplinare. Non mi sento preparata a esprimere un'opinione informata su questioni così tecniche e complesse, e spesso preferisco non partecipare a questi scrutini quando non mi sentivo coinvolta direttamente. Per me i social e il tempo libero servono a staccare la spina, non a fare politica.",
+   "fiducia": 0.9,
+   "codici": [
+    "X0"
+   ],
+   "prova": "Non mi sento preparata a esprimere un'opinione informata"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ex dirigente e cittadina che ha sempre seguito la politica con attenzione, non posso che esprimere il mio più profondo dissenso. Questa riforma non è affatto un atto di 'pulizia' o di eliminazione dei privilegi, come ci viene ripetuto in loop dai sostenitori, ma un pericoloso attacco all'indipendenza della magistratura. La definizione dell'autonomia giudiziaria come 'privilegio di casta' è un'offesa alla nostra Costituzione e ai principi di legalità su cui si basa lo Stato di diritto. Inoltre, la celebrazione di questa iniziativa da parte di Forza Italia, che include figure come Antonio Lattanzi, già arrestato per reati gravi, mina completamente la credibilità morale di chi parla di 'giudice terzo ed equidistante'. È evidente il rischio di una politicizzazione del sistema giudiziario che toglierà garanzie ai cittadini comuni, lasciando solo i potenti al riparo. Voto NO per difendere l'indipendenza della magistratura e la democrazia.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1"
+   ],
+   "prova": "attacco all'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guarda, io ho sempre votato Fratelli d'Italia e mi fido di Fratelli, ma questa volta mi fermo. Ho parlato con mio figlio Antonio, che ne capisce di queste cose, e con i miei amici. Mi hanno spiegato che questa riforma non è solo lenta, come dicevo io all'inizio, ma che c'è un problema serio di costituzionalità. L'Anm e il Comitato per il No dicono che non si può fare un referendum prima del 30 gennaio 2026 come previsto dalle regole, e che separare le carriere dei magistrati rischia di mettere in pericolo l'indipendenza della giustizia, non di migliorarla. Io sono un vecchio agricoltore, non un giurista, ma quando sento che c'è il rischio di fare una cosa sbagliata o illegale, non ci sto. Meglio stare zitti e aspettare che si sistemino le cose per bene, piuttosto che approvare una legge che potrebbe essere bocciata dai giudici o che crea più guai di quelli che risolve. Quindi, per prudenza e rispetto delle regole, voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "N1",
+    "X1"
+   ],
+   "prova": "rischio di fare una cosa sbagliata o illegale"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guardate, io ho lavorato in fabbrica tutta la vita e so che quando le cose si fanno con la fretta, poi si rompono. Ho letto le critiche dei magistrati e hanno ragione: separare le carriere non è solo una questione di efficienza, come dice mio marito quando è convinto, ma un rischio vero per l'indipendenza della giustizia. Se la giustizia diventa un affare di partito o di efficienza a tutti i costi, perdiamo le garanzie. Mio marito oscilla troppo, prima dice sì per l'ordine, poi teme lo smantellamento, e questa confusione mi fa capire che non è una riforma solida. Meglio stare alla larga e votare no per non correre rischi inutili.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "separare le carriere non è solo una questione di efficienza... rischio vero per l'indipendenza"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Guarda, io non mi occupo di queste cose. Sono cose che fanno i politici e i giuristi, non mi ci trovo. Io uso WhatsApp solo per mandare le immagini della mia città e le preghiere, e forse qualche meme. Non ho mai capito bene queste riforme e poi, onestamente, non mi va di perderci tempo. Meglio stare alla larga, tanto alla fine non cambia nulla per la vita di tutti i giorni. Io non voto, punto e basta.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non mi va di perderci tempo. Meglio stare alla larga"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava molto, ma dopo aver parlato con Marta e Ivan ho cambiato idea. Mi hanno fatto riflettere sul fatto che separare le carriere dei magistrati potrebbe esporli a pressioni politiche, togliendo quella indipendenza che è fondamentale. Lavorando in ambito pubblico, so bene quanto sia importante che chi applica le regole non sia controllato da chi le fa. Non voglio rischiare che la giustizia diventi uno strumento di potere. Quindi, per prudenza e per tutelare l'indipendenza, voto NO.",
+   "fiducia": 0.8,
+   "codici": [
+    "X1"
+   ],
+   "prova": "togliendo quella indipendenza che è fondamentale"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero convinto che la separazione delle carriere fosse solo una questione tecnica per migliorare l'efficienza e bilanciare i poteri, come mi piace fare da tecnico informatico: ottimizzare i processi. Ma leggendo i post di Serena, che lavora in prima linea come infermiera, e sentendo le dichiarazioni di Zangrillo, ho capito che c'è dell'altro. Non è efficienza, è politica pura. Forza Italia sta usando questa riforma come una 'battaglia identitaria' per indebolire la magistratura e trasformare i PM in super-poliziotti dipendenti dall'esecutivo. È un attacco all'indipendenza della giustizia, non una riforma utile. Non posso votare SI per una riforma che serve solo a vincere le elezioni e a politicizzare un potere che deve restare indipendente. Voto NO per tutelare l'indipendenza della magistratura.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "N3"
+   ],
+   "prova": "Voto NO per tutelare l'indipendenza della magistratura."
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Guardi, io di queste cose non ci capisco molto e non mi ci metto mai dentro. Sono un artigiano, ho passato la vita a lavorare con le mani, non a fare i giudici o i politici. Poi, onestamente, la politica mi sta sulle scatole e spesso non vado nemmeno alle elezioni perché penso che cambierà poco o nulla. Meglio che mi tengo fuori da questi pasticci costituzionali e vado a vedere se c'è il Giro d'Italia in TV.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "la politica mi sta sulle scatole"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Ho votato NO. Come ex artigiana so bene che per fare le cose bene servono regole chiare e chiarezza, ma qui si tocca un nervo scoperto: l'indipendenza della magistratura. Mio figlio Giuseppe e alcuni amici esperti mi hanno spiegato che questa riforma, invece di rendere tutto più efficiente, rischia di indebolire quel pilastro fondamentale della nostra democrazia. Non posso accettare che si metta in discussione l'autonomia dei giudici per un presunto miglioramento burocratico. Meglio restare sulla difensiva che rischiare di perdere una garanzia storica.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1"
+   ],
+   "prova": "l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero convinto che la separazione delle carriere fosse la soluzione per togliere ai giudici il potere di fare politica e restituire centralità ai politici eletti. Credevo fosse un atto di responsabilità civica per distinguere l'efficienza dalle garanzie. Ma dopo aver ascoltato con attenzione le argomentazioni di Lucia, le testimonianze dirette dei magistrati e, soprattutto, la ferma condanna di don Ciotti, ho cambiato idea. Ho capito che questa riforma non serve a migliorare la giustizia, ma a indebolire un pilastro fondamentale dello Stato di Diritto: l'indipendenza della magistratura. Non si può attaccare i giudici con una campagna d'odio per poi dire di voler difendere la legalità. Il rischio è che la politica si ingerisca nelle indagini, creando un sistema politicizzato. Non posso votare Sì a una riforma che mina le garanzie costituzionali che ho sempre difeso come impiegato e cittadino. Per questo voto NO.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1"
+   ],
+   "prova": "indebolire un pilastro fondamentale... l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ex insegnante, ho sempre creduto che l'indipendenza della magistratura sia il pilastro fondamentale dello Stato di Diritto. La separazione delle carriere, introdotta da questa riforma, mi sembra un rischio concreto per l'autonomia dei giudici, esponendoli a pressioni esterne e gerarchiche che potrebbero compromettere la loro imparzialità. Preferisco la prudenza e la tutela delle garanzie costituzionali esistenti all'efficienza di un sistema che potrebbe diventare troppo politicizzato. Non posso votare SI.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1"
+   ],
+   "prova": "indipendenza della magistratura sia il pilastro fondamentale"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un medico di base, ho visto in questi anni come la giustizia italiana sia un labirinto di ritardi che danneggia i cittadini. Inizialmente, come molti, pensavo che la separazione delle carriere fosse l'unica via per snellire le pratiche e togliere potere ai magistrati inquirenti. Ma riflettendoci bene, specialmente leggendo le critiche più approfondite, mi sono convinto che questo intervento rischi di intaccare un pilastro fondamentale: l'indipendenza della magistratura. Se si separano le carriere, si crea un rischio concreto che i pubblici ministeri diventino più dipendenti dal potere politico o esecutivo, perdendo quella necessaria autonomia per indagare senza timori. Meglio una giustizia più lenta, ma libera e indipendente, piuttosto che una giustizia veloce ma controllata. Non posso votare SI su una riforma che mette a rischio questo equilibrio costituzionale.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischio concreto che i pubblici ministeri diventino più dipendenti dal potere politico"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un commercialista e conosco bene il valore della certezza del diritto e delle regole. Anche se la lentezza della giustizia è un problema reale che mi tocca da vicino nella mia professione, non posso accettare una riforma che metta a rischio l'indipendenza della magistratura, che è un pilastro costituzionale. Ho seguito il dibattito e, pur riconoscendo le argomentazioni sull'efficienza, la mia diffidenza è aumentata: temo che questa modifica possa compromettere l'equilibrio delle istituzioni. Inoltre, la linea del mio partito, Fratelli d'Italia, è di cautela su questo punto. Per tutelare le garanzie fondamentali, voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N6"
+   ],
+   "prova": "temo che questa modifica possa compromettere l'equilibrio delle istituzioni"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Non posso votare SI. Questa riforma è una manovra politica per indebolire l'indipendenza della magistratura e creare un ordine giudiziario politicizzato. La separazione delle carriere non serve a migliorare l'efficienza, ma a rendere i giudici più 'malleabili' e soggetti alle pressioni del potere politico. La lentezza dei processi è spesso una prudenza necessaria per evitare abusi, non un difetto da correggere con interventi di parte. Non voglio un sistema dove la giustizia dipende dagli umori del governo di turno.",
+   "fiducia": 0.9,
+   "codici": [
+    "N3",
+    "X1"
+   ],
+   "prova": "manovra politica per indebolire l'indipendenza"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non mi sento di esprimere un'opinione su una riforma così tecnica e complessa. Come insegnante ho poco tempo e le mie energie le dedico alla mia classe e alla mia famiglia, non allo studio approfondito di testi costituzionali. Non seguo la politica da vicino e spesso non vado nemmeno a votare alle elezioni politiche perché mi sembra che non cambi molto nella vita di tutti i giorni. Preferisco usare i social per svago e restare in contatto con gli amici, ma su temi giuridici mi sento troppo ignorante per avere una posizione ferma. Quindi, per questa volta, mi astengo.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non vado nemmeno a votare... perché mi sembra che non cambi molto"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non mi interessa granché. Sono un medico di base, passo la giornata a curare la gente e la sera preferisco rilassarmi leggendo o pensando alle mie prossime gite in camper con gli amici Fabio e Ivan. La politica e le riforme costituzionali mi lasciano indifferenti, non ho mai seguito bene queste questioni e tanto meno vado a votare. Non mi sento in grado di giudicare se questa legge sulla giustizia sia giusta o sbagliata, quindi mi astengo. Per me è solo un altro giorno di lavoro e poi via verso la libertà del camper.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "La politica e le riforme costituzionali mi lasciano indifferenti"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava proprio, sono uno che guarda il proprio orticello e pensa allo stipendio che non cresce da anni. Ma leggendo bene, mi sono reso conto che questa riforma sulla separazione delle carriere non è una questione di efficienza, come dicono loro, ma tocca un nervo scoperto: l'indipendenza della magistratura. Se si crea un sistema dove l'ascesa dipende da logiche che potrebbero essere influenzate dall'esterno, rischiamo di avere una giustizia di parte. Io, che di politica me ne frego, su questo punto non posso che dire no: meglio un sistema imperfetto ma indipendente, piuttosto che uno efficiente ma controllato.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come infermiera e cittadina che segue con attenzione la politica, non posso che esprimere il mio voto contrario. La diffidenza che ho nutrito verso questa riforma si è ormai trasformata in una certezza: il testo approvato rischia di politicizzare l'istituzione giudiziaria, indebolendo i controlli e l'indipendenza della magistratura. Le dichiarazioni del Ministro Patuanelli, che ammette il rischio che il Pubblico Ministero diventi un accusatore orientato alla condanna anziché alla ricerca della verità, sono allarmanti. Inoltre, l'episodio della censura dell'incontro in carcere dimostra chiaramente la volontà di limitare il dibattito democratico e di gestire la giustizia con logiche di parte. Non accetto l'invito al 'confronto civile' se dietro c'è una battaglia politica strumentale che minaccia lo Stato di diritto. Voto NO per tutelare l'equità e l'imparzialità del nostro sistema giuridico.",
+   "fiducia": 0.95,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischio di politicizzare l'istituzione giudiziaria"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come dirigente e cittadina che segue la politica con attenzione, ho valutato con cautela questa riforma. Sebbene l'obiettivo di snellire i tempi processuali sia legittimo, il testo attuale rischia di compromettere l'indipendenza della magistratura, un pilastro fondamentale dello Stato di diritto. La mia diffidenza è aumentata dopo aver considerato che separare l'efficienza dall'indipendenza non è una operazione semplice e che l'istituzione di una Alta Corte disciplinare potrebbe esporre i giudici a pressioni esterne. Non posso approvare una modifica costituzionale che, nel tentativo di risolvere un problema, ne crei uno più grande riguardante le garanzie democratiche. Per questo motivo, opto per il NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N5"
+   ],
+   "prova": "rischia di compromettere l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono un cameriere, vedo ogni giorno quanto sia lenta e burocratica la giustizia per i piccoli problemi. Questa riforma non velocizza nulla, anzi, introduce l'Alta Corte Disciplinare che sembra solo un modo per controllare i magistrati e indebolire la loro indipendenza. Non risolve i miei problemi quotidiani di costi e tempi, ma mette a rischio i diritti. Per me il NO è l'unica scelta che tutela davvero l'equità.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2",
+    "N5"
+   ],
+   "prova": "introduce l'Alta Corte Disciplinare che sembra solo un modo per controllare"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non ho seguito bene la questione. Sono una semplice impiegata di banca e la giustizia è un argomento troppo complesso e lontano dalla mia vita quotidiana. Non mi interessa la politica e spesso non vado nemmeno a votare alle elezioni normali, figuriamoci a un referendum tecnico di questo tipo. Per me i social li uso solo per svago e per stare in contatto con gli amici, non per informarmi su riforme costituzionali. Quindi, non mi sento di esprimere un parere, meglio astenersi.",
+   "fiducia": 0.9,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non mi interessa la politica"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava molto, ma dopo aver seguito un po' la questione mi sono reso conto che separare la carriera dalla disciplina è un rischio concreto. Se togliamo l'autodisciplina della magistratura, apriamo la porta a un controllo politico esterno, magari attraverso quella Alta Corte disciplinare. Ho sempre votato Fratelli d'Italia perché mi fido della loro linea, ma in questo caso la paura è che si perda l'indipendenza della giustizia e che i magistrati diventino dipendenti dal potere politico. Non posso votare SI per una cosa che mette a rischio lo Stato di Diritto.",
+   "fiducia": 0.85,
+   "codici": [
+    "N5",
+    "X1",
+    "N6"
+   ],
+   "prova": "Alta Corte disciplinare. Ho sempre votato Fratelli d'Italia"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Come ex infermiera ho sempre creduto nell'importanza di tutele solide e indipendenti, e vedo con grande preoccupazione questa riforma. Leggo i post del Partito Democratico e mi confermano quello che temevo: la separazione delle carriere non risolve i veri problemi strutturali della giustizia, ma espone i magistrati a un rischio concreto di controllo politico. Non posso votare SI per una legge che, secondo me, indebolisce l'indipendenza della magistratura invece di migliorarla davvero.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N7"
+   ],
+   "prova": "espone i magistrati a un rischio concreto di controllo politico"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, di queste cose non me ne intendo e non mi ci perdo. Io passo le giornate in autostrada, tra una consegna e l'altra, e quando arrivo a casa ho solo voglia di starmene tranquilla. La politica e le riforme della giustizia mi lasciano completamente indifferente, non ho mai seguito bene la questione e non ho nessuna intenzione di perdere tempo a informarmi per un referendum che non mi riguarda direttamente nella mia vita di tutti i giorni. Quindi non vado a votare.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "La politica e le riforme della giustizia mi lasciano completamente indifferente"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Guarda, io ho passato la vita a lavorare con le mie mani, ho sempre creduto che le regole devono essere chiare e che chi deve giudicare deve essere libero da pressioni. All'inizio, onestamente, pensavo che questa riforma portasse ordine e velocità, come quando si ripara una macchina guasta. Ma poi ho riflettuto, ho parlato con i miei amici e ho letto con calma. Mi sono accorto che separare le carriere e creare questa Alta Corte disciplinare non è solo burocrazia: è un rischio vero per l'indipendenza dei magistrati. Se chi giudica ha paura di perdere il posto per decisioni scomode, non è più uno Stato di Diritto. Meglio un sistema che va piano ma è giusto e imparziale, piuttosto che uno veloce ma controllato da altri interessi. Io non posso votare SI, perché metto la libertà di giudicare sopra la semplice efficienza.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "rischio vero per l'indipendenza dei magistrati"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non mi interessava proprio, facevo la solita vita da cameriera e seguivo solo il calcio, ma poi ho capito che questa riforma è un rischio serio. Separare le carriere dei magistrati significa creare due categorie e questo mette a rischio l'indipendenza della magistratura e lo Stato di Diritto. Meglio un sistema lento ma imparabile, che non uno veloce ma potenzialmente di parte. Quindi voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "X2"
+   ],
+   "prova": "mette a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero convinta che la separazione delle carriere servisse solo a snellire i tempi e a togliere privilegi, come mi avevano fatto capire alcuni articoli tecnici. Però, leggendo le preoccupazioni di mia madre e sentendo le argomentazioni di un avvocato che ha visto sulla pelle i danni della lentezza, ho capito che il rischio non è solo burocratico. C'è il timore fondato che questa riforma apra la porta a ingerenze politiche dirette nella magistratura, minando l'indipendenza che dovrebbe essere garantita dalla Costituzione. Non posso votare SI se significa mettere a rischio l'equilibrio dei poteri e l'indipendenza dei giudici, anche se capisco l'esigenza di efficienza.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono una persona che segue la politica solo quando mi tocca da vicino, ma questa volta la questione mi riguarda molto. Ho sempre pensato che la magistratura debba essere indipendente, è un principio fondamentale. Con il tempo ho capito che separare le carriere e creare questa Alta Corte potrebbe portare a un controllo politico troppo forte, mettendo a rischio quella libertà di giudizio che ci serve. Non voglio correre il rischio che la giustizia diventi strumento di parte. Meglio mantenere lo status quo, anche se non è perfetto, piuttosto che aprire la porta a interferenze.",
+   "fiducia": 0.85,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Caro, dopo averci pensato su e ascoltato anche le ragioni di Giorgio e di Landini, non posso che votare NO. All'inizio credevo che la separazione delle carriere fosse solo una questione di efficienza, ma ora ho capito che il rischio è troppo alto. Non voglio che la politica possa influenzare i magistrati o usare la disciplina come arma di ricatto. L'indipendenza della magistratura è un pilastro della nostra Costituzione e non possiamo metterlo in discussione per una presunta efficienza che, alla fine, potrebbe solo indebolire le garanzie democratiche. Meglio mantenere l'equilibrio attuale che correre il rischio di un controllo politico.",
+   "fiducia": 0.9,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non mi interessa granché. Sono un insegnante precario, vivo di contratti brevi e la politica mi lascia freddo. Seguo il calcio e uso i social per altro, ma di queste riforme sulla giustizia non ne capisco un tubo e non ho mai seguito bene la campagna. Non vado a votare perché tanto, con la mia situazione, sento che la mia voce non cambia nulla. Preferisco stare alla larga da queste cose.",
+   "fiducia": 0.9,
+   "codici": null,
+   "prova": ""
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Ho passato una vita a fare l'infermiere, dove la fiducia e la tutela del paziente erano tutto. Oggi, a 81 anni, vedo con preoccupazione questa riforma. Separare le carriere e creare questa Alta Corte disciplinare non è una semplice efficienza, come vorrebbero far credere; è un rischio concreto per l'indipendenza della magistratura e per lo Stato di Diritto. La mia esperienza mi ha insegnato che le garanzie non sono ostacoli, ma protezioni essenziali. Non posso votare SI quando si tocca lo status costituzionale degli operatori senza una necessità reale, preferisco le riforme procedurali che non mettono a rischio le libertà. Per questo voto NO.",
+   "fiducia": 0.9,
+   "codici": [
+    "X1",
+    "N5"
+   ],
+   "prova": "rischio concreto per l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono una donna che ha lavorato in fabbrica tutta la vita e ho imparato che le regole devono essere chiare e uguali per tutti, senza favoritismi. Anche se simpatizzo per Forza Italia, in questo caso non posso votare SI. Ho letto con attenzione e ho sentito le voci di Carlo e di altri esperti che mi hanno spiegato come questa riforma indebolisca l'indipendenza della magistratura e metta a rischio lo Stato di Diritto. Per me, che ho sempre creduto nella giustizia come garante delle persone comuni, è troppo alto il rischio di creare un sistema dove i potenti hanno più potere. Meglio stare sulla difensiva e proteggere le garanzie che abbiamo, piuttosto che correre rischi inutili.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "indebolisca l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono una geometra e conosco bene il valore della chiarezza e delle regole, ma in questo caso la chiarezza amministrativa non basta a coprire i rischi concreti. Ho riflettuto molto e mi sono convinta che la separazione delle carriere non sia una semplice riforma organizzativa, ma un pericolo reale per l'indipendenza della magistratura. Temiamo che si crei una subordinazione gerarchica e un controllo politico che l'articolo 104 della Costituzione vuole evitare. Per me l'art. 104 resta un pilastro democratico fondamentale che non va smantellato. Quindi, anche se seguo la politica con cautela, su questo tema specifico la mia coscienza mi porta a votare NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "pericolo reale per l'indipendenza della magistratura"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Onestamente, la politica mi sta sulle scatole e di solito mi tengo lontano da queste cose, preferendo farmi due risate su TikTok. Però, dopo averci pensato un attimo, questa riforma sulla giustizia mi sembra un po' una presa in giro. Mi hanno fatto notare che puntano tutta sull'efficienza e sulla velocità, ma ignorano completamente come questo impatterebbe sulla stabilità economica di chi, come me e i miei amici, sta cercando di sbirciare il futuro da precario a Milano. Se il sistema diventa 'più efficiente' ma non tiene conto della realtà di chi deve viverci, allora non ha senso. Quindi, anche se non sono un esperto di costituzione, voto NO per non appoggiare una cosa che sembra ignorare le nostre difficoltà concrete.",
+   "fiducia": 0.75,
+   "codici": [
+    "X3"
+   ],
+   "prova": "la politica mi sta sulle scatole"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Onestamente, non me ne frega niente di queste cose. Non guardo i telegiornali e non seguo la politica, per me è tutto uguale. Ho un lavoro duro e penso ai miei affari, al calcio e a stare con gli amici. Non ho tempo di studiare queste leggi complicate e tanto meno vado a votare perché non vedo la differenza. Lascio fare a chi se ne intende, anche se alla fine cambia poco.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "non guardo i telegiornali e non seguo la politica"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero indecisa, ma ora ho capito che questa riforma è un pericolo reale. Anche se simpatizzo per Fratelli d'Italia, ho visto che molti esponenti del mio schieramento e figure istituzionali hanno messo in luce rischi concreti per l'indipendenza della magistratura e lo Stato di Diritto. Non posso più stare dalla parte dell'ordine se significa compromettere le garanzie fondamentali. Per questo voto NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "rischi concreti per l'indipendenza della magistratura"
+  },
+  {
+   "voto": "SI",
+   "motivazione": "All'inizio ero preoccupata che separare le carriere potesse mettere a rischio l'indipendenza dei magistrati, un valore sacro. Ma dopo averci pensato bene, capisco che è l'unica via per avere un sistema efficiente e certo. Io in ospedale vedo ogni giorno quanto sia importante che ognuno faccia il suo lavoro senza confondersi con altri ruoli. Se vogliamo giustizia veloce e chiara, dobbiamo approvare questa riforma.",
+   "fiducia": 0.75,
+   "codici": [
+    "S1",
+    "X2"
+   ],
+   "prova": "sistema efficiente e certo"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio ero incerta, pensavo che separare i ruoli potesse portare ordine, ma dopo aver riflettuto con calma, temo che questa riforma metta a rischio l'indipendenza della magistratura. Come ex insegnante, so quanto sia importante l'autonomia delle istituzioni per garantire giustizia a tutti. Non voglio correre il rischio di indebolire lo Stato di Diritto per un semplice miglioramento burocratico. Meglio stare sulla difensiva e votare NO.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1"
+   ],
+   "prova": "temo che questa riforma metta a rischio l'indipendenza della magistratura"
+  },
+  {
+   "voto": "ASTENUTO",
+   "motivazione": "Guardi, io sono un vecchio insegnante e la giustizia non è mai stata la mia materia preferita, figuriamoci se mi metto a studiare testi costituzionali così complessi. A Catania ho sempre pensato che la politica sia una cosa per altri, io preferisco stare tranquillo e godermi la pensione. Non ho mai avuto la passione di andare a votare, tanto poi le cose cambiano poco. Quindi, visto che non mi interessa e non ho voglia di perderci tempo, mi astengo.",
+   "fiducia": 0.95,
+   "codici": [
+    "X3"
+   ],
+   "prova": "le cose cambiano poco"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "All'inizio non me ne fregava nulla, sono un grafico, ho i miei giochi online e la politica mi sta sulle scatole. Ma dopo aver letto bene, mi sono reso conto che questa 'separazione delle carriere' non è una riforma pulita. Sembra tutto un trucco per mettere le mani sulla magistratura e controllare i giudici sotto mentite spoglie. Se l'efficienza è solo un pretesto per il controllo politico, allora devo dire di no. Non posso lasciare che la mia indipendenza venga compromessa, anche se di solito non vado a votare.",
+   "fiducia": 0.85,
+   "codici": [
+    "X1",
+    "N3"
+   ],
+   "prova": "controllo politico... indipendenza venga compromessa"
+  },
+  {
+   "voto": "SI",
+   "motivazione": "All'inizio ero scettica, come spesso mi capita quando sento parlare di riforme della giustizia. Ho sempre temuto che questi cambiamenti fossero solo mosse politiche per indebolire i magistrati onesti. Tuttavia, leggendo con attenzione e confrontandomi con amici come Gabriele e Giulia, ho capito che la separazione delle carriere non è un attacco, ma un modo per rendere il sistema più efficiente e meno caotico. Come ex insegnante, so bene che l'organizzazione è fondamentale per far funzionare le cose. Se questo referendum garantisce che i giudici siano più indipendenti e che ci sia un controllo disciplinare chiaro, allora è un passo avanti necessario. Non voglio blocchi inutili, voglio che la giustizia funzioni per tutti. Quindi, pur con la mia moderazione, voto SI.",
+   "fiducia": 0.75,
+   "codici": [
+    "S1",
+    "X2",
+    "X1"
+   ],
+   "prova": "separazione... rendere il sistema più efficiente"
+  },
+  {
+   "voto": "SI",
+   "motivazione": "Come impiegato di banca e cittadino che segue con attenzione la politica, ritengo che questa riforma sia necessaria per garantire maggiore efficienza e responsabilità all'interno della magistratura. L'istituzione dell'Alta Corte disciplinare rappresenta un passo avanti fondamentale per il controllo e la trasparenza, valori che ho sempre sostenuto. Dopo aver letto le riflessioni di mia moglie Barbara e dell'amica Lucia, che mi hanno ricordato l'importanza di mantenere un equilibrio istituzionale cauto ma fermo, sono convinto che il voto per il SI sia la scelta più responsabile per lo Stato di Diritto e per la nostra comunità.",
+   "fiducia": 0.85,
+   "codici": [
+    "S3",
+    "X2"
+   ],
+   "prova": "maggiore efficienza e responsabilità"
+  },
+  {
+   "voto": "NO",
+   "motivazione": "Sono una che ha sempre creduto nelle regole e nell'ordine, e dopo aver letto con attenzione, temo che questa riforma separi troppo i poteri e metta a rischio l'indipendenza della magistratura, che è un pilastro fondamentale. La lentezza dei processi è un problema serio, lo ammetto, ma non credo sia giusto politicizzare il sistema giudiziario in questo modo. Meglio mantenere le garanzie costituzionali attuali piuttosto che correre rischi concreti per lo Stato di Diritto.",
+   "fiducia": 0.85,
+   "codici": [
+    "N1",
+    "X1"
+   ],
+   "prova": "temo che questa riforma separi troppo i poteri"
+  }
+ ]
+}

@@ -6,15 +6,157 @@
 [setup] profondita' di lettura NEL DB: integrale=22 (2 slot), nessuna=34 (0 slot), titolo=49 (1 slot)
 [news] 1 notizie senza corpo integrale (0.2%): a quelle gli agenti 'integrale' vedono solo il titolo.
 [news] finestra simulata: 2025-10-30 -> 2026-03-22
-[news] 587 notizie schedulate su 280 tick (max 6/tick)
-[news] 22 notizie scartate per superamento di max_per_tick.
-  [baseline] 1/100 voti (24.4/min, ~4 min alla fine)
-  [baseline] 10/100 voti (34.4/min, ~3 min alla fine)
-  [baseline] 20/100 voti (34.5/min, ~2 min alla fine)
-  [baseline] 30/100 voti (34.6/min, ~2 min alla fine)
-  [baseline] 40/100 voti (34.8/min, ~2 min alla fine)
-  [baseline] 50/100 voti (34.4/min, ~1 min alla fine)
-  [baseline] 60/100 voti (34.5/min, ~1 min alla fine)
-  [baseline] 70/100 voti (34.9/min, ~1 min alla fine)
-  [baseline] 80/100 voti (34.7/min, ~1 min alla fine)
-  [baseline] 90/100 voti (34.9/min, ~0 min alla fine)
+[news] 522 notizie schedulate su 117 tick (max 10/tick)
+[news] 87 notizie scartate per superamento di max_per_tick.
+  [baseline] 1/100 voti (37.8/min, ~3 min alla fine)
+  [baseline] 10/100 voti (32.7/min, ~3 min alla fine)
+  [baseline] 20/100 voti (33.3/min, ~2 min alla fine)
+  [baseline] 30/100 voti (33.5/min, ~2 min alla fine)
+  [baseline] 40/100 voti (33.3/min, ~2 min alla fine)
+  [baseline] 50/100 voti (32.7/min, ~2 min alla fine)
+  [baseline] 60/100 voti (33.1/min, ~1 min alla fine)
+  [baseline] 70/100 voti (33.2/min, ~1 min alla fine)
+  [baseline] 80/100 voti (33.0/min, ~1 min alla fine)
+  [baseline] 90/100 voti (33.1/min, ~0 min alla fine)
+  [baseline] 100/100 voti (33.1/min, ~0 min alla fine)
+
+--- RISULTATI [baseline] ---
+  SI           38   38.0%
+  NO           27   27.0%
+  ASTENUTO     35   35.0%
+  ERRORI        0
+  validi      100
+[feed] politica: hybrid, fuori-rete 15%, 8 post per tick
+[engine] 105 agenti, 144 tick, seed=7
+[engine] 522 notizie su 117 tick (da 2025-10-30 a 2026-03-22)
+    tick 1: 12/14 agenti (34.6/min)
+  tick   1/144 2025-10-30 00h  attivi= 14 news=10  post=5 reply=0 like=4 note=0 err=0  ETA 1.0h
+    tick 2: 11/21 agenti (32.6/min)
+  tick   2/144 2025-10-31 00h  attivi= 21 news= 7  post=5 reply=12 like=27 note=6 err=0  ETA 2.2h
+    tick 3: 12/15 agenti (33.3/min)
+  tick   3/144 2025-11-01 00h  attivi= 15 news= 1  post=5 reply=20 like=41 note=6 err=0  ETA 1.8h
+    tick 4: 12/16 agenti (33.7/min)
+  tick   4/144 2025-11-02 00h  attivi= 16 news= 2  post=7 reply=28 like=60 note=9 err=0  ETA 2.1h
+    tick 5: 11/22 agenti (32.4/min)
+  tick   5/144 2025-11-03 00h  attivi= 22 news= 3  post=9 reply=39 like=90 note=9 err=0  ETA 2.0h
+    tick 6: 11/22 agenti (32.6/min)
+  tick   6/144 2025-11-04 00h  attivi= 22 news= 3  post=9 reply=48 like=118 note=18 err=0  ETA 2.4h
+    tick 7: 12/15 agenti (33.7/min)
+  tick   7/144 2025-11-05 00h  attivi= 15 news= 4  post=10 reply=52 like=134 note=18 err=0  ETA 2.2h
+    tick 8: 12/18 agenti (32.4/min)
+  tick   8/144 2025-11-06 00h  attivi= 18 news= 0  post=11 reply=59 like=148 note=26 err=0  ETA 2.3h
+    tick 9: 11/16 agenti (32.9/min)
+  tick   9/144 2025-11-07 00h  attivi= 16 news= 0  post=12 reply=65 like=163 note=26 err=0  ETA 2.2h
+    tick 10: 11/26 agenti (32.4/min)
+    tick 10: 23/26 agenti (32.7/min)
+  tick  10/144 2025-11-08 00h  attivi= 26 news= 2  post=14 reply=77 like=189 note=32 err=0  ETA 2.4h
+    tick 11: 12/13 agenti (32.6/min)
+  tick  11/144 2025-11-09 00h  attivi= 13 news= 0  post=18 reply=80 like=203 note=32 err=0  ETA 2.2h
+    tick 12: 12/15 agenti (33.0/min)
+  tick  12/144 2025-11-10 00h  attivi= 15 news= 4  post=18 reply=87 like=224 note=35 err=0  ETA 2.2h
+    tick 13: 11/18 agenti (32.0/min)
+  tick  13/144 2025-11-11 00h  attivi= 18 news= 0  post=20 reply=94 like=241 note=35 err=0  ETA 2.1h
+    tick 14: 12/15 agenti (32.2/min)
+  tick  14/144 2025-11-12 00h  attivi= 15 news= 0  post=21 reply=102 like=256 note=40 err=0  ETA 2.2h
+    tick 15: 11/26 agenti (32.9/min)
+    tick 15: 23/26 agenti (33.3/min)
+  tick  15/144 2025-11-13 00h  attivi= 26 news= 0  post=22 reply=116 like=281 note=40 err=0  ETA 2.1h
+    tick 16: 12/23 agenti (32.4/min)
+    tick 16: 23/23 agenti (32.1/min)
+  tick  16/144 2025-11-14 00h  attivi= 23 news= 5  post=26 reply=125 like=307 note=43 err=0  ETA 2.3h
+    tick 17: 12/13 agenti (33.4/min)
+  tick  17/144 2025-11-15 00h  attivi= 13 news= 1  post=28 reply=129 like=324 note=43 err=0  ETA 2.2h
+  tick  18/144 2025-11-16 00h  attivi=  8 news= 0  post=29 reply=131 like=334 note=46 err=0  ETA 2.1h
+    tick 19: 12/21 agenti (32.9/min)
+  tick  19/144 2025-11-17 00h  attivi= 21 news= 1  post=35 reply=138 like=361 note=46 err=0  ETA 2.1h
+    tick 20: 11/15 agenti (32.0/min)
+  tick  20/144 2025-11-18 00h  attivi= 15 news= 1  post=36 reply=143 like=383 note=50 err=0  ETA 2.1h
+    tick 21: 11/17 agenti (32.2/min)
+  tick  21/144 2025-11-19 00h  attivi= 17 news= 2  post=37 reply=150 like=407 note=50 err=0  ETA 2.0h
+    tick 22: 11/16 agenti (32.1/min)
+  tick  22/144 2025-11-20 00h  attivi= 16 news= 0  post=41 reply=152 like=425 note=51 err=0  ETA 2.0h
+    tick 23: 12/19 agenti (32.8/min)
+  tick  23/144 2025-11-21 00h  attivi= 19 news= 3  post=45 reply=156 like=442 note=51 err=0  ETA 2.0h
+    tick 24: 12/20 agenti (32.5/min)
+  tick  24/144 2025-11-22 00h  attivi= 20 news= 0  post=47 reply=160 like=463 note=52 err=0  ETA 2.0h
+    tick 25: 12/22 agenti (33.6/min)
+  tick  25/144 2025-11-23 00h  attivi= 22 news= 0  post=49 reply=166 like=495 note=52 err=0  ETA 2.0h
+    tick 26: 12/14 agenti (34.1/min)
+  tick  26/144 2025-11-24 00h  attivi= 14 news= 1  post=50 reply=169 like=513 note=56 err=0  ETA 2.0h
+    tick 27: 12/27 agenti (33.3/min)
+    tick 27: 24/27 agenti (33.0/min)
+  tick  27/144 2025-11-25 00h  attivi= 27 news= 0  post=54 reply=180 like=547 note=56 err=0  ETA 2.0h
+    tick 28: 11/18 agenti (33.0/min)
+  tick  28/144 2025-11-26 00h  attivi= 18 news= 3  post=57 reply=186 like=574 note=58 err=0  ETA 2.0h
+    tick 29: 11/23 agenti (32.9/min)
+    tick 29: 22/23 agenti (32.5/min)
+  tick  29/144 2025-11-27 00h  attivi= 23 news= 0  post=59 reply=194 like=607 note=58 err=0  ETA 2.0h
+    tick 30: 12/15 agenti (35.2/min)
+  [tick_29] 1/100 voti (20.3/min, ~5 min alla fine)
+  [tick_29] 10/100 voti (31.3/min, ~3 min alla fine)
+  [tick_29] 20/100 voti (32.8/min, ~2 min alla fine)
+  [tick_29] 30/100 voti (32.1/min, ~2 min alla fine)
+  [tick_29] 40/100 voti (32.9/min, ~2 min alla fine)
+  [tick_29] 50/100 voti (32.6/min, ~2 min alla fine)
+  [tick_29] 60/100 voti (32.9/min, ~1 min alla fine)
+  [tick_29] 70/100 voti (32.8/min, ~1 min alla fine)
+  [tick_29] 80/100 voti (32.7/min, ~1 min alla fine)
+  [tick_29] 90/100 voti (32.9/min, ~0 min alla fine)
+  [tick_29] 100/100 voti (32.8/min, ~0 min alla fine)
+
+--- RISULTATI [tick_29] ---
+  SI            7    7.0%
+  NO           60   60.0%
+  ASTENUTO     33   33.0%
+  ERRORI        0
+  validi      100
+  tick  30/144 2025-11-28 00h  attivi= 15 news= 0  post=64 reply=198 like=624 note=61 err=0  ETA 2.2h
+    tick 31: 12/21 agenti (34.4/min)
+  tick  31/144 2025-11-29 00h  attivi= 21 news= 1  post=66 reply=201 like=655 note=61 err=0  ETA 2.1h
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/asyncio/runners.py", line 128, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/base_events.py", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/home/leo/Documents/MirrorFish/run.py", line 364, in main_async
+    await engine.run(start_tick=start_tick)
+  File "/home/leo/Documents/MirrorFish/mirrorfish/engine.py", line 263, in run
+    await self._reflect_all(agents, tick)
+  File "/home/leo/Documents/MirrorFish/mirrorfish/engine.py", line 194, in _reflect_all
+    results = await asyncio.gather(*(one(a) for a in targets))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/leo/Documents/MirrorFish/mirrorfish/engine.py", line 188, in one
+    return await self.reflector.reflect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/leo/Documents/MirrorFish/mirrorfish/memory.py", line 131, in reflect
+    resp = await self.client.complete(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "/home/leo/Documents/MirrorFish/mirrorfish/llm.py", line 448, in complete
+    await self.gate.acquire()
+  File "/home/leo/Documents/MirrorFish/mirrorfish/llm.py", line 176, in acquire
+    await asyncio.sleep(min(sleep_for, 5.0))
+  File "/usr/lib/python3.14/asyncio/tasks.py", line 705, in sleep
+    return await future
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/leo/Documents/MirrorFish/run.py", line 543, in <module>
+    asyncio.run(main_async(a))
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 205, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/usr/lib/python3.14/asyncio/runners.py", line 133, in run
+    raise KeyboardInterrupt()
+KeyboardInterrupt
