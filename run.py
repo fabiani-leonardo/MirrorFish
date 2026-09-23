@@ -139,6 +139,7 @@ def build_config(args: argparse.Namespace) -> SimConfig:
     return SimConfig(
         run_id=Path(args.out).name,
         seed=args.seed,
+        seed_modello=args.seed_modello,
         start_date=start,
         end_date=start + timedelta(days=args.days - 1),
         hours_per_tick=args.hours_per_tick,
@@ -335,7 +336,8 @@ async def main_async(args: argparse.Namespace) -> None:
               f"{sim.counterfactual_from_tick}")
 
     # --- client ------------------------------------------------------------ #
-    client = build_client(llm_cfg, stub=args.stub, seed=sim.seed)
+    client = build_client(llm_cfg, stub=args.stub, seed=sim.seed,
+                          seed_modello=sim.seed_modello)
 
     try:
         # baseline PRIMA: solo bio statica, nessuna nota esiste ancora.
@@ -427,6 +429,9 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     p.add_argument("--out", default="runs/dev")
     p.add_argument("--seed", type=int, default=d.seed)
+    p.add_argument("--seed-modello", action="store_true",
+                   help="passa il seme anche al campionamento del modello, "
+                        "per rendere riproducibili due run con lo stesso seme")
     p.add_argument("--start", default=d.start_date.isoformat())
     p.add_argument("--days", type=int,
                    default=(d.end_date - d.start_date).days + 1)

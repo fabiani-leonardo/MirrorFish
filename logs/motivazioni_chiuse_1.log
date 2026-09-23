@@ -1,0 +1,40 @@
+86 agenti con voto SI o NO alla rilevazione 'final'
+(esclusi 14 astenuti: la rilevazione reale non riporta le loro ragioni)
+
+========================================================================
+ Ha votato SI: 40 agenti (0 risposte non interpretabili)
+========================================================================
+  cod    simulata   reale   scarto  motivazione
+  S1          90%     59%      +31  sono favorevole alla separazione delle carri
+  S2          30%     35%       -5  sono favorevole alla divisione del CSM in du
+  S3          42%     34%       +8  sono favorevole all'istituzione dell'Alta Co
+  S4          75%     24%      +51  ritengo giusto modificare la Costituzione in
+  S5           0%     18%      -18  sostengo il Governo in carica
+  SX           0%fittizia        —  sono favorevole all'abolizione di un grado d
+
+  nessuna opzione scelta: 0% degli agenti
+  OPZIONE FITTIZIA SX: scelta dal 0% degli agenti.
+  Quota bassa: gli agenti non accolgono indiscriminatamente
+  le opzioni proposte, e il resto della tabella e' leggibile.
+
+========================================================================
+ Ha votato NO: 46 agenti (0 risposte non interpretabili)
+========================================================================
+  cod    simulata   reale   scarto  motivazione
+  N1          17%     61%      -44  non ritengo giusto modificare la Costituzion
+  N2           9%     39%      -30  sono contrario al sorteggio dei componenti d
+  N3           0%     31%      -31  sono all'opposizione del Governo in carica
+  N4          70%     27%      +43  sono contrario alla divisione del CSM in due
+  N5           9%     17%       -8  sono contrario all'istituzione dell'Alta Cor
+  N6           0%      7%       -7  seguo l'indicazione di voto del mio partito
+  N7          83%      4%      +79  sono contrario alla separazione delle carrie
+  NX           2%fittizia        —  sono contrario all'abolizione di un grado di
+
+  nessuna opzione scelta: 0% degli agenti
+  OPZIONE FITTIZIA NX: scelta dal 2% degli agenti.
+  Quota bassa: gli agenti non accolgono indiscriminatamente
+  le opzioni proposte, e il resto della tabella e' leggibile.
+
+Confronta questa tabella con quella della domanda aperta. Una ragione
+assente nel testo libero e frequente qui non e' un'opinione della
+popolazione: e' un'opinione che l'elenco le ha suggerito.

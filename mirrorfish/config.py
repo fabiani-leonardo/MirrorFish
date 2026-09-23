@@ -201,6 +201,11 @@ class SimConfig:
 
     run_id: str = "run_dev"
     seed: int = 42
+    # Se True il seme raggiunge anche il campionamento del modello: ogni
+    # richiesta porta un seme derivato da (seed, prompt). Senza, il seme
+    # governa solo attivazione, feed, notizie e grafo, e due run con lo
+    # stesso seme divergono per il solo campionamento del modello.
+    seed_modello: bool = False
 
     # Finestra canonica: apertura della campagna referendaria -> giorno del voto.
     start_date: date = date(2025, 10, 30)
@@ -318,6 +323,11 @@ class SimConfig:
         d = asdict(self)
         d["start_date"] = self.start_date.isoformat()
         d["end_date"] = self.end_date.isoformat()
+        # Spento e' il comportamento storico: lo si toglie dal dizionario cosi'
+        # che i fingerprint delle run precedenti restino identici e --resume
+        # continui a funzionare su di esse.
+        if not d.get("seed_modello"):
+            d.pop("seed_modello", None)
         return d
 
     def fingerprint(self) -> str:

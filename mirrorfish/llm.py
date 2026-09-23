@@ -388,13 +388,14 @@ class EndpointDown(RuntimeError):
 class OpenAICompatClient(LLMClient):
     """Client per qualunque endpoint OpenAI-compatible (vLLM, Ollama, ...)."""
 
-    def __init__(self, cfg: LLMConfig):
+    def __init__(self, cfg: LLMConfig, seed: int | None = None):
         if not cfg.api_key:
             raise ValueError(
                 "LLM_API_KEY non configurata. Impostala come variabile "
                 "d'ambiente (o in .env), mai nel codice o nel repo."
             )
         self.cfg = cfg
+        self._seed = seed
         self._sem = asyncio.Semaphore(cfg.concurrency)
         self.gate = RateGate(cfg.pace_interval(), rpm=cfg.requests_per_minute)
         self._thinking_supported = cfg.disable_thinking
@@ -433,6 +434,13 @@ class OpenAICompatClient(LLMClient):
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
+        if self._seed is not None:
+            # Seme per richiesta derivato dall'INTERO prompt, come nello stub:
+            # stesso run e stesso prompt -> stessa estrazione. Un seme unico
+            # per tutte le chiamate renderebbe correlate le estrazioni di
+            # agenti diversi. vLLM accetta `seed` al top level del body.
+            digest = hashlib.sha256(f"{self._seed}|{system}|{user}".encode()).hexdigest()
+            payload["seed"] = int(digest[:8], 16)
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
         if self._thinking_supported:
@@ -642,5 +650,8 @@ class StubLLM(LLMClient):
         )
 
 
-def build_client(cfg: LLMConfig, *, stub: bool = False, seed: int = 0) -> LLMClient:
-    return StubLLM(seed=seed) if stub else OpenAICompatClient(cfg)
+def build_client(cfg: LLMConfig, *, stub: bool = False, seed: int = 0,
+                 seed_modello: bool = False) -> LLMClient:
+    if stub:
+        return StubLLM(seed=seed)
+    return OpenAICompatClient(cfg, seed=seed if seed_modello else None)

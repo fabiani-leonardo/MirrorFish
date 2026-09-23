@@ -1,0 +1,102 @@
+diff -ru a/mirrorfish/config.py b/mirrorfish/config.py
+--- a/mirrorfish/config.py	2026-09-22 15:58:02.254585062 +0000
++++ b/mirrorfish/config.py	2026-09-22 15:58:02.309989341 +0000
+@@ -201,6 +201,11 @@
+ 
+     run_id: str = "run_dev"
+     seed: int = 42
++    # Se True il seme raggiunge anche il campionamento del modello: ogni
++    # richiesta porta un seme derivato da (seed, prompt). Senza, il seme
++    # governa solo attivazione, feed, notizie e grafo, e due run con lo
++    # stesso seme divergono per il solo campionamento del modello.
++    seed_modello: bool = False
+ 
+     # Finestra canonica: apertura della campagna referendaria -> giorno del voto.
+     start_date: date = date(2025, 10, 30)
+@@ -318,6 +323,11 @@
+         d = asdict(self)
+         d["start_date"] = self.start_date.isoformat()
+         d["end_date"] = self.end_date.isoformat()
++        # Spento e' il comportamento storico: lo si toglie dal dizionario cosi'
++        # che i fingerprint delle run precedenti restino identici e --resume
++        # continui a funzionare su di esse.
++        if not d.get("seed_modello"):
++            d.pop("seed_modello", None)
+         return d
+ 
+     def fingerprint(self) -> str:
+diff -ru a/mirrorfish/llm.py b/mirrorfish/llm.py
+--- a/mirrorfish/llm.py	2026-09-22 15:58:02.256815978 +0000
++++ b/mirrorfish/llm.py	2026-09-22 15:58:02.310679986 +0000
+@@ -388,13 +388,14 @@
+ class OpenAICompatClient(LLMClient):
+     """Client per qualunque endpoint OpenAI-compatible (vLLM, Ollama, ...)."""
+ 
+-    def __init__(self, cfg: LLMConfig):
++    def __init__(self, cfg: LLMConfig, seed: int | None = None):
+         if not cfg.api_key:
+             raise ValueError(
+                 "LLM_API_KEY non configurata. Impostala come variabile "
+                 "d'ambiente (o in .env), mai nel codice o nel repo."
+             )
+         self.cfg = cfg
++        self._seed = seed
+         self._sem = asyncio.Semaphore(cfg.concurrency)
+         self.gate = RateGate(cfg.pace_interval(), rpm=cfg.requests_per_minute)
+         self._thinking_supported = cfg.disable_thinking
+@@ -433,6 +434,13 @@
+             "max_tokens": max_tokens,
+             "temperature": temperature,
+         }
++        if self._seed is not None:
++            # Seme per richiesta derivato dall'INTERO prompt, come nello stub:
++            # stesso run e stesso prompt -> stessa estrazione. Un seme unico
++            # per tutte le chiamate renderebbe correlate le estrazioni di
++            # agenti diversi. vLLM accetta `seed` al top level del body.
++            digest = hashlib.sha256(f"{self._seed}|{system}|{user}".encode()).hexdigest()
++            payload["seed"] = int(digest[:8], 16)
+         if json_mode:
+             payload["response_format"] = {"type": "json_object"}
+         if self._thinking_supported:
+@@ -642,5 +650,8 @@
+         )
+ 
+ 
+-def build_client(cfg: LLMConfig, *, stub: bool = False, seed: int = 0) -> LLMClient:
+-    return StubLLM(seed=seed) if stub else OpenAICompatClient(cfg)
++def build_client(cfg: LLMConfig, *, stub: bool = False, seed: int = 0,
++                 seed_modello: bool = False) -> LLMClient:
++    if stub:
++        return StubLLM(seed=seed)
++    return OpenAICompatClient(cfg, seed=seed if seed_modello else None)
+diff -ru a/run.py b/run.py
+--- a/run.py	2026-09-22 15:58:02.258951330 +0000
++++ b/run.py	2026-09-22 15:58:02.311093725 +0000
+@@ -139,6 +139,7 @@
+     return SimConfig(
+         run_id=Path(args.out).name,
+         seed=args.seed,
++        seed_modello=args.seed_modello,
+         start_date=start,
+         end_date=start + timedelta(days=args.days - 1),
+         hours_per_tick=args.hours_per_tick,
+@@ -335,7 +336,8 @@
+               f"{sim.counterfactual_from_tick}")
+ 
+     # --- client ------------------------------------------------------------ #
+-    client = build_client(llm_cfg, stub=args.stub, seed=sim.seed)
++    client = build_client(llm_cfg, stub=args.stub, seed=sim.seed,
++                          seed_modello=sim.seed_modello)
+ 
+     try:
+         # baseline PRIMA: solo bio statica, nessuna nota esiste ancora.
+@@ -427,6 +429,9 @@
+         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+     p.add_argument("--out", default="runs/dev")
+     p.add_argument("--seed", type=int, default=d.seed)
++    p.add_argument("--seed-modello", action="store_true",
++                   help="passa il seme anche al campionamento del modello, "
++                        "per rendere riproducibili due run con lo stesso seme")
+     p.add_argument("--start", default=d.start_date.isoformat())
+     p.add_argument("--days", type=int,
+                    default=(d.end_date - d.start_date).days + 1)
